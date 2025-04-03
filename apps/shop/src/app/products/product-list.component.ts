@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { ProductService } from './product.service';
 import { GetProductsQuery, ProductListOptions } from '../common/generated-types';
 import { Observable } from 'rxjs';
@@ -7,12 +8,14 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   template: `
     <div *ngIf="products$ | async as products">
       <h2>Products</h2>
       <div *ngFor="let product of products.items">
-        <h3>{{ product.name }}</h3>
+        <h3>
+          <a [routerLink]="['/product', product.slug]">{{ product.name }}</a>
+        </h3>
         <p>{{ product.description }}</p>
         <div *ngIf="product.featuredAsset">
           <img [src]="product.featuredAsset.preview" [alt]="product.name" width="200">

@@ -42,7 +42,7 @@ export interface ProductDetail {
     currencyCode: string;
     priceWithTax: number;
     sku: string;
-    stockLevel: string;
+    stockLevel?: string;
   }>;
 }
 

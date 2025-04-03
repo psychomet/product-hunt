@@ -28,8 +28,8 @@ export function createVendureConfig(
   const {
     templatePath = path.join(process.cwd(), 'static/email/templates'),
     migrationsPath = path.join(process.cwd(), 'apps/server/src/migrations'),
-    databasePath = path.join(process.cwd(), 'vendure', 'vendure.sqlite'),
-    assetsPath = path.join(process.cwd(), 'vendure', 'assets'),
+    databasePath = path.join(process.cwd(), 'static/data', 'vendure.sqlite'),
+    assetsPath = path.join(process.cwd(), 'static/data', 'assets'),
   } = configOptions;
 
   return {
