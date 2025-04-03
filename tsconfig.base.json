@@ -13,8 +13,11 @@
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "esModuleInterop": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@bigi-shop/util-config": ["packages/util-config/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

@@ -17,4 +17,7 @@ module.exports = {
       generatePackageJson: true,
     }),
   ],
+  // Vendure uses dynamic requires for some files, so we need to keep them as require()
+  // rather than converting to ESM imports
+  ignoreWarnings: [/Critical dependency: the request of a dependency is an expression/],
 };
