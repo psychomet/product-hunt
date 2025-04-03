@@ -3,6 +3,8 @@ import {
   DefaultJobQueuePlugin,
   DefaultSearchPlugin,
   VendureConfig,
+  PasswordValidationStrategy,
+  RequestContext,
 } from '@vendure/core';
 import { defaultEmailHandlers, EmailPlugin, FileBasedTemplateLoader } from '@vendure/email-plugin';
 import { AssetServerPlugin } from '@vendure/asset-server-plugin';
@@ -30,6 +32,16 @@ export function createVendureConfig(
     assetsPath = path.join(process.cwd(), 'static/data', 'assets'),
   } = configOptions;
 
+  // Custom password validation
+  class CustomPasswordValidationStrategy implements PasswordValidationStrategy {
+    validate(ctx: RequestContext, password: string): boolean | string {
+      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password)) {
+        return 'Password must contain at least 8 characters, one uppercase letter, one lowercase letter and one number';
+      }
+      return true;
+    }
+  }
+
   return {
     apiOptions: {
       port: serverPort,
@@ -50,6 +62,10 @@ export function createVendureConfig(
             shopApiDebug: true,
           }
         : {}),
+      cors: {
+        origin: process.env['CORS_ORIGIN'] || 'http://localhost:4200',
+        credentials: true,
+      },
     },
     authOptions: {
       tokenMethod: ['bearer', 'cookie'],
@@ -59,7 +75,14 @@ export function createVendureConfig(
       },
       cookieOptions: {
         secret: process.env.COOKIE_SECRET || 'cookie-secret',
+        // Set cookie options for better security
+        sameSite: 'strict',
+        secure: !IS_DEV,
+        httpOnly: true,
       },
+      verificationTokenDuration: '7d', // Verification token valid for 7 days
+      requireVerification: true, // Require email verification
+      passwordValidationStrategy: new CustomPasswordValidationStrategy(),
     },
     dbConnectionOptions: {
       type: 'postgres',
