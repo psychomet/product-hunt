@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # Vendure Server
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    ports:
+      - '3000:3000'
+      - '3002:3002' # Admin UI port
+    volumes:
+      - vendure-data:/app/vendure
+      - ./.env:/app/.env
+    environment:
+      - APP_ENV=prod
+      - PORT=3000
+      - SUPERADMIN_USERNAME=${SUPERADMIN_USERNAME:-superadmin}
+      - SUPERADMIN_PASSWORD=${SUPERADMIN_PASSWORD:-superadmin}
+      - COOKIE_SECRET=${COOKIE_SECRET:-cookie-secret-key}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      worker:
+        condition: service_started
+    networks:
+      - bigi-network
+    restart: unless-stopped
+
+  # Vendure Worker
+  worker:
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile
+    volumes:
+      - vendure-data:/app/vendure
+      - ./.env:/app/.env
+    environment:
+      - APP_ENV=prod
+    networks:
+      - bigi-network
+    restart: on-failure
+    # Ensure the container doesn't exit immediately
+    tty: true
+    stdin_open: true
+
+  # Angular Shop Frontend
+  shop:
+    build:
+      context: .
+      dockerfile: apps/shop/Dockerfile
+    ports:
+      - '4000:4000'
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - bigi-network
+    restart: unless-stopped
+
+volumes:
+  vendure-data: # Volume for persistent Vendure data (database, assets)
+
+networks:
+  bigi-network: # Network for services to communicate 

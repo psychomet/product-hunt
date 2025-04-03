@@ -1,3 +1,88 @@
+# Bigi Shop
+
+A monorepo e-commerce application built with Nx, Angular, and Vendure.
+
+## Applications
+
+- **shop**: Angular storefront application
+- **server**: Vendure backend server
+- **worker**: Vendure worker for background processing
+
+## Development
+
+### Prerequisites
+
+- Node.js (v18 or newer)
+- npm
+
+### Setup
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Run the applications in development mode:
+```bash
+# Run all services
+npm run vendure:dev
+
+# Run only the shop frontend
+npm run shop:dev
+```
+
+## Deployment with Docker
+
+The repository is configured for Docker-based deployment.
+
+### Prerequisites
+
+- Docker
+- Docker Compose
+
+### Deploy
+
+1. Make the deployment script executable:
+```bash
+chmod +x deploy.sh
+```
+
+2. Run the deployment script to build all applications and Docker images:
+```bash
+./deploy.sh
+```
+
+3. Start all services in detached mode:
+```bash
+docker-compose up -d
+```
+
+4. Access the applications:
+   - Storefront: http://localhost:4200
+   - Admin UI: http://localhost:3000/admin
+   - Shop API: http://localhost:3000/shop-api
+
+### Environment Variables
+
+Configure the following environment variables for production:
+
+- `SUPERADMIN_USERNAME`: Admin username (default: superadmin)  
+- `SUPERADMIN_PASSWORD`: Admin password (default: superadmin)
+- `COOKIE_SECRET`: Secret for cookie-based sessions
+- `APP_ENV`: Environment (dev/prod)
+
+Set these in a `.env` file or directly in your environment.
+
+## Data Persistence
+
+Vendure data (database and assets) is stored in a Docker volume named `vendure-data`.
+
+## Monitoring & Maintenance
+
+- View logs: `docker-compose logs -f`
+- Restart services: `docker-compose restart`
+- Stop all services: `docker-compose down`
+
 # BigiShop
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>

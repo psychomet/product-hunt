@@ -11,6 +11,25 @@ loadEnv();
 bootstrapWorker(config)
   .then(worker => {
     console.log('Worker process started.');
+    
+    // Keep the process alive with a heartbeat interval
+    const heartbeatInterval = setInterval(() => {
+      // This interval keeps the process alive
+      // You could add health check logging here if desired
+    }, 30000); // Every 30 seconds
+    
+    // Handle process termination
+    process.on('SIGINT', () => {
+      console.log('Received SIGINT, worker shutting down...');
+      clearInterval(heartbeatInterval);
+      process.exit(0);
+    });
+    
+    process.on('SIGTERM', () => {
+      console.log('Received SIGTERM, worker shutting down...');
+      clearInterval(heartbeatInterval);
+      process.exit(0);
+    });
   })
   .catch(err => {
     console.log(err);
