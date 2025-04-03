@@ -5,6 +5,30 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/server",
+        "tsConfig": "apps/server/tsconfig.app.json",
+        "assets": ["apps/server/src/assets"],
+        "webpackConfig": "apps/server/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production",
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false
+        }
+      }
+    },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
@@ -21,6 +45,14 @@
           "buildTarget": "server:build:production"
         }
       }
+    },
+    "populate-test-data": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node dist/apps/server/scripts/populate-test-data.js",
+        "cwd": "."
+      },
+      "dependsOn": ["build"]
     },
     "docker-build": {
       "dependsOn": ["build"],

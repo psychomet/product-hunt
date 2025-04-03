@@ -4,6 +4,11 @@ const { join } = require('path');
 module.exports = {
   output: {
     path: join(__dirname, '../../dist/apps/server'),
+    filename: '[name].js',
+  },
+  entry: {
+    main: './src/main.ts',
+    'scripts/populate-test-data': './src/scripts/populate-test-data.ts'
   },
   plugins: [
     new NxAppWebpackPlugin({
