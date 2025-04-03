@@ -1,0 +1,16 @@
+schema:
+  - http://localhost:3000/shop-api
+documents:
+  - apps/shop/src/app/graphql/**/*.graphql
+  - apps/shop/src/app/**/*.ts
+  - "!apps/shop/src/app/common/generated-types.ts"
+generates:
+  apps/shop/src/app/common/generated-types.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+    config:
+      skipTypename: false
+      immutableTypes: true
+      nonOptionalTypename: false
+      avoidOptionals: true 

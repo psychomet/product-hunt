@@ -1,4 +1,4 @@
 export const environment = {
-  production: false,
+  production: true,
   graphqlApiUrl: 'http://localhost:3000/shop-api'
 }; 
