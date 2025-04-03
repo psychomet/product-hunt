@@ -16,6 +16,13 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
+      "@bigi-shop/products/data-access": [
+        "packages/products/data-access/src/index.ts"
+      ],
+      "@bigi-shop/products/feature": ["packages/products/feature/src/index.ts"],
+      "@bigi-shop/products/ui": ["packages/products/ui/src/index.ts"],
+      "@bigi-shop/products/util": ["packages/products/util/src/index.ts"],
+      "@bigi-shop/shared/util-types": ["packages/shared/util-types/src/index.ts"],
       "@bigi-shop/util-config": ["packages/util-config/src/index.ts"]
     }
   },

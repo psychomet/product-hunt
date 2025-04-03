@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, map } from 'rxjs';
-import { GetProductsQuery, ProductListOptions, InputMaybe } from '../common/generated-types';
+import { GetProductsQuery, ProductListOptions, InputMaybe } from '@bigi-shop/shared/util-types';
 
 const GET_PRODUCTS = gql`
   query GetProducts($options: ProductListOptions) {

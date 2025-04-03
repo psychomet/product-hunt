@@ -1,0 +1,36 @@
+{
+  "name": "products-util",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/products/util/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["type:util"],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:ng-packagr-lite",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "options": {
+        "project": "packages/products/util/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "packages/products/util/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "packages/products/util/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/products/util/jest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

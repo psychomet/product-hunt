@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, map } from 'rxjs';
+import { GetProductQuery } from '@bigi-shop/shared/util-types';
 
 const GET_PRODUCT = gql`
   query GetProduct($slug: String!) {
@@ -59,13 +60,13 @@ export class ProductDetailService {
   ) {}
 
   getProduct(slug: string): Observable<ProductDetail> {
-    return this.apollo.watchQuery<ProductDetailResponse>({
+    return this.apollo.watchQuery<GetProductQuery>({
       query: GET_PRODUCT,
       variables: { slug }
     })
     .valueChanges
     .pipe(
-      map(result => result.data.product)
+      map(result => result.data.product as ProductDetail)
     );
   }
 } 

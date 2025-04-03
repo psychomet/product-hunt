@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Observable, switchMap } from 'rxjs';
-import { ProductDetailService, ProductDetail } from './product-detail.service';
+import { ProductDetailService, ProductDetail } from '@bigi-shop/products/data-access';
 
 @Component({
-  selector: 'app-product-detail',
+  selector: 'lib-product-detail',
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
