@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "dev": "nx run-many -t serve -p server worker shop",
     "server:dev": "nx serve server",
     "worker:dev": "nx serve worker",
     "shop:dev": "nx serve shop",
