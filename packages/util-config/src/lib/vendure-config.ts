@@ -63,15 +63,15 @@ export function createVendureConfig(
     },
     dbConnectionOptions: {
       type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      port: +(process.env.DB_PORT || 5432),
-      username: process.env.DB_USERNAME || 'vendure',
-      password: process.env.DB_PASSWORD || 'vendure',
-      database: process.env.DB_NAME || 'vendure',
+      host: process.env['DB_HOST'] || 'localhost',
+      port: +(process.env['DB_PORT'] || 5432),
+      username: process.env['DB_USERNAME'] || 'vendure',
+      password: process.env['DB_PASSWORD'] || 'vendure',
+      database: process.env['DB_NAME'] || 'vendure',
       synchronize: true, // Should be false in production
       logging: false,
       migrations: [path.join(migrationsPath, '*.+(js|ts)')],
-      ssl: process.env.DB_SSL === 'true',
+      ssl: process.env['DB_SSL'] === 'true',
     },
     paymentOptions: {
       paymentMethodHandlers: [dummyPaymentHandler],
