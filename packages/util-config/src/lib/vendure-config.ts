@@ -21,14 +21,12 @@ export function createVendureConfig(
   configOptions: {
     templatePath?: string; // Path to email templates
     migrationsPath?: string; // Path to migrations
-    databasePath?: string; // Path to database file
     assetsPath?: string; // Path to assets directory
   } = {}
 ): VendureConfig {
   const {
     templatePath = path.join(process.cwd(), 'static/email/templates'),
     migrationsPath = path.join(process.cwd(), 'apps/server/src/migrations'),
-    databasePath = path.join(process.cwd(), 'static/data', 'vendure.sqlite'),
     assetsPath = path.join(process.cwd(), 'static/data', 'assets'),
   } = configOptions;
 
@@ -64,13 +62,16 @@ export function createVendureConfig(
       },
     },
     dbConnectionOptions: {
-      type: 'better-sqlite3',
-      // See the README.md "Migrations" section for an explanation of
-      // the `synchronize` and `migrations` options.
-      synchronize: true,
-      migrations: [path.join(migrationsPath, '*.+(js|ts)')],
+      type: 'postgres',
+      host: process.env.DB_HOST || 'localhost',
+      port: +(process.env.DB_PORT || 5432),
+      username: process.env.DB_USERNAME || 'vendure',
+      password: process.env.DB_PASSWORD || 'vendure',
+      database: process.env.DB_NAME || 'vendure',
+      synchronize: true, // Should be false in production
       logging: false,
-      database: databasePath,
+      migrations: [path.join(migrationsPath, '*.+(js|ts)')],
+      ssl: process.env.DB_SSL === 'true',
     },
     paymentOptions: {
       paymentMethodHandlers: [dummyPaymentHandler],
