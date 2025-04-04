@@ -1,14 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DataService, StateService } from '@bigi-shop/shared/data-access';
-import { CollectionsMenuComponent } from '@bigi-shop/shared/ui';
+import { CollectionsMenuComponent, Collection } from '@bigi-shop/shared/ui';
 import { SIGN_OUT } from './shell-layout.graphql';
+import { Observable, map } from 'rxjs';
+import { GET_COLLECTIONS } from './shell-layout.graphql';
+import { arrayToTree, TreeNode } from '@bigi-shop/shared/ui';
 
 @Component({
   selector: 'lib-shell-layout',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterOutlet, CollectionsMenuComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="shell-container">
       <header class="header">
@@ -17,7 +21,7 @@ import { SIGN_OUT } from './shell-layout.graphql';
             <a routerLink="/" class="brand-link">Bigi Shop</a>
           </div>
           
-          <bigi-collections-menu></bigi-collections-menu>
+          <bigi-collections-menu [collections]="collections$ | async"></bigi-collections-menu>
           
           <div class="nav-links">            
             <ng-container *ngIf="state.currentUser$ | async as user; else authLinks">
@@ -52,7 +56,7 @@ import { SIGN_OUT } from './shell-layout.graphql';
 
       <footer class="footer">
         <div class="footer-content">
-          <p>&copy; 2024 Bigi Shop. All rights reserved.</p>
+          <p>&copy; {{ currentYear }} Bigi Shop. All rights reserved.</p>
         </div>
       </footer>
     </div>
@@ -218,11 +222,18 @@ import { SIGN_OUT } from './shell-layout.graphql';
   `]
 })
 export class ShellLayoutComponent {
+  collections$: Observable<TreeNode<Collection>[]>;
+  currentYear = new Date().getFullYear();
+
   constructor(
     public dataService: DataService,
     public state: StateService,
     private router: Router
-  ) {}
+  ) {
+    this.collections$ = this.dataService
+      .query<{ collections: { items: Collection[] } }>(GET_COLLECTIONS)
+      .pipe(map(({ collections }) => arrayToTree(collections.items)));
+  }
 
   signOut() {
     this.dataService.mutate(SIGN_OUT).subscribe(() => {

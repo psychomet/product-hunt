@@ -1,12 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Observable, map } from 'rxjs';
-import { DataService } from '@bigi-shop/shared/data-access';
-import { GET_COLLECTIONS } from './collections-menu.graphql';
-import { arrayToTree, TreeNode } from './array-to-tree';
+import { TreeNode } from './array-to-tree';
 
-interface Collection {
+export interface Collection {
   id: string;
   name: string;
   slug: string;
@@ -22,7 +19,7 @@ interface Collection {
   imports: [CommonModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <nav class="collections-menu" *ngIf="collections$ | async as collections">
+    <nav class="collections-menu" *ngIf="collections">
       <ul class="menu-list">
         <ng-container *ngTemplateOutlet="menuItems; context: { $implicit: collections }">
         </ng-container>
@@ -85,16 +82,6 @@ interface Collection {
     }
   `]
 })
-export class CollectionsMenuComponent implements OnInit {
-  collections$!: Observable<TreeNode<Collection>[]>;
-
-  constructor(private dataService: DataService) {}
-
-  ngOnInit() {
-    this.collections$ = this.dataService
-      .query<{ collections: { items: Collection[] } }>(GET_COLLECTIONS)
-      .pipe(
-        map(({ collections }) => arrayToTree(collections.items))
-      );
-  }
+export class CollectionsMenuComponent {
+  @Input() collections: TreeNode<Collection>[] = [];
 } 
