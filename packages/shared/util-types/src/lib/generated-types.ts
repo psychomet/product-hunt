@@ -3524,7 +3524,7 @@ export type Zone = Node & {
 };
 
 export type GetProductQueryVariables = Exact<{
-  slug: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
 }>;
 
 

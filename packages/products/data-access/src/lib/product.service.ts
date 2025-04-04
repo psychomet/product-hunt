@@ -1,50 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Apollo, gql } from 'apollo-angular';
-import { Observable, map } from 'rxjs';
+import { DataService } from '@bigi-shop/shared/data-access';
 import { GetProductsQuery, ProductListOptions, InputMaybe } from '@bigi-shop/shared/util-types';
-
-const GET_PRODUCTS = gql`
-  query GetProducts($options: ProductListOptions) {
-    products(options: $options) {
-      items {
-        id
-        name
-        slug
-        description
-        featuredAsset {
-          id
-          preview
-        }
-        variants {
-          id
-          name
-          price
-          currencyCode
-          priceWithTax
-          sku
-        }
-      }
-      totalItems
-    }
-  }
-`;
+import { GET_PRODUCTS } from './product.graphql';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  constructor(
-    private apollo: Apollo
-  ) {}
+  constructor(private dataService: DataService) {}
 
-  getProducts(options?: ProductListOptions): Observable<GetProductsQuery['products']> {
-    return this.apollo.watchQuery<GetProductsQuery>({
-      query: GET_PRODUCTS,
-      variables: { options: options as InputMaybe<ProductListOptions> }
-    })
-    .valueChanges
-    .pipe(
-      map(result => result.data.products)
+  getProducts(options?: ProductListOptions) {
+    return this.dataService.watchQuery<GetProductsQuery>(
+      GET_PRODUCTS,
+      { options: options as InputMaybe<ProductListOptions> }
     );
   }
 } 

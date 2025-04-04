@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { Observable, switchMap } from 'rxjs';
+import { Observable, switchMap, map, filter } from 'rxjs';
 import { ProductDetailService, ProductDetail } from '@bigi-shop/products/data-access';
 
 @Component({
@@ -70,7 +70,30 @@ export class ProductDetailComponent implements OnInit {
         if (!slug) {
           throw new Error('Product slug is required');
         }
-        return this.productDetailService.getProduct(slug);
+        return this.productDetailService.getProduct(slug).pipe(
+          map(result => {
+            if (!result.product) {
+              throw new Error('Product not found');
+            }
+            const { product } = result;
+            return {
+              id: product.id,
+              name: product.name,
+              slug: product.slug,
+              description: product.description,
+              featuredAsset: product.featuredAsset || undefined,
+              variants: [...product.variants].map(variant => ({
+                id: variant.id,
+                name: variant.name,
+                price: variant.price,
+                currencyCode: variant.currencyCode,
+                priceWithTax: variant.priceWithTax,
+                sku: variant.sku,
+                stockLevel: variant.stockLevel
+              }))
+            };
+          })
+        );
       })
     );
   }

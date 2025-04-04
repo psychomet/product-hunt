@@ -136,9 +136,9 @@ export function createVendureConfig(
           // The following variables will change depending on your storefront implementation.
           // Here we are assuming a storefront running at http://localhost:8080.
           fromAddress: '"example" <noreply@example.com>',
-          verifyEmailAddressUrl: 'http://localhost:8080/verify',
-          passwordResetUrl: 'http://localhost:8080/password-reset',
-          changeEmailAddressUrl: 'http://localhost:8080/verify-email-address-change',
+          verifyEmailAddressUrl: 'http://localhost:4200/account/verify',
+          passwordResetUrl: 'http://localhost:4200/account/password-reset',
+          changeEmailAddressUrl: 'http://localhost:4200/account/verify-email-address-change',
         },
       }),
       AdminUiPlugin.init({

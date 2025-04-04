@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { ProductService } from '@bigi-shop/products/data-access';
 import { GetProductsQuery, ProductListOptions } from '@bigi-shop/shared/util-types';
 
@@ -34,8 +34,7 @@ export class ProductListComponent implements OnInit {
   constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
-    // Since all properties in ProductListOptions are optional (InputMaybe), 
-    // we can use a partial object as the options
-    this.products$ = this.productService.getProducts({ take: 10 } as ProductListOptions);
+    this.products$ = this.productService.getProducts({ take: 10 } as ProductListOptions)
+      .pipe(map(result => result.products));
   }
 } 

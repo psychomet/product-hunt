@@ -1,0 +1,92 @@
+import { Routes } from '@angular/router';
+import { AccountComponent } from './components/account/account.component';
+import { AccountDashboardComponent } from './components/account-dashboard/account-dashboard.component';
+import { AccountOrderListComponent } from './components/account-order-list/account-order-list.component';
+import { AccountOrderDetailComponent } from './components/account-order-detail/account-order-detail.component';
+import { AccountAddressBookComponent } from './components/account-address-book/account-address-book.component';
+import { AccountAddressDetailComponent } from './components/account-address-detail/account-address-detail.component';
+import { AccountCustomerDetailsComponent } from './components/account-customer-details/account-customer-details.component';
+import { AccountChangeCredentialsComponent } from './components/account-change-credentials/account-change-credentials.component';
+import { AccountSignInComponent } from './components/account-sign-in/account-sign-in.component';
+import { RegisterComponent } from './components/register/register.component';
+import { VerifyComponent } from './components/verify/verify.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { ForgottenPasswordComponent } from './components/forgotten-password/forgotten-password.component';
+import { ChangeEmailAddressComponent } from './components/change-email-address/change-email-address.component';
+import { AccountGuard } from './guards/account.guard';
+import { SignInGuard } from './guards/sign-in.guard';
+
+export const accountRoutes: Routes = [
+  {
+    path: '',
+    component: AccountComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        canActivate: [AccountGuard],
+        component: AccountDashboardComponent,
+      },
+      {
+        path: 'orders',
+        canActivate: [AccountGuard],
+        component: AccountOrderListComponent,
+      },
+      {
+        path: 'orders/:code',
+        canActivate: [AccountGuard],
+        component: AccountOrderDetailComponent,
+      },
+      {
+        path: 'address-book',
+        canActivate: [AccountGuard],
+        component: AccountAddressBookComponent,
+      },
+      {
+        path: 'address-book/:id',
+        canActivate: [AccountGuard],
+        component: AccountAddressDetailComponent,
+      },
+      {
+        path: 'details',
+        canActivate: [AccountGuard],
+        component: AccountCustomerDetailsComponent,
+      },
+      {
+        path: 'change-credentials',
+        canActivate: [AccountGuard],
+        component: AccountChangeCredentialsComponent,
+      },
+      {
+        path: 'sign-in',
+        canActivate: [SignInGuard],
+        component: AccountSignInComponent,
+      },
+      {
+        path: 'register',
+        canActivate: [SignInGuard],
+        component: RegisterComponent,
+      },
+      {
+        path: 'verify',
+        canActivate: [SignInGuard],
+        component: VerifyComponent,
+      },
+      {
+        path: 'reset-password',
+        canActivate: [SignInGuard],
+        component: ResetPasswordComponent,
+      },
+      {
+        path: 'forgotten-password',
+        canActivate: [SignInGuard],
+        component: ForgottenPasswordComponent,
+      },
+      {
+        path: 'change-email-address',
+        canActivate: [SignInGuard],
+        component: ChangeEmailAddressComponent,
+      },
+    ],
+  },
+]; 

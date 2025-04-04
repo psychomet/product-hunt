@@ -1,31 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Apollo, gql } from 'apollo-angular';
-import { Observable, map } from 'rxjs';
+import { DataService } from '@bigi-shop/shared/data-access';
 import { GetProductQuery } from '@bigi-shop/shared/util-types';
+import { GET_PRODUCT } from './product-detail.graphql';
 
-const GET_PRODUCT = gql`
-  query GetProduct($slug: String!) {
-    product(slug: $slug) {
-      id
-      name
-      slug
-      description
-      featuredAsset {
-        id
-        preview
-      }
-      variants {
-        id
-        name
-        price
-        currencyCode
-        priceWithTax
-        sku
-        stockLevel
-      }
-    }
-  }
-`;
 
 export interface ProductDetail {
   id: string;
@@ -55,18 +32,12 @@ interface ProductDetailResponse {
   providedIn: 'root'
 })
 export class ProductDetailService {
-  constructor(
-    private apollo: Apollo
-  ) {}
+  constructor(private dataService: DataService) {}
 
-  getProduct(slug: string): Observable<ProductDetail> {
-    return this.apollo.watchQuery<GetProductQuery>({
-      query: GET_PRODUCT,
-      variables: { slug }
-    })
-    .valueChanges
-    .pipe(
-      map(result => result.data.product as ProductDetail)
+  getProduct(id: string) {
+    return this.dataService.watchQuery<GetProductQuery>(
+      GET_PRODUCT,
+      { id }
     );
   }
 } 
