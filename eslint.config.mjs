@@ -17,9 +17,40 @@ export default [
           allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?js$'],
           depConstraints: [
             {
-              sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*'],
+              "sourceTag": "type:app",
+              "onlyDependOnLibsWithTags": [
+                "type:feature"
+              ]
             },
+            {
+              "sourceTag": "type:feature",
+              "onlyDependOnLibsWithTags": [
+                "type:feature",
+                "type:ui",
+                "type:util",
+                "type:data-access"
+              ]
+            },
+            {
+              "sourceTag": "type:ui",
+              "onlyDependOnLibsWithTags": [
+                "type:ui",
+                "type:util"
+              ]
+            },
+            {
+              "sourceTag": "type:util",
+              "onlyDependOnLibsWithTags": [
+                "type:util"
+              ]
+            },
+            {
+              "sourceTag": "type:data-access",
+              "onlyDependOnLibsWithTags": [
+                "type:data-access",
+                "type:util"
+              ]
+            }
           ],
         },
       ],
