@@ -30,6 +30,7 @@
       "@bigi-shop/shared/data-access": [
         "packages/shared/data-access/src/index.ts"
       ],
+      "@bigi-shop/shared/ui": ["packages/shared/ui/src/index.ts"],
       "@bigi-shop/shared/util-types": [
         "packages/shared/util-types/src/index.ts"
       ],

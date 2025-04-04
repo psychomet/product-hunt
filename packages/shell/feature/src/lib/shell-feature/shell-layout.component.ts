@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DataService, StateService } from '@bigi-shop/shared/data-access';
+import { CollectionsMenuComponent } from '@bigi-shop/shared/ui';
 import { SIGN_OUT } from './shell-layout.graphql';
 
 @Component({
   selector: 'lib-shell-layout',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet],
+  imports: [CommonModule, RouterLink, RouterOutlet, CollectionsMenuComponent],
   template: `
     <div class="shell-container">
       <header class="header">
@@ -16,9 +17,9 @@ import { SIGN_OUT } from './shell-layout.graphql';
             <a routerLink="/" class="brand-link">Bigi Shop</a>
           </div>
           
-          <div class="nav-links">
-            <a routerLink="/products" class="nav-link">Products</a>
-            
+          <bigi-collections-menu></bigi-collections-menu>
+          
+          <div class="nav-links">            
             <ng-container *ngIf="state.currentUser$ | async as user; else authLinks">
               <div class="user-menu">
                 <span class="user-name">{{ user.identifier }}</span>
