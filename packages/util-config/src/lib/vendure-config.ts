@@ -5,6 +5,9 @@ import {
   VendureConfig,
   PasswordValidationStrategy,
   RequestContext,
+  DefaultLogger,
+  LogLevel,
+  TypeORMHealthCheckStrategy,
 } from '@vendure/core';
 import { defaultEmailHandlers, EmailPlugin, FileBasedTemplateLoader } from '@vendure/email-plugin';
 import { AssetServerPlugin } from '@vendure/asset-server-plugin';
@@ -26,6 +29,8 @@ export function createVendureConfig(
     assetsPath?: string; // Path to assets directory
   } = {}
 ): VendureConfig {
+  console.log('createVendureConfig',  path.join(process.cwd(), 'static/email/test-emails'));
+  console.log('IS_DEV', IS_DEV);
   const {
     templatePath = path.join(process.cwd(), 'static/email/templates'),
     migrationsPath = path.join(process.cwd(), 'apps/server/src/migrations'),
@@ -92,13 +97,21 @@ export function createVendureConfig(
       password: process.env['DB_PASSWORD'] || 'vendure',
       database: process.env['DB_NAME'] || 'vendure',
       synchronize: true, // Should be false in production
-      logging: false,
+      logging: ['error', 'warn'],
       migrations: [path.join(migrationsPath, '*.+(js|ts)')],
       ssl: process.env['DB_SSL'] === 'true',
+    },
+    systemOptions: {
+      healthChecks: [
+        new TypeORMHealthCheckStrategy({ key: 'database', timeout: 5000 }),
+      ],
     },
     paymentOptions: {
       paymentMethodHandlers: [dummyPaymentHandler],
     },
+    logger: new DefaultLogger({
+      level: LogLevel.Debug
+    }),
     // When adding or altering custom field definitions, the database will
     // need to be updated. See the "Migrations" section in README.md.
     customFields: {},

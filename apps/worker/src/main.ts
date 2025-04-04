@@ -9,9 +9,12 @@ loadEnv();
  * Bootstrap the Vendure worker process
  */
 bootstrapWorker(config)
-  .then(worker => {
+  .then(async (worker) => {
     console.log('Worker process started.');
-    
+    await worker.startJobQueue();
+    await worker.startHealthCheckServer({
+        port: 3123,
+    });
     // Keep the process alive with a heartbeat interval
     const heartbeatInterval = setInterval(() => {
       // This interval keeps the process alive
