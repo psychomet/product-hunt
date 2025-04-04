@@ -1,4 +1,4 @@
-import { ERROR_RESULT_FRAGMENT } from '@bigi-shop/shared/util-types';
+import { ERROR_RESULT_FRAGMENT } from '@bigi-shop/shared-data-access';
 import { gql } from 'apollo-angular';
 
 export const VERIFY = gql`

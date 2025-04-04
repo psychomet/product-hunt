@@ -1,13 +1,13 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
-import { AuthService } from '@bigi-shop/account/data-access';
+import {  StateService} from '@bigi-shop/shared-data-access';
 
 export const AccountGuard: CanActivateFn = () => {
   const router = inject(Router);
-  const authService = inject(AuthService);
+  const stateService = inject(StateService);
 
-  return authService.isAuthenticated$.pipe(
+  return stateService.select(select => select.signedIn).pipe(
     map(isAuthenticated => {
       if (!isAuthenticated) {
         router.navigate(['/account/sign-in']);

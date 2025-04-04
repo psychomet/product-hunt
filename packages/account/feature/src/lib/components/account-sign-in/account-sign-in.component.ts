@@ -2,11 +2,11 @@ import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { DataService, StateService } from '@bigi-shop/shared/data-access';
+import { DataService, StateService } from '@bigi-shop/shared-data-access';
 import { LOGIN } from './account-sign-in.graphql';
 
 @Component({
-  selector: 'lib-account-sign-in',
+  selector: 'bigi-account-sign-in',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,

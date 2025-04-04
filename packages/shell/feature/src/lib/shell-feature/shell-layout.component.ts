@@ -1,12 +1,10 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { DataService, StateService } from '@bigi-shop/shared/data-access';
-import { CollectionsMenuComponent, Collection } from '@bigi-shop/shared/ui';
-import { SIGN_OUT } from './shell-layout.graphql';
-import { Observable, map } from 'rxjs';
-import { GET_COLLECTIONS } from './shell-layout.graphql';
-import { arrayToTree, TreeNode } from '@bigi-shop/shared/ui';
+import { DataService, StateService } from '@bigi-shop/shared-data-access';
+import { CollectionsMenuComponent, Collection, arrayToTree, TreeNode } from '@bigi-shop/shared-ui';
+import { GET_COLLECTIONS, SIGN_OUT } from './shell-layout.graphql';
+import { Observable, map, startWith } from 'rxjs';
 
 @Component({
   selector: 'lib-shell-layout',
@@ -14,225 +12,94 @@ import { arrayToTree, TreeNode } from '@bigi-shop/shared/ui';
   imports: [CommonModule, RouterLink, RouterOutlet, CollectionsMenuComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="shell-container">
-      <header class="header">
-        <nav class="nav">
-          <div class="nav-brand">
-            <a routerLink="/" class="brand-link">Bigi Shop</a>
+    <header class="bg-white shadow-sm">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-8">
+            <a routerLink="/" class="text-2xl font-bold text-gray-800">BigiShop</a>
+            <bigi-collections-menu [collections]="collections$ | async"></bigi-collections-menu>
           </div>
           
-          <bigi-collections-menu [collections]="collections$ | async"></bigi-collections-menu>
-          
-          <div class="nav-links">            
-            <ng-container *ngIf="state.currentUser$ | async as user; else authLinks">
-              <div class="user-menu">
-                <span class="user-name">{{ user.identifier }}</span>
-                <div class="dropdown-menu">
-                  <a routerLink="/account/dashboard" class="menu-item">My Account</a>
-                  <button class="menu-item" (click)="signOut()">Logout</button>
-                </div>
-              </div>
+          <div class="flex items-center space-x-4">
+            <ng-container *ngIf="state.currentUser$ | async as user; else loginButton">
+              <span class="text-gray-600">{{ user.identifier }}</span>
+              <button
+                (click)="signOut()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+              >
+                Sign Out
+              </button>
             </ng-container>
             
-            <ng-template #authLinks>
-              <a routerLink="/account/sign-in" class="nav-link">Sign In</a>
-              <a routerLink="/account/register" class="nav-link register">Register</a>
+            <ng-template #loginButton>
+              <a
+                routerLink="/sign-in"
+                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+              >
+                Sign In
+              </a>
             </ng-template>
 
-            <button 
-              class="cart-button" 
+            <button
               (click)="state.toggleCartDrawer()"
-              [class.has-items]="state.activeOrderId$ | async"
+              class="relative p-2 text-gray-600 hover:text-gray-900"
+              [class.text-primary-600]="state.activeOrderId$ | async"
             >
-              Cart
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
             </button>
           </div>
-        </nav>
-      </header>
-
-      <main class="main-content">
-        <router-outlet></router-outlet>
-      </main>
-
-      <footer class="footer">
-        <div class="footer-content">
-          <p>&copy; {{ currentYear }} Bigi Shop. All rights reserved.</p>
         </div>
-      </footer>
-    </div>
+      </div>
+    </header>
+
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+
+    <footer class="bg-gray-50 mt-auto">
+      <div class="container mx-auto px-4 py-8">
+        <p class="text-center text-gray-500">
+          © {{ currentYear }} BigiShop. All rights reserved.
+        </p>
+      </div>
+    </footer>
   `,
-  styles: [`
-    .shell-container {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .header {
-      background-color: #ffffff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .nav {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .nav-brand {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    .brand-link {
-      color: #333;
-      text-decoration: none;
-      
-      &:hover {
-        color: #007bff;
+  styles: [
+    `
+      :host {
+        @apply flex flex-col min-h-screen;
       }
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .nav-link {
-      color: #666;
-      text-decoration: none;
-      font-weight: 500;
-      
-      &:hover {
-        color: #007bff;
-      }
-
-      &.register {
-        background-color: #007bff;
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        
-        &:hover {
-          background-color: #0056b3;
-          color: white;
-        }
-      }
-    }
-
-    .user-menu {
-      position: relative;
-      cursor: pointer;
-
-      &:hover .dropdown-menu {
-        display: block;
-      }
-    }
-
-    .user-name {
-      color: #333;
-      font-weight: 500;
-    }
-
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background-color: white;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      border-radius: 4px;
-      padding: 0.5rem;
-      min-width: 150px;
-    }
-
-    .menu-item {
-      display: block;
-      padding: 0.5rem;
-      color: #666;
-      text-decoration: none;
-      border: none;
-      background: none;
-      width: 100%;
-      text-align: left;
-      cursor: pointer;
-      font-size: 1rem;
-      
-      &:hover {
-        background-color: #f8f9fa;
-        color: #007bff;
-      }
-    }
-
-    .cart-button {
-      padding: 0.5rem 1rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background: white;
-      color: #666;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s;
-
-      &:hover {
-        background-color: #f8f9fa;
-        border-color: #007bff;
-        color: #007bff;
-      }
-
-      &.has-items {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: white;
-
-        &:hover {
-          background-color: #0056b3;
-        }
-      }
-    }
-
-    .main-content {
-      flex: 1;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-      width: 100%;
-    }
-
-    .footer {
-      background-color: #f8f9fa;
-      padding: 2rem 0;
-      margin-top: auto;
-    }
-
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-      text-align: center;
-      color: #666;
-    }
-  `]
+    `,
+  ],
 })
 export class ShellLayoutComponent {
   collections$: Observable<TreeNode<Collection>[]>;
   currentYear = new Date().getFullYear();
 
   constructor(
-    public dataService: DataService,
+    private dataService: DataService,
     public state: StateService,
     private router: Router
   ) {
     this.collections$ = this.dataService
       .query<{ collections: { items: Collection[] } }>(GET_COLLECTIONS)
-      .pipe(map(({ collections }) => arrayToTree(collections.items)));
+      .pipe(
+        map(({ collections }) => arrayToTree(collections.items)),
+        startWith([])
+      );
   }
 
   signOut() {

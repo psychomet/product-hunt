@@ -3,7 +3,15 @@
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^19.2.0",
-    "@angular/core": "^19.2.0"
+    "@angular/core": "^19.2.0",
+    "@angular/router": "~19.2.0",
+    "rxjs": "~7.8.0",
+    "@bigi-shop/shared-util": "0.0.1"
+  },
+  "dependencies": {
+    "apollo-angular": "^10.0.3",
+    "graphql": "^16.10.0",
+    "@apollo/client": "^3.13.5"
   },
   "sideEffects": false
 }

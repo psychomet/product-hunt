@@ -1,5 +1,5 @@
-import { ERROR_RESULT_FRAGMENT } from '@bigi-shop/shared/util-types';
 import { gql } from 'apollo-angular';
+import { ERROR_RESULT_FRAGMENT } from '@bigi-shop/shared-data-access';
 
 export const REGISTER = gql`
   mutation Register($input: RegisterCustomerInput!) {

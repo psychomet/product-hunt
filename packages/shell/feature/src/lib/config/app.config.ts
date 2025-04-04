@@ -7,7 +7,7 @@ import {
 } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { apolloConfig } from './apollo.config';
-import { defaultInterceptor } from '@bigi-shop/shared/data-access';
+import { defaultInterceptor } from '@bigi-shop/shared-data-access';
 
 export const appConfig: ApplicationConfig = {
   providers: [

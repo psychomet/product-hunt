@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Observable, map } from 'rxjs';
-import { ProductService } from '@bigi-shop/products/data-access';
-import { GetProductsQuery, ProductListOptions } from '@bigi-shop/shared/util-types';
+import { ProductService } from '@bigi-shop/products-data-access';
+import { GetProductsQuery, ProductListOptions } from '@bigi-shop/shared-util-types';
 
 @Component({
   selector: 'lib-product-list',

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { CurrentUser } from '@bigi-shop/shared/util-types';
+import { CurrentUser } from '@bigi-shop/shared-util-types';
 
 export interface AppState {
+  signedIn: boolean;
   currentUser: CurrentUser | null;
   activeOrderId: string | null;
   lastCollectionSlug: string | null;
@@ -12,6 +13,7 @@ export interface AppState {
 }
 
 export const initialState: AppState = {
+  signedIn: false,
   currentUser: null,
   activeOrderId: null,
   lastCollectionSlug: null,

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { ProductListComponent, ProductDetailComponent } from '@bigi-shop/products/feature';
-import { accountRoutes } from '@bigi-shop/account/feature';
+import { ProductListComponent, ProductDetailComponent } from '@bigi-shop/products-feature';
+import { accountRoutes } from '@bigi-shop/account-feature';
 import { ShellLayoutComponent } from '../shell-feature/shell-layout.component';
 
 export const routes: Routes = [

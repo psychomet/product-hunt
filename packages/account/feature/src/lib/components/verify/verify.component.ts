@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DataService } from '@bigi-shop/shared/data-access';
+import { DataService } from '@bigi-shop/shared-data-access';
 import { VERIFY } from './verify.graphql';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'lib-verify',
+  selector: 'bigi-verify',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `

@@ -19,7 +19,7 @@ export interface Collection {
   imports: [CommonModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <nav class="collections-menu" *ngIf="collections">
+    <nav class="collections-menu" *ngIf="collections?.length">
       <ul class="menu-list">
         <ng-container *ngTemplateOutlet="menuItems; context: { $implicit: collections }">
         </ng-container>
@@ -31,7 +31,7 @@ export interface Collection {
         <a [routerLink]="['/category', item.data.slug]" class="menu-link">
           {{ item.data.name }}
         </a>
-        <ul *ngIf="item.children.length" class="submenu">
+        <ul *ngIf="item.children?.length" class="submenu">
           <ng-container *ngTemplateOutlet="menuItems; context: { $implicit: item.children }">
           </ng-container>
         </ul>
@@ -83,5 +83,5 @@ export interface Collection {
   `]
 })
 export class CollectionsMenuComponent {
-  @Input() collections: TreeNode<Collection>[] = [];
+  @Input() collections: TreeNode<Collection>[] | null = [];
 } 

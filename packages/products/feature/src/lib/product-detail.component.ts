@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Observable, switchMap, map, filter } from 'rxjs';
-import { ProductDetailService, ProductDetail } from '@bigi-shop/products/data-access';
+import { ProductDetailService, ProductDetail } from '@bigi-shop/products-data-access';
 
 @Component({
   selector: 'lib-product-detail',
