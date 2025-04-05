@@ -7,7 +7,7 @@
     "server:dev": "nx serve server",
     "worker:dev": "nx serve worker",
     "shop:dev": "nx serve shop",
-    "vendure:dev": "nx serve server & nx serve worker",
+    "vendure:dev": "nx run-many -t serve -p server worker",
     "generate-types": "graphql-codegen --config codegen.yml"
   },
   "private": true,

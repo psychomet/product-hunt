@@ -1,10 +1,10 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DataService, StateService } from '@bigi-shop/shared-data-access';
 import { CollectionsMenuComponent, Collection, arrayToTree, TreeNode } from '@bigi-shop/shared-ui';
 import { GET_COLLECTIONS, SIGN_OUT } from './shell-layout.graphql';
-import { Observable, map, startWith } from 'rxjs';
+import { Observable, map, startWith, tap } from 'rxjs';
 
 @Component({
   selector: 'lib-shell-layout',
@@ -86,21 +86,21 @@ import { Observable, map, startWith } from 'rxjs';
   ],
 })
 export class ShellLayoutComponent {
-  collections$: Observable<TreeNode<Collection>[]>;
   currentYear = new Date().getFullYear();
 
-  constructor(
-    private dataService: DataService,
-    public state: StateService,
-    private router: Router
-  ) {
-    this.collections$ = this.dataService
-      .query<{ collections: { items: Collection[] } }>(GET_COLLECTIONS)
-      .pipe(
-        map(({ collections }) => arrayToTree(collections.items)),
-        startWith([])
-      );
-  }
+  private dataService = inject(DataService);
+  private router = inject(Router);
+  public state = inject(StateService);
+
+  collections$: Observable<TreeNode<Collection>[]> = this.dataService
+    .query<{ collections: { items: Collection[] } }>(GET_COLLECTIONS)
+    .pipe(
+      map(({ collections }) => {
+        const tree = arrayToTree(collections.items);
+        return tree;
+      }),
+      startWith([])
+    );
 
   signOut() {
     this.dataService.mutate(SIGN_OUT).subscribe(() => {

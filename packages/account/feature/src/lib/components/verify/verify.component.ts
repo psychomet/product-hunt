@@ -209,7 +209,7 @@ export class VerifyComponent implements OnInit {
     return this.verifyForm.get('confirmPassword')!;
   }
 
-  private passwordMatchValidator(group: FormGroup) {
+  private passwordMatchValidator(group: FormGroup): null {
     const password = group.get('password');
     const confirmPassword = group.get('confirmPassword');
 

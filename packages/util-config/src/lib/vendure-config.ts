@@ -110,7 +110,7 @@ export function createVendureConfig(
       paymentMethodHandlers: [dummyPaymentHandler],
     },
     logger: new DefaultLogger({
-      level: LogLevel.Debug
+      level: LogLevel.Info
     }),
     // When adding or altering custom field definitions, the database will
     // need to be updated. See the "Migrations" section in README.md.

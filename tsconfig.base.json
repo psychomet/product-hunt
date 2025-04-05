@@ -14,6 +14,7 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "esModuleInterop": true,
+    "strictNullChecks": false,
     "baseUrl": ".",
     "paths": {
       "@bigi-shop/account-data-access": [

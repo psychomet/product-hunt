@@ -3536,3 +3536,18 @@ export type GetProductsQueryVariables = Exact<{
 
 
 export type GetProductsQuery = { readonly __typename?: 'Query', readonly products: { readonly __typename?: 'ProductList', readonly totalItems: number, readonly items: ReadonlyArray<{ readonly __typename?: 'Product', readonly id: string, readonly name: string, readonly slug: string, readonly description: string, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null, readonly variants: ReadonlyArray<{ readonly __typename?: 'ProductVariant', readonly id: string, readonly name: string, readonly price: any, readonly currencyCode: CurrencyCode, readonly priceWithTax: any, readonly sku: string }> }> } };
+
+export type SearchProductsQueryVariables = Exact<{
+  input: SearchInput;
+}>;
+
+
+export type SearchProductsQuery = { readonly __typename?: 'Query', readonly search: { readonly __typename?: 'SearchResponse', readonly totalItems: number, readonly items: ReadonlyArray<{ readonly __typename?: 'SearchResult', readonly productId: string, readonly slug: string, readonly productName: string, readonly description: string, readonly priceWithTax: { readonly __typename?: 'PriceRange', readonly min: any, readonly max: any } | { readonly __typename?: 'SinglePrice' }, readonly productAsset: { readonly __typename?: 'SearchResultAsset', readonly id: string, readonly preview: string, readonly focalPoint: { readonly __typename?: 'Coordinate', readonly x: number, readonly y: number } | null } | null }>, readonly facetValues: ReadonlyArray<{ readonly __typename?: 'FacetValueResult', readonly count: number, readonly facetValue: { readonly __typename?: 'FacetValue', readonly id: string, readonly name: string, readonly facet: { readonly __typename?: 'Facet', readonly id: string, readonly name: string } } }> } };
+
+export type GetCollectionQueryVariables = Exact<{
+  id: InputMaybe<Scalars['ID']['input']>;
+  slug: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetCollectionQuery = { readonly __typename?: 'Query', readonly collection: { readonly __typename?: 'Collection', readonly id: string, readonly name: string, readonly slug: string, readonly description: string, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null, readonly breadcrumbs: ReadonlyArray<{ readonly __typename?: 'CollectionBreadcrumb', readonly id: string, readonly slug: string, readonly name: string }>, readonly children: ReadonlyArray<{ readonly __typename?: 'Collection', readonly id: string, readonly slug: string, readonly name: string, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null }> | null } | null };
