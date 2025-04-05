@@ -11,9 +11,11 @@ export const USER_FRAGMENT = gql`
   fragment User on CurrentUser {
     id
     identifier
-    verified
-    firstName
-    lastName
-    emailAddress
+    channels {
+      id
+      token
+      code
+      permissions
+    }
   }
 `; 

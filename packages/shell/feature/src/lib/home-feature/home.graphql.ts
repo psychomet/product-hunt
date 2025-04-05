@@ -29,19 +29,37 @@ export const GET_FEATURED_PRODUCTS = gql`
       sort: { price: ASC }
     }) {
       items {
-        id
+        productId
+        productName
         slug
-        name
         description
-        featuredAsset {
+        productAsset {
           preview
+          focalPoint {
+            x
+            y
+          }
         }
-        variants {
-          id
-          name
-          price
-          priceWithTax
+        price {
+          ... on SinglePrice {
+            value
+          }
+          ... on PriceRange {
+            min
+            max
+          }
         }
+        priceWithTax {
+          ... on SinglePrice {
+            value
+          }
+          ... on PriceRange {
+            min
+            max
+          }
+        }
+        currencyCode
+        inStock
       }
     }
   }

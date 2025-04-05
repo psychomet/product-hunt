@@ -3,7 +3,7 @@ schema:
 documents:
   - apps/shop/src/app/graphql/**/*.graphql
   - apps/shop/src/app/**/*.ts
-  - packages/products/**/*.ts
+  - packages/**/*.ts
   - "!packages/shared/util-types/src/lib/generated-types.ts"
 generates:
   packages/shared/util-types/src/lib/generated-types.ts:

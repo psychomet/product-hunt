@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { DocumentNode } from 'graphql';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { StateService } from './state.service';
-import { FetchPolicy, MutationFetchPolicy } from '@apollo/client/core';
+import { FetchPolicy, MutationFetchPolicy, NetworkStatus } from '@apollo/client/core';
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +21,14 @@ export class DataService {
     fetchPolicy: FetchPolicy = 'cache-first'
   ): Observable<T> {
     return this.apollo
-      .query<T>({
+      .watchQuery<T>({
         query,
         variables,
         fetchPolicy,
       })
-      .pipe(map(response => response.data as T));
+      .valueChanges.pipe(
+        filter(result => result.networkStatus === NetworkStatus.ready),
+        map(response => response.data as T))
   }
 
   watchQuery<T = any, V extends Record<string, any> = Record<string, any>>(

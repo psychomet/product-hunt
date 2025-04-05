@@ -1,4 +1,8 @@
 import { gql } from '@apollo/client/core';
+import {
+  CART_FRAGMENT,
+  ERROR_RESULT_FRAGMENT,
+} from '@bigi-shop/shared-data-access';
 
 export const GET_PRODUCT_DETAIL = gql`
   query GetProductDetail($slug: String!) {
@@ -39,24 +43,15 @@ export const GET_PRODUCT_DETAIL = gql`
 export const ADD_TO_CART = gql`
   mutation AddToCart($variantId: ID!, $qty: Int!) {
     addItemToOrder(productVariantId: $variantId, quantity: $qty) {
-      ... on Order {
-        id
-        totalQuantity
-        lines {
-          id
-          quantity
-          productVariant {
-            id
-            name
-            price
-            priceWithTax
-          }
+      ...Cart
+      ...ErrorResult
+      ... on InsufficientStockError {
+        order {
+          ...Cart
         }
-      }
-      ... on ErrorResult {
-        errorCode
-        message
       }
     }
   }
-`; 
+  ${CART_FRAGMENT}
+  ${ERROR_RESULT_FRAGMENT}  
+`;

@@ -1,27 +1,71 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  computed,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { DataService, StateService } from '@bigi-shop/shared-data-access';
-import { CollectionsMenuComponent, Collection, arrayToTree, TreeNode } from '@bigi-shop/shared-ui';
-import { GET_COLLECTIONS, SIGN_OUT } from './shell-layout.graphql';
-import { Observable, map, startWith, tap } from 'rxjs';
+import {
+  DataService,
+  StateService,
+  ActiveService,
+} from '@bigi-shop/shared-data-access';
+import {
+  CollectionsMenuComponent,
+  Collection,
+  arrayToTree,
+  TreeNode,
+} from '@bigi-shop/shared-ui';
+import { CartDrawerComponent, CartToggleComponent } from '@bigi-shop/shell-ui';
+import {
+  GET_COLLECTIONS,
+  SIGN_OUT,
+  ADJUST_ITEM_QUANTITY,
+  REMOVE_ITEM_FROM_CART,
+} from './shell-layout.graphql';
+import {
+  Observable,
+  Subject,
+  map,
+  merge,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+} from 'rxjs';
+import type { RemoveItemFromCartMutation, RemoveItemFromCartMutationVariables } from '@bigi-shop/shared-util-types';
 
 @Component({
   selector: 'lib-shell-layout',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet, CollectionsMenuComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterOutlet,
+    CollectionsMenuComponent,
+    CartDrawerComponent,
+    CartToggleComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="bg-white shadow-sm">
       <div class="container mx-auto px-4 py-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-8">
-            <a routerLink="/" class="text-2xl font-bold text-gray-800">BigiShop</a>
-            <bigi-collections-menu [collections]="collections$ | async"></bigi-collections-menu>
+            <a routerLink="/" class="text-2xl font-bold text-gray-800"
+              >BigiShop</a
+            >
+            <bigi-collections-menu
+              [collections]="collections$ | async"
+            ></bigi-collections-menu>
           </div>
-          
+
           <div class="flex items-center space-x-4">
-            <ng-container *ngIf="state.currentUser$ | async as user; else loginButton">
+            <ng-container
+              *ngIf="currentUser$ | async as user; else loginButton"
+            >
               <span class="text-gray-600">{{ user.identifier }}</span>
               <button
                 (click)="signOut()"
@@ -30,7 +74,7 @@ import { Observable, map, startWith, tap } from 'rxjs';
                 Sign Out
               </button>
             </ng-container>
-            
+
             <ng-template #loginButton>
               <a
                 routerLink="/sign-in"
@@ -40,30 +84,22 @@ import { Observable, map, startWith, tap } from 'rxjs';
               </a>
             </ng-template>
 
-            <button
-              (click)="state.toggleCartDrawer()"
-              class="relative p-2 text-gray-600 hover:text-gray-900"
-              [class.text-primary-600]="state.activeOrderId$ | async"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-            </button>
+            <bigi-cart-toggle
+              (cartToggle)="openCartDrawer()"
+              [cart]="cart$ | async"
+            />
           </div>
         </div>
       </div>
     </header>
+
+    <!-- Cart Drawer -->
+    <bigi-cart-drawer
+      [visible]="cartDrawerVisible$ | async"
+      [cart]="cart$ | async"
+      (drawerClose)="closeCartDrawer()"
+      (setQuantity)="setQuantity($event)"
+    />
 
     <main>
       <router-outlet></router-outlet>
@@ -85,12 +121,27 @@ import { Observable, map, startWith, tap } from 'rxjs';
     `,
   ],
 })
-export class ShellLayoutComponent {
+export class ShellLayoutComponent implements OnInit {
   currentYear = new Date().getFullYear();
 
   private dataService = inject(DataService);
   private router = inject(Router);
-  public state = inject(StateService);
+  private stateService = inject(StateService);
+  private activeService = inject(ActiveService);
+
+  cartDrawerVisible$ = this.stateService.select(
+    (state) => state.cartDrawerOpen
+  );
+  activeOrderId$ = this.stateService.select((state) => state.activeOrderId);
+  currentUser$ = this.stateService.select((state) => state.currentUser);
+
+  cart$ = merge(
+    this.stateService.select((state) => state.activeOrderId),
+    this.stateService.select((state) => state.signedIn),
+  ).pipe(
+    switchMap(() => this.activeService.activeOrder$),
+    shareReplay(1)
+  );
 
   collections$: Observable<TreeNode<Collection>[]> = this.dataService
     .query<{ collections: { items: Collection[] } }>(GET_COLLECTIONS)
@@ -102,11 +153,60 @@ export class ShellLayoutComponent {
       startWith([])
     );
 
+  ngOnInit(): void {
+    this.cart$.subscribe((cart) => {
+      console.log(cart);
+    });
+  }
+
   signOut() {
     this.dataService.mutate(SIGN_OUT).subscribe(() => {
-      this.state.setCurrentUser(null);
       this.dataService.resetStore();
       this.router.navigate(['/']);
     });
   }
-} 
+
+  openCartDrawer() {
+    this.stateService.setState('cartDrawerOpen', true);
+  }
+
+  closeCartDrawer() {
+    this.stateService.setState('cartDrawerOpen', false);
+  }
+
+
+  setQuantity(event: { itemId: string; quantity: number }) {
+    if (0 < event.quantity) {
+      this.adjustItemQuantity(event.itemId, event.quantity);
+    } else {
+      this.removeItem(event.itemId);
+    }
+  }
+
+  adjustItemQuantity(id: string, qty: number) {
+    this.dataService
+      .mutate(ADJUST_ITEM_QUANTITY, {
+        id,
+        qty,
+      })
+      .pipe(take(1))
+      .subscribe(({ adjustOrderLine }: any) => {
+        if (adjustOrderLine.__typename !== 'Order') {
+          // Handle error case
+          console.error('Error adjusting quantity:', adjustOrderLine.message);
+        }
+      });
+  }
+
+  private removeItem(id: string) {
+    this.dataService
+      .mutate<
+        RemoveItemFromCartMutation,
+        RemoveItemFromCartMutationVariables
+      >(REMOVE_ITEM_FROM_CART, {
+        id,
+      })
+      .pipe(take(1))
+      .subscribe();
+  }
+}

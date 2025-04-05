@@ -2,18 +2,19 @@ import { gql } from 'apollo-angular';
 import { ERROR_RESULT_FRAGMENT, USER_FRAGMENT } from './fragments';
 
 export const LOGIN = gql`
-  mutation Login($email: String!, $password: String!, $rememberMe: Boolean) {
-    login(username: $email, password: $password, rememberMe: $rememberMe) {
+  mutation SharedDataAccessLogin($username: String!, $password: String!, $rememberMe: Boolean!) {
+    login(username: $username, password: $password, rememberMe: $rememberMe) {
+      __typename
       ... on CurrentUser {
-        ...User
+        id
+        identifier
       }
       ... on ErrorResult {
-        ...ErrorResult
+        errorCode
+        message
       }
     }
   }
-  ${USER_FRAGMENT}
-  ${ERROR_RESULT_FRAGMENT}
 `;
 
 export const REGISTER = gql`
@@ -31,16 +32,17 @@ export const REGISTER = gql`
 `;
 
 export const VERIFY = gql`
-  mutation Verify($token: String!, $password: String!) {
-    verifyCustomerAccount(token: $token, password: $password) {
+  mutation SharedDataAccessVerify($token: String!) {
+    verifyCustomerAccount(token: $token) {
+      __typename
       ... on CurrentUser {
-        ...User
+        id
+        identifier
       }
       ... on ErrorResult {
-        ...ErrorResult
+        errorCode
+        message
       }
     }
   }
-  ${USER_FRAGMENT}
-  ${ERROR_RESULT_FRAGMENT}
 `; 
