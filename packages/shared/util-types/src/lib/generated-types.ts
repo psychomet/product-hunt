@@ -3537,6 +3537,21 @@ export type GetProductsQueryVariables = Exact<{
 
 export type GetProductsQuery = { readonly __typename?: 'Query', readonly products: { readonly __typename?: 'ProductList', readonly totalItems: number, readonly items: ReadonlyArray<{ readonly __typename?: 'Product', readonly id: string, readonly name: string, readonly slug: string, readonly description: string, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null, readonly variants: ReadonlyArray<{ readonly __typename?: 'ProductVariant', readonly id: string, readonly name: string, readonly price: any, readonly currencyCode: CurrencyCode, readonly priceWithTax: any, readonly sku: string }> }> } };
 
+export type GetProductDetailQueryVariables = Exact<{
+  slug: Scalars['String']['input'];
+}>;
+
+
+export type GetProductDetailQuery = { readonly __typename?: 'Query', readonly product: { readonly __typename?: 'Product', readonly id: string, readonly name: string, readonly description: string, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null, readonly variants: ReadonlyArray<{ readonly __typename?: 'ProductVariant', readonly id: string, readonly name: string, readonly sku: string, readonly price: any, readonly priceWithTax: any, readonly stockLevel: string, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null }>, readonly collections: ReadonlyArray<{ readonly __typename?: 'Collection', readonly id: string, readonly name: string, readonly slug: string, readonly breadcrumbs: ReadonlyArray<{ readonly __typename?: 'CollectionBreadcrumb', readonly id: string, readonly name: string, readonly slug: string }> }> } | null };
+
+export type AddToCartMutationVariables = Exact<{
+  variantId: Scalars['ID']['input'];
+  qty: Scalars['Int']['input'];
+}>;
+
+
+export type AddToCartMutation = { readonly __typename?: 'Mutation', readonly addItemToOrder: { readonly __typename?: 'InsufficientStockError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'NegativeQuantityError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'Order', readonly id: string, readonly totalQuantity: number, readonly lines: ReadonlyArray<{ readonly __typename?: 'OrderLine', readonly id: string, readonly quantity: number, readonly productVariant: { readonly __typename?: 'ProductVariant', readonly id: string, readonly name: string, readonly price: any, readonly priceWithTax: any } }> } | { readonly __typename?: 'OrderInterceptorError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'OrderLimitError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'OrderModificationError', readonly errorCode: ErrorCode, readonly message: string } };
+
 export type SearchProductsQueryVariables = Exact<{
   input: SearchInput;
 }>;

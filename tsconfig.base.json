@@ -36,6 +36,7 @@
         "packages/shared/util-types/src/index.ts"
       ],
       "@bigi-shop/shell-feature": ["packages/shell/feature/src/index.ts"],
+      "@bigi-shop/shell-ui": ["packages/shell/ui/src/index.ts"],
       "@bigi-shop/util-config": ["packages/util-config/src/index.ts"]
     }
   },
