@@ -5,20 +5,39 @@ export interface Cart {
   totalQuantity: number;
   subTotal: number;
   subTotalWithTax: number;
-  total: number;
-  totalWithTax: number;
   shipping: number;
   shippingWithTax: number;
+  total: number;
+  totalWithTax: number;
+  customer?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    emailAddress: string;
+  };
+  shippingAddress?: {
+    fullName: string;
+    company?: string;
+    streetLine1: string;
+    streetLine2?: string;
+    city: string;
+    province: string;
+    postalCode: string;
+    countryCode: string;
+  };
   lines: Array<CartLine>;
   discounts: Array<CartDiscount>;
 }
 
 export interface CartLine {
   id: string;
+  productVariantId: string;
+  quantity: number;
   unitPrice: number;
   unitPriceWithTax: number;
-  quantity: number;
+  linePrice: number;
   linePriceWithTax: number;
+  discountedLinePrice: number;
   discountedLinePriceWithTax: number;
   productVariant: {
     id: string;
@@ -35,9 +54,9 @@ export interface CartLine {
 }
 
 export interface CartDiscount {
-  description: string;
+  adjustmentSource: string;
   amount: number;
   amountWithTax: number;
-  adjustmentSource: string;
+  description: string;
   type: string;
 } 

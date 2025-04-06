@@ -1,0 +1,20 @@
+{
+  "name": "checkout-ui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/checkout/ui/src",
+  "prefix": "bigi",
+  "projectType": "library",
+  "tags": ["type:ui", "scope:checkout"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/checkout/ui/jest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

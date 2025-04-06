@@ -22,6 +22,11 @@
       ],
       "@bigi-shop/account-feature": ["packages/account/feature/src/index.ts"],
       "@bigi-shop/account-ui": ["packages/account/ui/src/index.ts"],
+      "@bigi-shop/checkout-data-access": [
+        "packages/checkout/data-access/src/index.ts"
+      ],
+      "@bigi-shop/checkout-feature": ["packages/checkout/feature/src/index.ts"],
+      "@bigi-shop/checkout-ui": ["packages/checkout/ui/src/index.ts"],
       "@bigi-shop/products-data-access": [
         "packages/products/data-access/src/index.ts"
       ],
