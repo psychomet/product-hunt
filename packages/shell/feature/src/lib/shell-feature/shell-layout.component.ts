@@ -2,8 +2,6 @@ import {
   Component,
   ChangeDetectionStrategy,
   inject,
-  computed,
-  OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
@@ -27,7 +25,6 @@ import {
 } from './shell-layout.graphql';
 import {
   Observable,
-  Subject,
   map,
   merge,
   shareReplay,
@@ -120,7 +117,7 @@ import { CartToggleComponent } from '../cart-toggle-feature/cart-toggle.componen
     `,
   ],
 })
-export class ShellLayoutComponent implements OnInit {
+export class ShellLayoutComponent {
   currentYear = new Date().getFullYear();
 
   private dataService = inject(DataService);
@@ -136,7 +133,7 @@ export class ShellLayoutComponent implements OnInit {
 
   cart$ = merge(
     this.stateService.select((state) => state.activeOrderId),
-    this.stateService.select((state) => state.signedIn),
+    this.stateService.select((state) => state.signedIn)
   ).pipe(
     switchMap(() => this.activeService.activeOrder$),
     shareReplay(1)
@@ -151,12 +148,6 @@ export class ShellLayoutComponent implements OnInit {
       }),
       startWith([])
     );
-
-  ngOnInit(): void {
-    this.cart$.subscribe((cart) => {
-      console.log(cart);
-    });
-  }
 
   signOut() {
     this.dataService.mutate(SIGN_OUT).subscribe(() => {

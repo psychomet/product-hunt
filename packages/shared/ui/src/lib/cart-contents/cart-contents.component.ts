@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Cart } from '@bigi-shop/shared-util-types';
+import { Cart, GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
 
 @Component({
   selector: 'bigi-cart-contents',
@@ -101,32 +101,32 @@ import { Cart } from '@bigi-shop/shared-util-types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartContentsComponent {
-  cart = input<Cart | null>();
+  cart = input<GetActiveOrderQuery['activeOrder'] | null>();
   setQuantity = output<{ itemId: string; quantity: number }>();
 
-  increment(item: Cart['lines'][0]) {
+  increment(item: GetActiveOrderQuery['activeOrder']['lines'][0]) {
     this.setQuantity.emit({ itemId: item.id, quantity: item.quantity + 1 });
   }
 
-  decrement(item: Cart['lines'][0]) {
+  decrement(item: GetActiveOrderQuery['activeOrder']['lines'][0]) {
     if (item.quantity > 0) {
       this.setQuantity.emit({ itemId: item.id, quantity: item.quantity - 1 });
     }
   }
 
-  trackByFn(index: number, item: Cart['lines'][0]) {
+  trackByFn(index: number, item: GetActiveOrderQuery['activeOrder']['lines'][0]) {
     return item.id;
   }
 
-  trackByDiscount(index: number, item: Cart['discounts'][0]) {
+  trackByDiscount(index: number, item: GetActiveOrderQuery['activeOrder']['discounts'][0]) {
     return item.description;
   }
 
-  isDiscounted(line: Cart['lines'][0]): boolean {
+  isDiscounted(line: GetActiveOrderQuery['activeOrder']['lines'][0]): boolean {
     return line.discounts.length > 0;
   }
 
-  getLinePromotions(adjustments: Cart['discounts']) {
+  getLinePromotions(adjustments: GetActiveOrderQuery['activeOrder']['discounts']) {
     return adjustments.filter(a => a.type === 'PROMOTION');
   }
 } 

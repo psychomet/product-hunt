@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 import { CommonModule } from '@angular/common';
 import { CartContentsComponent } from '@bigi-shop/shared-ui';
 import { RouterModule } from '@angular/router';
-import { Cart } from '@bigi-shop/shared-util-types';
+import { Cart, GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
 
 @Component({
   selector: 'bigi-cart-drawer',
@@ -126,7 +126,7 @@ import { Cart } from '@bigi-shop/shared-util-types';
 })
 export class CartDrawerComponent {
   visible = input<boolean>();
-  cart = input<Cart | null>();
+  cart = input<GetActiveOrderQuery['activeOrder'] | null>();
   drawerClose = output<void>();
   setQuantity = output<{ itemId: string; quantity: number }>();
 

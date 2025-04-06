@@ -4,9 +4,9 @@ import { inject, PLATFORM_ID } from '@angular/core';
 import { TransferState, makeStateKey } from '@angular/core';
 import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
-import { ApolloLink, InMemoryCache, NormalizedCacheObject } from '@apollo/client/core';
+import { ApolloLink, InMemoryCache } from '@apollo/client/core';
 
-const STATE_KEY = makeStateKey<NormalizedCacheObject>('apollo.state');
+const STATE_KEY = makeStateKey<any>('apollo.state');
 
 function mergeFields(existing: any, incoming: any) {
   return { ...existing, ...incoming };
@@ -27,6 +27,9 @@ export const apolloConfig = provideApollo(() => {
       Query: {
         fields: {
           eligibleShippingMethods: {
+            merge: replaceFields,
+          },
+          activeOrder: {
             merge: replaceFields,
           },
         },
@@ -79,13 +82,14 @@ export const apolloConfig = provideApollo(() => {
 
   const http = httpLink.create({
     uri: 'http://localhost:3000/shop-api',
-    withCredentials: true,
+    withCredentials: true
   });
 
   const afterware = new ApolloLink((operation, forward) => {
     return forward(operation).map((response) => {
       const context = operation.getContext();
       const authHeader = context['response']?.headers.get('vendure-auth-token');
+
       if (authHeader && isPlatformBrowser(platformId)) {
         localStorage.setItem(AUTH_TOKEN_KEY, authHeader);
       }
@@ -94,33 +98,51 @@ export const apolloConfig = provideApollo(() => {
   });
 
   const middleware = new ApolloLink((operation, forward) => {
+    let headers = new HttpHeaders();
+    
     if (isPlatformBrowser(platformId)) {
-      operation.setContext({
-        headers: new HttpHeaders().set(
-          'Authorization',
-          `Bearer ${localStorage.getItem(AUTH_TOKEN_KEY) || null}`,
-        ),
-      });
+      const token = localStorage.getItem(AUTH_TOKEN_KEY);
+      if (token) {
+        headers = headers.set('Authorization', `Bearer ${token}`);
+      }
     }
+
+    operation.setContext({
+      headers
+    });
+    
     return forward(operation);
   });
 
-  const isBrowser = transferState.hasKey(STATE_KEY);
+  const isBrowser = isPlatformBrowser(platformId);
 
-  if (isBrowser) {
-    const state = transferState.get(STATE_KEY, {} as NormalizedCacheObject);
-    cache.restore(state);
-  } else {
+  if (isBrowser && transferState.hasKey(STATE_KEY)) {
+    const state = transferState.get(STATE_KEY, null);
+    if (state) {
+      cache.restore(state);
+    }
+  }
+
+  if (!isBrowser) {
     transferState.onSerialize(STATE_KEY, () => {
       return cache.extract();
     });
-    cache.reset();
   }
 
   return {
     cache,
-    ssrMode: true,
-    ssrForceFetchDelay: 500,
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: 'cache-and-network',
+      },
+      query: {
+        fetchPolicy: 'network-only',
+      },
+      mutate: {
+        fetchPolicy: 'network-only',
+      },
+    },
+    ssrMode: !isBrowser,
     link: ApolloLink.from([middleware, afterware, http]),
   };
 }); 
