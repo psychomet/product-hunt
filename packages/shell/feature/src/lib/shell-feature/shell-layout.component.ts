@@ -18,7 +18,7 @@ import {
   arrayToTree,
   TreeNode,
 } from '@bigi-shop/shared-ui';
-import { CartDrawerComponent, CartToggleComponent } from '@bigi-shop/shell-ui';
+import { CartDrawerComponent } from '@bigi-shop/shell-ui';
 import {
   GET_COLLECTIONS,
   SIGN_OUT,
@@ -36,9 +36,9 @@ import {
   take,
 } from 'rxjs';
 import type { RemoveItemFromCartMutation, RemoveItemFromCartMutationVariables } from '@bigi-shop/shared-util-types';
+import { CartToggleComponent } from '../cart-toggle-feature/cart-toggle.component';
 
 @Component({
-  selector: 'lib-shell-layout',
   standalone: true,
   imports: [
     CommonModule,
@@ -86,7 +86,6 @@ import type { RemoveItemFromCartMutation, RemoveItemFromCartMutationVariables } 
 
             <bigi-cart-toggle
               (cartToggle)="openCartDrawer()"
-              [cart]="cart$ | async"
             />
           </div>
         </div>

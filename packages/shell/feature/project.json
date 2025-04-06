@@ -2,7 +2,7 @@
   "name": "shell-feature",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/shell/feature/src",
-  "prefix": "lib",
+  "prefix": "bigi",
   "projectType": "library",
   "tags": ["type:feature", "scope:shell"],
   "targets": {

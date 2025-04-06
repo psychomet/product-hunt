@@ -2,7 +2,11 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { DataService, StateService } from '@bigi-shop/shared-data-access';
+import {
+  ActiveService,
+  DataService,
+  StateService,
+} from '@bigi-shop/shared-data-access';
 import { GET_PRODUCT_DETAIL, ADD_TO_CART } from './product-detail.graphql';
 
 interface Variant {
@@ -166,6 +170,7 @@ export class ProductDetailComponent {
   private route = inject(ActivatedRoute);
   private dataService = inject(DataService);
   private stateService = inject(StateService);
+  private activeService = inject(ActiveService);
   // State
   product = signal<Product | null>(null);
   selectedVariantId = signal<string>('');
@@ -211,6 +216,16 @@ export class ProductDetailComponent {
           }
         });
     });
+
+    effect(() => {
+      this.activeService.activeOrder$.subscribe((order) => {
+        const qtyInCart: { [id: string]: number } = {};
+        for (const line of order?.lines ?? []) {
+          qtyInCart[line.productVariant.id] = line.quantity;
+        }
+        this.qtyInCart.set(qtyInCart);
+      });
+    });
   }
 
   addToCart(): void {
@@ -225,16 +240,11 @@ export class ProductDetailComponent {
       })
       .subscribe({
         next: (result) => {
-          console.log('result',result);
-          
           if (result.addItemToOrder.__typename === 'Order') {
-            this.stateService.setState('activeOrderId', result.addItemToOrder ? result.addItemToOrder.id : null);
-            // Update cart quantities
-            const newQtyInCart = { ...this.qtyInCart() };
-            for (const line of result.addItemToOrder.lines) {
-              newQtyInCart[line.productVariant.id] = line.quantity;
-            }
-            this.qtyInCart.set(newQtyInCart);
+            this.stateService.setState(
+              'activeOrderId',
+              result.addItemToOrder ? result.addItemToOrder.id : null
+            );
           }
           this.inFlight.set(false);
         },

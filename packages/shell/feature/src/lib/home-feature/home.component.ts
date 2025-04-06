@@ -50,7 +50,6 @@ interface SearchResponse {
 }
 
 @Component({
-  selector: 'lib-home',
   standalone: true,
   imports: [CommonModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,

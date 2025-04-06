@@ -1,20 +1,24 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
-  input,
+  inject,
   output,
-  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Cart } from '@bigi-shop/shared-util-types';
-import { timer, of } from 'rxjs';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { GetCartTotalsQuery } from '@bigi-shop/shared-util-types';
+import { timer, merge, zip, from } from 'rxjs';
 import {
   switchMap,
   map,
-  take,
+  distinctUntilChanged,
+  shareReplay,
 } from 'rxjs/operators';
+import {
+  DataService,
+  GET_CART_TOTALS,
+  StateService,
+} from '@bigi-shop/shared-data-access';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'bigi-cart-toggle',
@@ -43,33 +47,43 @@ import {
         />
       </svg>
       <span
-        *ngIf="cartQuantity()"
+        *ngIf="cart$ | async as cart"
         class="absolute -right-1 -top-1 h-5 w-5 rounded-full bg-primary-600 text-xs font-medium flex items-center justify-center"
       >
-        {{ cartQuantity() }}
+        {{ cart.quantity }}
       </span>
     </button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartToggleComponent {
-  cart = input<Cart | null>();
   cartToggle = output<void>();
+  private dataService = inject(DataService);
+  private stateService = inject(StateService);
 
-  private lastQuantity = signal<number>(0);
-  
-  cartQuantity = computed(() => this.cart()?.totalQuantity ?? 0);
-  
-  cartChangeIndication$ = toObservable(this.cartQuantity).pipe(
-    switchMap((quantity) => {
-      if (quantity !== this.lastQuantity()) {
-        this.lastQuantity.set(quantity);
-        return timer(0, 1000).pipe(
-          take(2),
-          map((i) => i === 0)
-        );
-      }
-      return of(false);
-    })
+  cart$ = merge(
+    this.stateService.select((state) => state.activeOrderId),
+    this.stateService.select((state) => state.signedIn)
+  ).pipe(
+    switchMap(() =>
+      this.dataService.query<GetCartTotalsQuery>(
+        GET_CART_TOTALS,
+        {},
+        'network-only'
+      )
+    ),
+    map(({ activeOrder }) => {
+      return {
+        total: activeOrder ? activeOrder.totalWithTax : 0,
+        quantity: activeOrder ? activeOrder.totalQuantity : 0,
+      };
+    }),
+    shareReplay(1)
+  );
+
+  cartChangeIndication$: Observable<boolean> = this.cart$.pipe(
+    map((cart) => cart.quantity),
+    distinctUntilChanged(),
+    switchMap(() => zip(from([true, false]), timer(0, 1000)).pipe(map(([value]) => value)))
   );
 }
