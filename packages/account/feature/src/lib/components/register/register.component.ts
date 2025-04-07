@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { DataService } from '@bigi-shop/shared-data-access';
-import { REGISTER } from './register.graphql';
+import { DataService, REGISTER } from '@bigi-shop/shared-data-access';
 
 @Component({
   selector: 'bigi-register',

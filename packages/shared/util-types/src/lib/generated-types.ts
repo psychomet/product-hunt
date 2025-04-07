@@ -3532,13 +3532,6 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { readonly __typename?: 'Mutation', readonly login: { readonly __typename?: 'CurrentUser', readonly id: string, readonly identifier: string } | { readonly __typename?: 'InvalidCredentialsError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'NativeAuthStrategyError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'NotVerifiedError', readonly errorCode: ErrorCode, readonly message: string } };
 
-export type RegisterMutationVariables = Exact<{
-  input: RegisterCustomerInput;
-}>;
-
-
-export type RegisterMutation = { readonly __typename?: 'Mutation', readonly registerCustomerAccount: { readonly __typename?: 'MissingPasswordError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'NativeAuthStrategyError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'PasswordValidationError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'Success', readonly success: boolean } };
-
 export type VerifyMutationVariables = Exact<{
   token: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -3546,6 +3539,73 @@ export type VerifyMutationVariables = Exact<{
 
 
 export type VerifyMutation = { readonly __typename?: 'Mutation', readonly verifyCustomerAccount: { readonly __typename?: 'CurrentUser', readonly id: string, readonly identifier: string } | { readonly __typename?: 'MissingPasswordError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'NativeAuthStrategyError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'PasswordAlreadySetError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'PasswordValidationError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'VerificationTokenExpiredError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'VerificationTokenInvalidError', readonly errorCode: ErrorCode, readonly message: string } };
+
+export type GetOrderForCheckoutQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetOrderForCheckoutQuery = { readonly __typename?: 'Query', readonly activeOrder: { readonly __typename?: 'Order', readonly id: string, readonly code: string, readonly state: string, readonly active: boolean, readonly updatedAt: any, readonly orderPlacedAt: any | null, readonly totalQuantity: number, readonly subTotal: any, readonly subTotalWithTax: any, readonly total: any, readonly totalWithTax: any, readonly shipping: any, readonly shippingWithTax: any, readonly shippingAddress: { readonly __typename?: 'OrderAddress', readonly fullName: string | null, readonly company: string | null, readonly streetLine1: string | null, readonly streetLine2: string | null, readonly city: string | null, readonly province: string | null, readonly postalCode: string | null, readonly country: string | null, readonly phoneNumber: string | null } | null, readonly lines: ReadonlyArray<{ readonly __typename?: 'OrderLine', readonly id: string, readonly unitPrice: any, readonly unitPriceWithTax: any, readonly quantity: number, readonly linePriceWithTax: any, readonly discountedLinePriceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly width: number, readonly height: number, readonly name: string, readonly preview: string, readonly focalPoint: { readonly __typename?: 'Coordinate', readonly x: number, readonly y: number } | null } | null, readonly productVariant: { readonly __typename?: 'ProductVariant', readonly id: string, readonly name: string, readonly sku: string, readonly price: any, readonly priceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null }, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> }>, readonly shippingLines: ReadonlyArray<{ readonly __typename?: 'ShippingLine', readonly priceWithTax: any, readonly shippingMethod: { readonly __typename?: 'ShippingMethod', readonly id: string, readonly code: string, readonly name: string, readonly description: string } }>, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> } | null };
+
+export type GetOrderShippingDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetOrderShippingDataQuery = { readonly __typename?: 'Query', readonly activeOrder: { readonly __typename?: 'Order', readonly id: string, readonly customer: { readonly __typename?: 'Customer', readonly id: string, readonly firstName: string, readonly lastName: string, readonly emailAddress: string } | null, readonly shippingAddress: { readonly __typename?: 'OrderAddress', readonly fullName: string | null, readonly company: string | null, readonly streetLine1: string | null, readonly streetLine2: string | null, readonly city: string | null, readonly province: string | null, readonly postalCode: string | null, readonly country: string | null, readonly phoneNumber: string | null } | null } | null };
+
+export type SetShippingAddressMutationVariables = Exact<{
+  input: CreateAddressInput;
+}>;
+
+
+export type SetShippingAddressMutation = { readonly __typename?: 'Mutation', readonly setOrderShippingAddress: { readonly __typename?: 'NoActiveOrderError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'Order', readonly id: string, readonly code: string, readonly state: string, readonly active: boolean, readonly updatedAt: any, readonly orderPlacedAt: any | null, readonly totalQuantity: number, readonly subTotal: any, readonly subTotalWithTax: any, readonly total: any, readonly totalWithTax: any, readonly shipping: any, readonly shippingWithTax: any, readonly shippingAddress: { readonly __typename?: 'OrderAddress', readonly fullName: string | null, readonly company: string | null, readonly streetLine1: string | null, readonly streetLine2: string | null, readonly city: string | null, readonly province: string | null, readonly postalCode: string | null, readonly country: string | null, readonly phoneNumber: string | null } | null, readonly lines: ReadonlyArray<{ readonly __typename?: 'OrderLine', readonly id: string, readonly unitPrice: any, readonly unitPriceWithTax: any, readonly quantity: number, readonly linePriceWithTax: any, readonly discountedLinePriceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly width: number, readonly height: number, readonly name: string, readonly preview: string, readonly focalPoint: { readonly __typename?: 'Coordinate', readonly x: number, readonly y: number } | null } | null, readonly productVariant: { readonly __typename?: 'ProductVariant', readonly id: string, readonly name: string, readonly sku: string, readonly price: any, readonly priceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null }, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> }>, readonly shippingLines: ReadonlyArray<{ readonly __typename?: 'ShippingLine', readonly priceWithTax: any, readonly shippingMethod: { readonly __typename?: 'ShippingMethod', readonly id: string, readonly code: string, readonly name: string, readonly description: string } }>, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> } };
+
+export type GetEligibleShippingMethodsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetEligibleShippingMethodsQuery = { readonly __typename?: 'Query', readonly eligibleShippingMethods: ReadonlyArray<{ readonly __typename?: 'ShippingMethodQuote', readonly id: string, readonly name: string, readonly description: string, readonly price: any, readonly priceWithTax: any, readonly metadata: any | null }> };
+
+export type SetShippingMethodMutationVariables = Exact<{
+  id: ReadonlyArray<Scalars['ID']['input']> | Scalars['ID']['input'];
+}>;
+
+
+export type SetShippingMethodMutation = { readonly __typename?: 'Mutation', readonly setOrderShippingMethod: { readonly __typename?: 'IneligibleShippingMethodError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'NoActiveOrderError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'Order', readonly id: string, readonly code: string, readonly state: string, readonly active: boolean, readonly updatedAt: any, readonly orderPlacedAt: any | null, readonly totalQuantity: number, readonly subTotal: any, readonly subTotalWithTax: any, readonly total: any, readonly totalWithTax: any, readonly shipping: any, readonly shippingWithTax: any, readonly lines: ReadonlyArray<{ readonly __typename?: 'OrderLine', readonly id: string, readonly unitPrice: any, readonly unitPriceWithTax: any, readonly quantity: number, readonly linePriceWithTax: any, readonly discountedLinePriceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly width: number, readonly height: number, readonly name: string, readonly preview: string, readonly focalPoint: { readonly __typename?: 'Coordinate', readonly x: number, readonly y: number } | null } | null, readonly productVariant: { readonly __typename?: 'ProductVariant', readonly id: string, readonly name: string, readonly sku: string, readonly price: any, readonly priceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null }, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> }>, readonly shippingLines: ReadonlyArray<{ readonly __typename?: 'ShippingLine', readonly priceWithTax: any, readonly shippingMethod: { readonly __typename?: 'ShippingMethod', readonly id: string, readonly code: string, readonly name: string, readonly description: string } }>, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> } | { readonly __typename?: 'OrderModificationError', readonly errorCode: ErrorCode, readonly message: string } };
+
+export type SetCustomerForOrderMutationVariables = Exact<{
+  input: CreateCustomerInput;
+}>;
+
+
+export type SetCustomerForOrderMutation = { readonly __typename?: 'Mutation', readonly setCustomerForOrder: { readonly __typename?: 'AlreadyLoggedInError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'EmailAddressConflictError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'GuestCheckoutError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'NoActiveOrderError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'Order', readonly id: string, readonly customer: { readonly __typename?: 'Customer', readonly id: string, readonly emailAddress: string, readonly firstName: string, readonly lastName: string } | null } };
+
+export type TransitionToArrangingPaymentMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TransitionToArrangingPaymentMutation = { readonly __typename?: 'Mutation', readonly transitionOrderToState: { readonly __typename?: 'Order', readonly id: string, readonly code: string, readonly state: string, readonly active: boolean, readonly updatedAt: any, readonly orderPlacedAt: any | null, readonly totalQuantity: number, readonly subTotal: any, readonly subTotalWithTax: any, readonly total: any, readonly totalWithTax: any, readonly shipping: any, readonly shippingWithTax: any, readonly lines: ReadonlyArray<{ readonly __typename?: 'OrderLine', readonly id: string, readonly unitPrice: any, readonly unitPriceWithTax: any, readonly quantity: number, readonly linePriceWithTax: any, readonly discountedLinePriceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly width: number, readonly height: number, readonly name: string, readonly preview: string, readonly focalPoint: { readonly __typename?: 'Coordinate', readonly x: number, readonly y: number } | null } | null, readonly productVariant: { readonly __typename?: 'ProductVariant', readonly id: string, readonly name: string, readonly sku: string, readonly price: any, readonly priceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null }, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> }>, readonly shippingLines: ReadonlyArray<{ readonly __typename?: 'ShippingLine', readonly priceWithTax: any, readonly shippingMethod: { readonly __typename?: 'ShippingMethod', readonly id: string, readonly code: string, readonly name: string, readonly description: string } }>, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> } | { readonly __typename?: 'OrderStateTransitionError', readonly errorCode: ErrorCode, readonly message: string } | null };
+
+export type GetEligiblePaymentMethodsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetEligiblePaymentMethodsQuery = { readonly __typename?: 'Query', readonly eligiblePaymentMethods: ReadonlyArray<{ readonly __typename?: 'PaymentMethodQuote', readonly id: string, readonly code: string, readonly name: string, readonly description: string, readonly isEligible: boolean, readonly eligibilityMessage: string | null }> };
+
+export type AddPaymentMutationVariables = Exact<{
+  input: PaymentInput;
+}>;
+
+
+export type AddPaymentMutation = { readonly __typename?: 'Mutation', readonly addPaymentToOrder: { readonly __typename?: 'IneligiblePaymentMethodError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'NoActiveOrderError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'Order', readonly id: string, readonly code: string, readonly state: string, readonly active: boolean, readonly updatedAt: any, readonly orderPlacedAt: any | null, readonly totalQuantity: number, readonly subTotal: any, readonly subTotalWithTax: any, readonly total: any, readonly totalWithTax: any, readonly shipping: any, readonly shippingWithTax: any, readonly payments: ReadonlyArray<{ readonly __typename?: 'Payment', readonly id: string, readonly state: string, readonly method: string, readonly amount: any, readonly metadata: any | null }> | null, readonly lines: ReadonlyArray<{ readonly __typename?: 'OrderLine', readonly id: string, readonly unitPrice: any, readonly unitPriceWithTax: any, readonly quantity: number, readonly linePriceWithTax: any, readonly discountedLinePriceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly width: number, readonly height: number, readonly name: string, readonly preview: string, readonly focalPoint: { readonly __typename?: 'Coordinate', readonly x: number, readonly y: number } | null } | null, readonly productVariant: { readonly __typename?: 'ProductVariant', readonly id: string, readonly name: string, readonly sku: string, readonly price: any, readonly priceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null }, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> }>, readonly shippingLines: ReadonlyArray<{ readonly __typename?: 'ShippingLine', readonly priceWithTax: any, readonly shippingMethod: { readonly __typename?: 'ShippingMethod', readonly id: string, readonly code: string, readonly name: string, readonly description: string } }>, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> } | { readonly __typename?: 'OrderPaymentStateError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'OrderStateTransitionError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'PaymentDeclinedError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'PaymentFailedError', readonly errorCode: ErrorCode, readonly message: string } };
+
+export type GetOrderByCodeQueryVariables = Exact<{
+  code: Scalars['String']['input'];
+}>;
+
+
+export type GetOrderByCodeQuery = { readonly __typename?: 'Query', readonly orderByCode: { readonly __typename?: 'Order', readonly updatedAt: any, readonly id: string, readonly code: string, readonly state: string, readonly active: boolean, readonly orderPlacedAt: any | null, readonly totalQuantity: number, readonly subTotal: any, readonly subTotalWithTax: any, readonly total: any, readonly totalWithTax: any, readonly shipping: any, readonly shippingWithTax: any, readonly customer: { readonly __typename?: 'Customer', readonly id: string, readonly emailAddress: string, readonly firstName: string, readonly lastName: string, readonly user: { readonly __typename?: 'User', readonly id: string, readonly identifier: string, readonly verified: boolean } | null } | null, readonly lines: ReadonlyArray<{ readonly __typename?: 'OrderLine', readonly id: string, readonly unitPrice: any, readonly unitPriceWithTax: any, readonly quantity: number, readonly linePriceWithTax: any, readonly discountedLinePriceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly width: number, readonly height: number, readonly name: string, readonly preview: string, readonly focalPoint: { readonly __typename?: 'Coordinate', readonly x: number, readonly y: number } | null } | null, readonly productVariant: { readonly __typename?: 'ProductVariant', readonly id: string, readonly name: string, readonly sku: string, readonly price: any, readonly priceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null }, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> }>, readonly shippingLines: ReadonlyArray<{ readonly __typename?: 'ShippingLine', readonly priceWithTax: any, readonly shippingMethod: { readonly __typename?: 'ShippingMethod', readonly id: string, readonly code: string, readonly name: string, readonly description: string } }>, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> } | null };
+
+export type CreateAddressMutationVariables = Exact<{
+  input: CreateAddressInput;
+}>;
+
+
+export type CreateAddressMutation = { readonly __typename?: 'Mutation', readonly createCustomerAddress: { readonly __typename?: 'Address', readonly id: string, readonly fullName: string | null, readonly company: string | null, readonly streetLine1: string, readonly streetLine2: string | null, readonly city: string | null, readonly province: string | null, readonly postalCode: string | null, readonly phoneNumber: string | null, readonly defaultShippingAddress: boolean | null, readonly defaultBillingAddress: boolean | null, readonly country: { readonly __typename?: 'Country', readonly id: string, readonly code: string, readonly name: string } } };
 
 export type GetProductQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -3617,9 +3677,44 @@ export type GetCartTotalsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetCartTotalsQuery = { readonly __typename?: 'Query', readonly activeOrder: { readonly __typename?: 'Order', readonly id: string, readonly active: boolean, readonly totalQuantity: number, readonly totalWithTax: any } | null };
 
+export type GetCustomerAddressesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCustomerAddressesQuery = { readonly __typename?: 'Query', readonly activeCustomer: { readonly __typename?: 'Customer', readonly id: string, readonly addresses: ReadonlyArray<{ readonly __typename?: 'Address', readonly id: string, readonly fullName: string | null, readonly company: string | null, readonly streetLine1: string, readonly streetLine2: string | null, readonly city: string | null, readonly province: string | null, readonly postalCode: string | null, readonly phoneNumber: string | null, readonly defaultShippingAddress: boolean | null, readonly defaultBillingAddress: boolean | null, readonly country: { readonly __typename?: 'Country', readonly id: string, readonly code: string, readonly name: string } }> | null } | null };
+
+export type GetAvailableCountriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAvailableCountriesQuery = { readonly __typename?: 'Query', readonly availableCountries: ReadonlyArray<{ readonly __typename?: 'Country', readonly id: string, readonly code: string, readonly name: string, readonly enabled: boolean }> };
+
+export type GetActiveCustomerQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetActiveCustomerQuery = { readonly __typename?: 'Query', readonly activeCustomer: { readonly __typename?: 'Customer', readonly id: string, readonly firstName: string, readonly lastName: string, readonly emailAddress: string, readonly phoneNumber: string | null } | null };
+
+export type GetCollectionsQueryVariables = Exact<{
+  options: InputMaybe<CollectionListOptions>;
+}>;
+
+
+export type GetCollectionsQuery = { readonly __typename?: 'Query', readonly collections: { readonly __typename?: 'CollectionList', readonly items: ReadonlyArray<{ readonly __typename?: 'Collection', readonly id: string, readonly name: string, readonly slug: string, readonly parent: { readonly __typename?: 'Collection', readonly id: string, readonly name: string, readonly slug: string } | null, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly width: number, readonly height: number, readonly name: string, readonly preview: string, readonly focalPoint: { readonly __typename?: 'Coordinate', readonly x: number, readonly y: number } | null } | null }> } };
+
+export type RegisterMutationVariables = Exact<{
+  input: RegisterCustomerInput;
+}>;
+
+
+export type RegisterMutation = { readonly __typename?: 'Mutation', readonly registerCustomerAccount: { readonly __typename?: 'MissingPasswordError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'NativeAuthStrategyError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'PasswordValidationError', readonly errorCode: ErrorCode, readonly message: string } | { readonly __typename?: 'Success', readonly success: boolean } };
+
 export type AssetFragment = { readonly __typename?: 'Asset', readonly id: string, readonly width: number, readonly height: number, readonly name: string, readonly preview: string, readonly focalPoint: { readonly __typename?: 'Coordinate', readonly x: number, readonly y: number } | null };
 
 export type CartFragment = { readonly __typename?: 'Order', readonly id: string, readonly code: string, readonly state: string, readonly active: boolean, readonly updatedAt: any, readonly orderPlacedAt: any | null, readonly totalQuantity: number, readonly subTotal: any, readonly subTotalWithTax: any, readonly total: any, readonly totalWithTax: any, readonly shipping: any, readonly shippingWithTax: any, readonly lines: ReadonlyArray<{ readonly __typename?: 'OrderLine', readonly id: string, readonly unitPrice: any, readonly unitPriceWithTax: any, readonly quantity: number, readonly linePriceWithTax: any, readonly discountedLinePriceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly width: number, readonly height: number, readonly name: string, readonly preview: string, readonly focalPoint: { readonly __typename?: 'Coordinate', readonly x: number, readonly y: number } | null } | null, readonly productVariant: { readonly __typename?: 'ProductVariant', readonly id: string, readonly name: string, readonly sku: string, readonly price: any, readonly priceWithTax: any, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null }, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> }>, readonly shippingLines: ReadonlyArray<{ readonly __typename?: 'ShippingLine', readonly priceWithTax: any, readonly shippingMethod: { readonly __typename?: 'ShippingMethod', readonly id: string, readonly code: string, readonly name: string, readonly description: string } }>, readonly discounts: ReadonlyArray<{ readonly __typename?: 'Discount', readonly amount: any, readonly amountWithTax: any, readonly description: string, readonly adjustmentSource: string, readonly type: AdjustmentType }> };
+
+export type CountryFragment = { readonly __typename?: 'Country', readonly id: string, readonly code: string, readonly name: string, readonly enabled: boolean };
+
+export type OrderAddressFragment = { readonly __typename?: 'OrderAddress', readonly fullName: string | null, readonly company: string | null, readonly streetLine1: string | null, readonly streetLine2: string | null, readonly city: string | null, readonly province: string | null, readonly postalCode: string | null, readonly country: string | null, readonly phoneNumber: string | null };
+
+export type AddressFragment = { readonly __typename?: 'Address', readonly id: string, readonly fullName: string | null, readonly company: string | null, readonly streetLine1: string, readonly streetLine2: string | null, readonly city: string | null, readonly province: string | null, readonly postalCode: string | null, readonly phoneNumber: string | null, readonly defaultShippingAddress: boolean | null, readonly defaultBillingAddress: boolean | null, readonly country: { readonly __typename?: 'Country', readonly id: string, readonly code: string, readonly name: string } };
 
 type ErrorResult_AlreadyLoggedInError_Fragment = { readonly __typename?: 'AlreadyLoggedInError', readonly errorCode: ErrorCode, readonly message: string };
 
@@ -3685,12 +3780,10 @@ export type ErrorResultFragment = ErrorResult_AlreadyLoggedInError_Fragment | Er
 
 export type UserFragment = { readonly __typename?: 'CurrentUser', readonly id: string, readonly identifier: string, readonly channels: ReadonlyArray<{ readonly __typename?: 'CurrentUserChannel', readonly id: string, readonly token: string, readonly code: string, readonly permissions: ReadonlyArray<Permission> }> };
 
-export type GetCollectionsQueryVariables = Exact<{
-  options: InputMaybe<CollectionListOptions>;
-}>;
+export type GetActiveChannelQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCollectionsQuery = { readonly __typename?: 'Query', readonly collections: { readonly __typename?: 'CollectionList', readonly items: ReadonlyArray<{ readonly __typename?: 'Collection', readonly id: string, readonly name: string, readonly slug: string, readonly parent: { readonly __typename?: 'Collection', readonly id: string, readonly slug: string, readonly name: string } | null, readonly featuredAsset: { readonly __typename?: 'Asset', readonly id: string, readonly preview: string } | null }> } };
+export type GetActiveChannelQuery = { readonly __typename?: 'Query', readonly activeChannel: { readonly __typename?: 'Channel', readonly id: string, readonly code: string, readonly currencyCode: CurrencyCode, readonly defaultLanguageCode: LanguageCode } };
 
 export type GetFeaturedProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3701,11 +3794,6 @@ export type ShellLayoutSignOutMutationVariables = Exact<{ [key: string]: never; 
 
 
 export type ShellLayoutSignOutMutation = { readonly __typename?: 'Mutation', readonly logout: { readonly __typename?: 'Success', readonly success: boolean } };
-
-export type ShellLayoutGetCollectionsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ShellLayoutGetCollectionsQuery = { readonly __typename?: 'Query', readonly collections: { readonly __typename?: 'CollectionList', readonly items: ReadonlyArray<{ readonly __typename?: 'Collection', readonly id: string, readonly name: string, readonly slug: string, readonly parent: { readonly __typename?: 'Collection', readonly id: string, readonly name: string, readonly slug: string } | null }> } };
 
 export type AdjustItemQuantityMutationVariables = Exact<{
   id: Scalars['ID']['input'];

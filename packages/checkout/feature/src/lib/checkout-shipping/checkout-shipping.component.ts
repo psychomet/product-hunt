@@ -1,231 +1,299 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { CheckoutService } from '@bigi-shop/checkout-data-access';
-import { Observable, Subject } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import {
+  ReactiveFormsModule,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  CheckoutService,
+  GET_ELIGIBLE_SHIPPING_METHODS,
+  GET_ORDER_SHIPPING_DATA,
+  SET_CUSTOMER_FOR_ORDER,
+  SET_SHIPPING_ADDRESS,
+  SET_SHIPPING_METHOD,
+  TRANSITION_TO_ARRANGING_PAYMENT,
+} from '@bigi-shop/checkout-data-access';
+import { Observable, of, Subject } from 'rxjs';
+import { map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
+import {
+  AddressFragment,
+  CreateAddressInput,
+  GetAvailableCountriesQuery,
+  GetCustomerAddressesQuery,
+  GetEligibleShippingMethodsQuery,
+  GetOrderShippingDataQuery,
+  notNullOrUndefined,
+  SetCustomerForOrderMutation,
+  SetCustomerForOrderMutationVariables,
+  SetShippingAddressMutation,
+  SetShippingAddressMutationVariables,
+  SetShippingMethodMutation,
+  SetShippingMethodMutationVariables,
+  TransitionToArrangingPaymentMutation,
+} from '@bigi-shop/shared-util-types';
+import {
+  DataService,
+  GET_AVAILABLE_COUNTRIES,
+  GET_CUSTOMER_ADDRESSES,
+  StateService,
+} from '@bigi-shop/shared-data-access';
+
+import {
+  AddressFormComponent,
+  FormatPricePipe,
+  ModalService,
+  NotificationService,
+  RadioCardComponent,
+  RadioCardFieldsetComponent,
+} from '@bigi-shop/shared-ui';
+import { AddressModalComponent } from './address-modal/address-modal.component';
+
+export type AddressFormValue = Pick<
+  AddressFragment,
+  Exclude<keyof AddressFragment, 'country'>
+> & { countryCode: string };
 
 @Component({
   selector: 'bigi-checkout-shipping',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    AddressFormComponent,
+    FormatPricePipe,
+    RadioCardFieldsetComponent,
+    RadioCardComponent,
+  ],
   template: `
-    <div class="mt-10 sm:mt-0">
-      <div class="md:grid md:grid-cols-3 md:gap-6">
-        <!-- Customer Details Section -->
-        <div class="md:col-span-1">
-          <div class="px-4 sm:px-0">
-            <h3 class="text-lg font-medium leading-6 text-gray-900">Contact Information</h3>
-            <p class="mt-1 text-sm text-gray-600">
-              Please enter your contact details.
-            </p>
+    <div
+      class="card"
+      *ngIf="(signedIn$ | async) && (customerAddresses$ | async)?.length"
+    >
+      <div class="card-header">
+        <button class="btn btn-light" (click)="step = 'selectAddress'">
+          Select Address
+        </button>
+      </div>
+      <div class="" [ngClass]="step === 'selectAddress' ? 'block' : 'hidden'">
+        <div class="d-flex flex-wrap">
+          <div
+            class="customer-address"
+            *ngFor="let address of customerAddresses$ | async"
+            (click)="setShippingAddress(address)"
+          >
+            <div class="address-line" *ngFor="let line of getLines(address)">
+              {{ line }}
+            </div>
           </div>
-        </div>
-        <div class="mt-5 md:mt-0 md:col-span-2">
-          <form [formGroup]="customerForm" (blur)="onCustomerFormBlur()">
-            <div class="shadow overflow-hidden sm:rounded-md">
-              <div class="px-4 py-5 bg-white sm:p-6">
-                <div class="grid grid-cols-6 gap-6">
-                  <div class="col-span-6">
-                    <label for="emailAddress" class="block text-sm font-medium text-gray-700">Email Address</label>
-                    <input 
-                      id="emailAddress" 
-                      type="email" 
-                      formControlName="emailAddress" 
-                      class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      [class.border-red-500]="customerForm.get('emailAddress')?.invalid && customerForm.get('emailAddress')?.touched"
-                    >
-                  </div>
-                  <div class="col-span-6 sm:col-span-3">
-                    <label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
-                    <input 
-                      id="firstName" 
-                      type="text" 
-                      formControlName="firstName" 
-                      class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      [class.border-red-500]="customerForm.get('firstName')?.invalid && customerForm.get('firstName')?.touched"
-                    >
-                  </div>
-                  <div class="col-span-6 sm:col-span-3">
-                    <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name</label>
-                    <input 
-                      id="lastName" 
-                      type="text" 
-                      formControlName="lastName" 
-                      class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      [class.border-red-500]="customerForm.get('lastName')?.invalid && customerForm.get('lastName')?.touched"
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-
-        <!-- Shipping Address Section -->
-        <div class="md:col-span-1 mt-10 md:mt-0">
-          <div class="px-4 sm:px-0">
-            <h3 class="text-lg font-medium leading-6 text-gray-900">Shipping Address</h3>
-            <p class="mt-1 text-sm text-gray-600">
-              Please enter your shipping details.
-            </p>
-          </div>
-        </div>
-        <div class="mt-5 md:mt-0 md:col-span-2">
-          <form [formGroup]="shippingForm" (blur)="onAddressFormBlur()">
-            <div class="shadow overflow-hidden sm:rounded-md">
-              <div class="px-4 py-5 bg-white sm:p-6">
-                <div class="grid grid-cols-6 gap-6">
-                  <div class="col-span-6">
-                    <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
-                    <input 
-                      id="fullName" 
-                      type="text" 
-                      formControlName="fullName" 
-                      class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      [class.border-red-500]="shippingForm.get('fullName')?.invalid && shippingForm.get('fullName')?.touched"
-                    >
-                  </div>
-
-                  <div class="col-span-6">
-                    <label for="streetLine1" class="block text-sm font-medium text-gray-700">Street Address</label>
-                    <input 
-                      id="streetLine1" 
-                      type="text" 
-                      formControlName="streetLine1" 
-                      class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      [class.border-red-500]="shippingForm.get('streetLine1')?.invalid && shippingForm.get('streetLine1')?.touched"
-                    >
-                  </div>
-
-                  <div class="col-span-6 sm:col-span-6 lg:col-span-2">
-                    <label for="city" class="block text-sm font-medium text-gray-700">City</label>
-                    <input 
-                      id="city" 
-                      type="text" 
-                      formControlName="city" 
-                      class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      [class.border-red-500]="shippingForm.get('city')?.invalid && shippingForm.get('city')?.touched"
-                    >
-                  </div>
-
-                  <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                    <label for="province" class="block text-sm font-medium text-gray-700">State / Province</label>
-                    <input 
-                      id="province" 
-                      type="text" 
-                      formControlName="province" 
-                      class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      [class.border-red-500]="shippingForm.get('province')?.invalid && shippingForm.get('province')?.touched"
-                    >
-                  </div>
-
-                  <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                    <label for="postalCode" class="block text-sm font-medium text-gray-700">Postal Code</label>
-                    <input 
-                      id="postalCode" 
-                      type="text" 
-                      formControlName="postalCode" 
-                      class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      [class.border-red-500]="shippingForm.get('postalCode')?.invalid && shippingForm.get('postalCode')?.touched"
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-
-        <!-- Shipping Methods Section -->
-        <div class="md:col-span-1 mt-10 md:mt-0">
-          <div class="px-4 sm:px-0">
-            <h3 class="text-lg font-medium leading-6 text-gray-900">Shipping Method</h3>
-            <p class="mt-1 text-sm text-gray-600">
-              Please select your preferred shipping method.
-            </p>
-          </div>
-        </div>
-        <div class="mt-5 md:mt-0 md:col-span-2">
-          <div class="shadow overflow-hidden sm:rounded-md">
-            <div class="px-4 py-5 bg-white sm:p-6">
-              <div class="space-y-4">
-                <ng-container *ngIf="eligibleShippingMethods$ | async as methods">
-                  <div *ngFor="let method of methods" class="flex items-center">
-                    <input
-                      [id]="method.id"
-                      name="shippingMethod"
-                      type="radio"
-                      [value]="method.id"
-                      (change)="setShippingMethod(method.id)"
-                      [checked]="selectedShippingMethodId === method.id"
-                      class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300"
-                    >
-                    <label [for]="method.id" class="ml-3">
-                      <span class="block text-sm font-medium text-gray-700">{{ method.name }}</span>
-                      <span class="block text-sm text-gray-500">{{ method.description }}</span>
-                      <span class="block text-sm font-medium text-gray-900">{{ method.priceWithTax | currency }}</span>
-                    </label>
-                  </div>
-                </ng-container>
-              </div>
-            </div>
-            <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-              <button
-                type="button"
-                [disabled]="!canProceedToPayment()"
-                (click)="proceedToPayment()"
-                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
-              >
-                Continue to Payment
-              </button>
-            </div>
+          <div class="d-flex align-items-end ml-3 mb-3">
+            <button class="btn btn-secondary" (click)="createAddress()">
+              Add new address
+            </button>
           </div>
         </div>
       </div>
     </div>
+    <div class="" *ngIf="!(signedIn$ | async)">
+      <h2 class="text-lg font-medium text-gray-900">Contact information</h2>
+      <form [formGroup]="contactForm" (focusout)="onCustomerFormBlur()">
+        <div class="mt-4">
+          <label
+            htmlFor="emailAddress"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Email address
+          </label>
+          <div class="mt-1">
+            <input
+              type="email"
+              id="emailAddress"
+              name="emailAddress"
+              autoComplete="email"
+              formControlName="emailAddress"
+              class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+            />
+          </div>
+        </div>
+        <div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+          <div>
+            <label
+              htmlFor="firstName"
+              class="block text-sm font-medium text-gray-700"
+            >
+              First name
+            </label>
+            <div class="mt-1">
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                autoComplete="given-name"
+                formControlName="firstName"
+                class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="lastName"
+              class="block text-sm font-medium text-gray-700"
+            >
+              Last name
+            </label>
+            <div class="mt-1">
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                autoComplete="family-name"
+                formControlName="lastName"
+                class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="mt-10 border-t border-gray-200 pt-10">
+      <h2 class="text-lg font-medium text-gray-900">Shipping Address</h2>
+      <div class="card-body">
+        <bigi-address-form
+          #addressForm
+          (focusout)="onAddressFormBlur(addressForm.addressForm)"
+          [address]="shippingAddress$ | async"
+          [availableCountries]="availableCountries$ | async"
+        />
+      </div>
+    </div>
+    <div class="mt-10 border-t border-gray-200 pt-10">
+      <h2 class="text-lg font-medium text-gray-900">Shipping Method</h2>
+      <bigi-radio-card-fieldset
+        [idFn]="getId"
+        [selectedItemId]="shippingMethodId"
+        (selectItem)="setShippingMethod($event.id)"
+      >
+        <div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+          <bigi-radio-card
+            *ngFor="let method of eligibleShippingMethods$ | async"
+            [item]="method"
+          >
+            <span class="block text-sm font-medium text-gray-900">
+              {{ method.name }}
+            </span>
+            <span class="mt-6 text-sm font-medium text-gray-900">
+              {{ method.priceWithTax | formatPrice }}
+            </span>
+          </bigi-radio-card>
+        </div>
+      </bigi-radio-card-fieldset>
+    </div>
+    <button
+      class="btn-primary mt-6 w-full space-x-2"
+      [disabled]="!shippingMethodId || addressForm.addressForm.invalid"
+      (click)="proceedToPayment()"
+    >
+      <!-- <fa-icon icon="credit-card"></fa-icon> -->
+      <span>Proceed to payment</span>
+    </button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckoutShippingComponent implements OnInit, OnDestroy {
-  private checkoutService = inject(CheckoutService);
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
+  @ViewChild('addressForm') addressForm: AddressFormComponent;
+
+  step = '';
+
+  customerAddresses$: Observable<AddressFragment[]>;
+  availableCountries$: Observable<
+    GetAvailableCountriesQuery['availableCountries'] | any
+  >;
+  eligibleShippingMethods$: Observable<
+    GetEligibleShippingMethodsQuery['eligibleShippingMethods']
+  >;
+  shippingAddress$: Observable<
+    NonNullable<GetOrderShippingDataQuery['activeOrder']>['shippingAddress']
+  >;
+  signedIn$: Observable<boolean>;
+  shippingMethodId: string | undefined;
+  contactForm: UntypedFormGroup;
   private destroy$ = new Subject<void>();
 
-  eligibleShippingMethods$ = this.checkoutService.getEligibleShippingMethods();
-  selectedShippingMethodId: string | undefined;
-
-  customerForm = this.fb.group({
-    firstName: ['', Validators.required],
-    lastName: ['', Validators.required],
-    emailAddress: ['', [Validators.required, Validators.email]],
-  });
-
-  shippingForm = this.fb.group({
-    fullName: ['', Validators.required],
-    streetLine1: ['', Validators.required],
-    city: ['', Validators.required],
-    province: ['', Validators.required],
-    postalCode: ['', Validators.required],
-  });
+  constructor(
+    private dataService: DataService,
+    private stateService: StateService,
+    private changeDetector: ChangeDetectorRef,
+    private modalService: ModalService,
+    private notificationService: NotificationService,
+    private formBuilder: UntypedFormBuilder,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    // Load active order data
-    this.checkoutService.getActiveOrder().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(order => {
-      if (order?.customer) {
-        this.customerForm.patchValue({
-          firstName: order.customer.firstName,
-          lastName: order.customer.lastName,
-          emailAddress: order.customer.emailAddress,
-        }, { emitEvent: false });
-      }
-      if (order?.shippingAddress) {
-        this.shippingForm.patchValue(order.shippingAddress, { emitEvent: false });
-      }
+    this.contactForm = this.formBuilder.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      emailAddress: ['', Validators.email],
     });
+    this.signedIn$ = this.stateService.select((state) => state.signedIn);
+    this.customerAddresses$ = this.dataService
+      .query<GetCustomerAddressesQuery>(GET_CUSTOMER_ADDRESSES)
+      .pipe(
+        map(
+          (data) =>
+            (data.activeCustomer
+              ? data.activeCustomer.addresses || []
+              : []) as AddressFragment[]
+        )
+      );
+    this.availableCountries$ = this.dataService
+      .query<GetAvailableCountriesQuery>(GET_AVAILABLE_COUNTRIES)
+      .pipe(map((data) => data.availableCountries));
+    const shippingData$ = this.dataService.query<GetOrderShippingDataQuery>(
+      GET_ORDER_SHIPPING_DATA
+    );
+    this.shippingAddress$ = shippingData$.pipe(
+      map((data) => data.activeOrder && data.activeOrder.shippingAddress)
+    );
+    this.eligibleShippingMethods$ = this.shippingAddress$.pipe(
+      switchMap(() =>
+        this.dataService.query<GetEligibleShippingMethodsQuery>(
+          GET_ELIGIBLE_SHIPPING_METHODS
+        )
+      ),
+      map((data) => data.eligibleShippingMethods)
+    );
+
+    shippingData$
+      .pipe(
+        map((data) => data.activeOrder && data.activeOrder.customer),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((customer) => {
+        if (customer) {
+          this.contactForm.patchValue(
+            {
+              firstName: customer.firstName,
+              lastName: customer.lastName,
+              emailAddress: customer.emailAddress,
+            },
+            { emitEvent: false }
+          );
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -233,41 +301,155 @@ export class CheckoutShippingComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  getLines(address: AddressFragment): string[] {
+    return [
+      address.fullName,
+      address.company,
+      address.streetLine1,
+      address.streetLine2,
+      address.province,
+      address.postalCode,
+      address.country.name,
+    ].filter(notNullOrUndefined);
+  }
+
+  createAddress() {
+    this.modalService
+      .fromComponent(AddressModalComponent, {
+        locals: {
+          title: 'Create new address',
+        },
+        closable: true,
+      })
+      .pipe(
+        switchMap(() =>
+          this.dataService.query<GetCustomerAddressesQuery>(
+            GET_CUSTOMER_ADDRESSES,
+            {},
+            'network-only'
+          )
+        )
+      )
+      .subscribe();
+  }
+
+  editAddress(address: AddressFragment) {
+    this.addressForm.addressForm.patchValue({
+      ...address,
+      countryCode: address.country.code,
+    });
+  }
+
   onCustomerFormBlur() {
-    if (this.customerForm.valid && this.customerForm.dirty) {
-      const { firstName, lastName, emailAddress } = this.customerForm.value;
-      if (firstName && lastName && emailAddress) {
-        this.checkoutService.setCustomerDetails({ firstName, lastName, emailAddress });
-      }
+    this.setCustomerForOrder()?.subscribe();
+  }
+
+  onAddressFormBlur(addressForm: UntypedFormGroup) {
+    if (addressForm.dirty && addressForm.valid) {
+      this.setShippingAddress(addressForm.value);
     }
   }
 
-  onAddressFormBlur() {
-    if (this.shippingForm.valid && this.shippingForm.dirty) {
-      const { fullName, streetLine1, city, province, postalCode } = this.shippingForm.value;
-      if (fullName && streetLine1 && city && province && postalCode) {
-        this.checkoutService.setShippingAddress({ fullName, streetLine1, city, province, postalCode });
-      }
-    }
+  setShippingAddress(value: AddressFormValue | AddressFragment) {
+    const input = this.valueToAddressInput(value);
+    this.dataService
+      .mutate<SetShippingAddressMutation, SetShippingAddressMutationVariables>(
+        SET_SHIPPING_ADDRESS,
+        {
+          input,
+        }
+      )
+      .subscribe((data) => {
+        this.changeDetector.markForCheck();
+      });
   }
 
-  setShippingMethod(methodId: string) {
-    this.selectedShippingMethodId = methodId;
-  }
-
-  canProceedToPayment(): boolean {
-    return this.customerForm.valid && this.shippingForm.valid && !!this.selectedShippingMethodId;
+  setShippingMethod(id: string) {
+    this.shippingMethodId = id;
   }
 
   proceedToPayment() {
-    if (this.canProceedToPayment() && this.selectedShippingMethodId) {
-      this.checkoutService.setShippingMethod(this.selectedShippingMethodId)
+    const shippingMethodId = this.shippingMethodId;
+    if (shippingMethodId) {
+      this.stateService
+        .select((state) => state.signedIn)
         .pipe(
-          switchMap(() => this.checkoutService.transitionToPayment())
+          mergeMap((signedIn) =>
+            !signedIn ? this.setCustomerForOrder() || of({}) : of({})
+          ),
+          mergeMap(() =>
+            this.dataService.mutate<
+              SetShippingMethodMutation,
+              SetShippingMethodMutationVariables
+            >(SET_SHIPPING_METHOD, {
+              id: shippingMethodId,
+            })
+          ),
+          mergeMap(() =>
+            this.dataService.mutate<TransitionToArrangingPaymentMutation>(
+              TRANSITION_TO_ARRANGING_PAYMENT
+            )
+          )
         )
-        .subscribe(() => {
-          this.router.navigate(['/checkout/payment']);
+        .subscribe((data) => {
+          this.router.navigate(['../payment'], { relativeTo: this.route });
         });
     }
   }
-} 
+
+  getId(method: { id: string }) {
+    return method.id;
+  }
+
+  private setCustomerForOrder() {
+    if (this.contactForm.valid) {
+      return this.dataService
+        .mutate<
+          SetCustomerForOrderMutation,
+          SetCustomerForOrderMutationVariables
+        >(SET_CUSTOMER_FOR_ORDER, {
+          input: this.contactForm.value,
+        })
+        .pipe(
+          tap(({ setCustomerForOrder }) => {
+            if (
+              setCustomerForOrder &&
+              setCustomerForOrder.__typename !== 'Order'
+            ) {
+              this.notificationService
+                .error((setCustomerForOrder as any).message)
+                .subscribe();
+            }
+          })
+        );
+    }
+    return null;
+  }
+
+  private valueToAddressInput(
+    value: AddressFormValue | AddressFragment
+  ): CreateAddressInput {
+    return {
+      city: value.city || '',
+      company: value.company || '',
+      countryCode: this.isFormValue(value)
+        ? value.countryCode
+        : value.country.code,
+      defaultBillingAddress: value.defaultBillingAddress,
+      defaultShippingAddress: value.defaultShippingAddress,
+      fullName: value.fullName || '',
+      phoneNumber: value.phoneNumber || '',
+      postalCode: value.postalCode || '',
+      province: value.province || '',
+      streetLine1: value.streetLine1 || '',
+      streetLine2: value.streetLine2 || '',
+      customFields: [],
+    };
+  }
+
+  private isFormValue(
+    input: AddressFormValue | AddressFragment
+  ): input is AddressFormValue {
+    return typeof (input as any).countryCode === 'string';
+  }
+}

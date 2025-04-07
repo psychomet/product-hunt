@@ -7,3 +7,5 @@ export * from './lib/graphql/fragments';
 export { CART_FRAGMENT } from './lib/graphql/fragments.graphql';
 export * from './lib/graphql/auth.graphql';
 export * from './lib/graphql/cart.graphql';
+export * from './lib/graphql/documents.graphql';
+export * from './lib/graphql/get-active-channel.graphql';

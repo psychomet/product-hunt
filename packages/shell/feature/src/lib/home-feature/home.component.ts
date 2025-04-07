@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { DataService } from '@bigi-shop/shared-data-access';
+import { DataService, GET_COLLECTIONS } from '@bigi-shop/shared-data-access';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GET_COLLECTIONS, GET_FEATURED_PRODUCTS } from './home.graphql';
 
 interface Collection {
   id: string;

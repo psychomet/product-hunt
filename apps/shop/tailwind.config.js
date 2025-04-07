@@ -9,7 +9,14 @@ module.exports = {
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {
-    extend: {},
+    extend: {
+      extend: {
+        colors: {
+          primary: colors.sky,
+          secondary: colors.emerald,
+        },
+      },
+    },
     container: {
       center: true,
       padding: '1rem',
@@ -21,12 +28,6 @@ module.exports = {
         '2xl': '1400px',
       },
     },
-    colors: {
-      primary: '#53E1D9',
-      transparent: 'transparent',
-      current: 'currentColor',
-      ...colors
-    }
   },
   plugins: [],
 };

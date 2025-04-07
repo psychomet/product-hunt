@@ -9,6 +9,7 @@ import {
   DataService,
   StateService,
   ActiveService,
+  GET_COLLECTIONS,
 } from '@bigi-shop/shared-data-access';
 import {
   CollectionsMenuComponent,
@@ -18,7 +19,6 @@ import {
 } from '@bigi-shop/shared-ui';
 import { CartDrawerComponent } from '@bigi-shop/shell-ui';
 import {
-  GET_COLLECTIONS,
   SIGN_OUT,
   ADJUST_ITEM_QUANTITY,
   REMOVE_ITEM_FROM_CART,
@@ -34,6 +34,7 @@ import {
 } from 'rxjs';
 import type { RemoveItemFromCartMutation, RemoveItemFromCartMutationVariables } from '@bigi-shop/shared-util-types';
 import { CartToggleComponent } from '../cart-toggle-feature/cart-toggle.component';
+import { AccountLinkComponent } from "../account-link/account-link.component";
 
 @Component({
   standalone: true,
@@ -44,7 +45,8 @@ import { CartToggleComponent } from '../cart-toggle-feature/cart-toggle.componen
     CollectionsMenuComponent,
     CartDrawerComponent,
     CartToggleComponent,
-  ],
+    AccountLinkComponent
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="bg-white shadow-sm">
@@ -60,7 +62,7 @@ import { CartToggleComponent } from '../cart-toggle-feature/cart-toggle.componen
           </div>
 
           <div class="flex items-center space-x-4">
-            <ng-container
+            <!-- <ng-container
               *ngIf="currentUser$ | async as user; else loginButton"
             >
               <span class="text-gray-600">{{ user.identifier }}</span>
@@ -74,12 +76,13 @@ import { CartToggleComponent } from '../cart-toggle-feature/cart-toggle.componen
 
             <ng-template #loginButton>
               <a
-                routerLink="/sign-in"
+                routerLink="/account/sign-in"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
               >
                 Sign In
               </a>
-            </ng-template>
+            </ng-template> -->
+            <bigi-account-link />
 
             <bigi-cart-toggle
               (cartToggle)="openCartDrawer()"

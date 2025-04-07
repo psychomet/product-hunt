@@ -115,13 +115,13 @@ import { Cart } from '@bigi-shop/shared-util-types';
             </div>
 
             <!-- Shipping Address Card -->
-            <div *ngIf="cart.shippingAddress?.streetLine1" class="bg-white rounded-lg shadow-sm p-6">
+            <div *ngIf="cart.shipping?.streetLine1" class="bg-white rounded-lg shadow-sm p-6">
               <h3 class="text-lg font-medium text-gray-900 mb-4">Shipping Address</h3>
               <div class="text-sm text-gray-700">
-                <p>{{ cart.shippingAddress.fullName }}</p>
-                <p>{{ cart.shippingAddress.streetLine1 }}</p>
-                <p *ngIf="cart.shippingAddress.streetLine2">{{ cart.shippingAddress.streetLine2 }}</p>
-                <p>{{ cart.shippingAddress.city }}, {{ cart.shippingAddress.province }} {{ cart.shippingAddress.postalCode }}</p>
+                <p>{{ cart.shipping.fullName }}</p>
+                <p>{{ cart.shipping.streetLine1 }}</p>
+                <p *ngIf="cart.shipping.streetLine2">{{ cart.shipping.streetLine2 }}</p>
+                <p>{{ cart.shipping.city }}, {{ cart.shipping.province }} {{ cart.shipping.postalCode }}</p>
               </div>
               <button 
                 *ngIf="activeStage === 3"

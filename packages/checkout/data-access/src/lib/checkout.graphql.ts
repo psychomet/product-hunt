@@ -1,26 +1,23 @@
 import { gql } from '@apollo/client/core';
-import { CART_FRAGMENT, ERROR_RESULT_FRAGMENT, ORDER_ADDRESS_FRAGMENT } from '@bigi-shop/shared-data-access';
+import {
+  CART_FRAGMENT,
+  ERROR_RESULT_FRAGMENT,
+  ORDER_ADDRESS_FRAGMENT,
+} from '@bigi-shop/shared-data-access';
 
-export const GET_ACTIVE_ORDER = gql`
-  query GetActiveOrder {
-    activeOrder {
-      ...Cart
-      ... on Order {
-        shippingAddress {
-          ...OrderAddress
+export const GET_ORDER_FOR_CHECKOUT = gql`
+    query GetOrderForCheckout {
+        activeOrder {
+            ...Cart
+            shippingAddress {
+                ...OrderAddress
+            }
         }
-        customer {
-          id
-          firstName
-          lastName
-          emailAddress
-        }
-      }
     }
-  }
-  ${CART_FRAGMENT}
-  ${ORDER_ADDRESS_FRAGMENT}
+    ${CART_FRAGMENT}
+    ${ORDER_ADDRESS_FRAGMENT}
 `;
+
 
 export const GET_ORDER_SHIPPING_DATA = gql`
   query GetOrderShippingData {
@@ -74,15 +71,6 @@ export const SET_SHIPPING_METHOD = gql`
   mutation SetShippingMethod($id: [ID!]!) {
     setOrderShippingMethod(shippingMethodId: $id) {
       ...Cart
-      ... on Order {
-        shippingMethod {
-          id
-          name
-          description
-          price
-          priceWithTax
-        }
-      }
       ...ErrorResult
     }
   }
@@ -101,6 +89,7 @@ export const SET_CUSTOMER_FOR_ORDER = gql`
           firstName
           lastName
         }
+
       }
       ...ErrorResult
     }
@@ -173,12 +162,5 @@ export const GET_ORDER_BY_CODE = gql`
   ${CART_FRAGMENT}
 `;
 
-export const REGISTER_CUSTOMER_ACCOUNT = gql`
-  mutation RegisterCustomerAccount($input: RegisterCustomerInput!) {
-    registerCustomerAccount(input: $input) {
-      success
-      errorCode
-      message
-    }
-  }
-`; 
+
+

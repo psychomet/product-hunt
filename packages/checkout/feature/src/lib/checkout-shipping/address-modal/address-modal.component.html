@@ -1,0 +1,10 @@
+<ng-template bigiDialogTitle>{{ title }}</ng-template>
+<bigi-address-form #addressFormComponent
+                  [address]="address"
+                  [availableCountries]="availableCountries$ | async"></bigi-address-form>
+<ng-template bigiDialogButtons>
+    <button type="button"
+            class="btn btn-primary"
+            [disabled]="addressFormComponent.addressForm.invalid"
+            (click)="save(addressFormComponent.addressForm.value)">Okay</button>
+</ng-template>

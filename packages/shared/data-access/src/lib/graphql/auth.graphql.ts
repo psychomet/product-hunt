@@ -17,20 +17,6 @@ export const LOGIN = gql`
   }
 `;
 
-export const REGISTER = gql`
-  mutation Register($input: RegisterCustomerInput!) {
-    registerCustomerAccount(input: $input) {
-      ... on Success {
-        success
-      }
-      ... on ErrorResult {
-        ...ErrorResult
-      }
-    }
-  }
-  ${ERROR_RESULT_FRAGMENT}
-`;
-
 export const VERIFY = gql`
   mutation SharedDataAccessVerify($token: String!) {
     verifyCustomerAccount(token: $token) {

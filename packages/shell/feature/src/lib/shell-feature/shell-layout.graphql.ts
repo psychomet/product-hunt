@@ -12,22 +12,6 @@ export const SIGN_OUT = gql`
   }
 `;
 
-export const GET_COLLECTIONS = gql`
-  query ShellLayoutGetCollections {
-    collections {
-      items {
-        id
-        name
-        slug
-        parent {
-          id
-          name
-          slug
-        }
-      }
-    }
-  }
-`;
 
 export const ADJUST_ITEM_QUANTITY = gql`
   mutation AdjustItemQuantity($id: ID!, $qty: Int!) {

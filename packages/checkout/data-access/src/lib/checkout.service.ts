@@ -1,11 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService } from '@bigi-shop/shared-data-access';
-import { Cart } from '@bigi-shop/shared-util-types';
+import { ActiveService, DataService, REGISTER } from '@bigi-shop/shared-data-access';
+import { Cart, GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
-  GET_ACTIVE_ORDER,
   GET_ELIGIBLE_SHIPPING_METHODS,
   SET_CUSTOMER_FOR_ORDER,
   SET_SHIPPING_ADDRESS,
@@ -14,7 +13,6 @@ import {
   GET_ELIGIBLE_PAYMENT_METHODS,
   ADD_PAYMENT,
   GET_ORDER_BY_CODE,
-  REGISTER_CUSTOMER_ACCOUNT
 } from './checkout.graphql';
 
 export interface CustomerDetails {
@@ -77,11 +75,10 @@ export interface RegisterCustomerInput {
 export class CheckoutService {
   private dataService = inject(DataService);
   private router = inject(Router);
+  private activeService = inject(ActiveService);
 
-  getActiveOrder(): Observable<Cart> {
-    return this.dataService.query(GET_ACTIVE_ORDER).pipe(
-      map(({ activeOrder }) => activeOrder)
-    );
+  getActiveOrder(): Observable<GetActiveOrderQuery['activeOrder']> {
+    return this.activeService.activeOrder$;
   }
 
   getEligibleShippingMethods(): Observable<ShippingMethod[]> {
@@ -103,7 +100,7 @@ export class CheckoutService {
   }
 
   setShippingMethod(methodId: string): Observable<Cart> {
-    return this.dataService.mutate(SET_SHIPPING_METHOD, { ids: [methodId] }).pipe(
+    return this.dataService.mutate(SET_SHIPPING_METHOD, { id: [methodId] }).pipe(
       map(({ setOrderShippingMethod }) => setOrderShippingMethod)
     );
   }
@@ -124,7 +121,7 @@ export class CheckoutService {
     );
   }
 
-  addPayment(input: PaymentInput): Observable<Cart> {
+  addPayment(input: PaymentInput): Observable<GetActiveOrderQuery['activeOrder']> {
     return this.dataService.mutate(ADD_PAYMENT, { input }).pipe(
       map(({ addPaymentToOrder }) => addPaymentToOrder)
     );
@@ -137,7 +134,7 @@ export class CheckoutService {
   }
 
   register(input: RegisterCustomerInput): Observable<any> {
-    return this.dataService.mutate(REGISTER_CUSTOMER_ACCOUNT, {
+    return this.dataService.mutate(REGISTER, {
       input: {
         ...input,
         password: this.generateTemporaryPassword()
