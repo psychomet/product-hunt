@@ -1,12 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  DataService,
-  GET_ACTIVE_CUSTOMER,
-  StateService,
-} from '@bigi-shop/shared-data-access';
+import { ActiveCustomerService } from '@bigi-shop/shared-data-access';
 import { GetActiveCustomerQuery } from '@bigi-shop/shared-util-types';
-import { map, Observable, switchMap, take } from 'rxjs';
+import { Observable } from 'rxjs';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -17,29 +13,10 @@ import { RouterLink } from '@angular/router';
 })
 export class AccountLinkComponent implements OnInit {
   activeCustomer$: Observable<GetActiveCustomerQuery['activeCustomer']>;
-  private dataService = inject(DataService);
-  private stateService = inject(StateService);
+  private activeCustomerService = inject(ActiveCustomerService);
 
   ngOnInit() {
-    const getActiveCustomer$ = this.dataService.query<GetActiveCustomerQuery>(
-      GET_ACTIVE_CUSTOMER,
-      {},
-      'network-only'
-    );
-
-    getActiveCustomer$.pipe(take(1)).subscribe((data) => {
-        console.log('data',data)
-      if (data.activeCustomer) {
-        this.stateService.setState('signedIn', true);
-      }
-    });
-
-    this.activeCustomer$ = this.stateService
-      .select((state) => state.signedIn)
-      .pipe(
-        switchMap(() => getActiveCustomer$),
-        map((data) => data && data.activeCustomer)
-      );
+    this.activeCustomer$ = this.activeCustomerService.watchActiveCustomer();
   }
 
   userName(

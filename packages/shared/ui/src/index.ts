@@ -10,3 +10,7 @@ export * from './lib/notification/notification.service';
 export * from './lib/notification/notification.component';
 export * from './lib/modal/modal-types';
 export * from './lib/modal/modal.service';
+
+export * from './lib/cart-totals/cart-totals.component';
+export * from './lib/asset-preview.pipe';
+export * from './lib/address-card/address-card.component';

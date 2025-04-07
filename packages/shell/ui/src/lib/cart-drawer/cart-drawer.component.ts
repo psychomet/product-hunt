@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 import { CommonModule } from '@angular/common';
 import { CartContentsComponent } from '@bigi-shop/shared-ui';
 import { RouterModule } from '@angular/router';
-import { Cart, GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
+import { GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
 
 @Component({
   selector: 'bigi-cart-drawer',
@@ -88,6 +88,7 @@ import { Cart, GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
                 <div *ngIf="!isEmpty()">
                   <bigi-cart-contents
                     [cart]="cart()"
+                    [canAdjustQuantities]="true"
                     (setQuantity)="setQuantity.emit($event)"
                   />
                 </div>

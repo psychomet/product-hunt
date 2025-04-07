@@ -9,3 +9,6 @@ export * from './lib/graphql/auth.graphql';
 export * from './lib/graphql/cart.graphql';
 export * from './lib/graphql/documents.graphql';
 export * from './lib/graphql/get-active-channel.graphql';
+export * from './lib/services/active-customer.service';
+export * from './lib/services/data.service';
+export * from './lib/services/state.service';

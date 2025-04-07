@@ -1,5 +1,8 @@
 import { Route } from '@angular/router';
-import { checkoutGuard, checkoutResolver } from '@bigi-shop/checkout-data-access';
+import {
+  checkoutGuard,
+  checkoutResolver,
+} from '@bigi-shop/checkout-data-access';
 
 export const checkoutFeatureRoutes: Route[] = [
   {
@@ -20,6 +23,9 @@ export const checkoutFeatureRoutes: Route[] = [
             (m) => m.CheckoutSignInComponent
           ),
         canActivate: [checkoutGuard],
+        data: {
+          componentName: 'CheckoutSignInComponent',
+        },
       },
       {
         path: 'shipping',
@@ -28,6 +34,9 @@ export const checkoutFeatureRoutes: Route[] = [
             (m) => m.CheckoutShippingComponent
           ),
         canActivate: [checkoutGuard],
+        data: {
+          componentName: 'CheckoutShippingComponent',
+        },
       },
       {
         path: 'payment',
@@ -36,14 +45,20 @@ export const checkoutFeatureRoutes: Route[] = [
             (m) => m.CheckoutPaymentComponent
           ),
         canActivate: [checkoutGuard],
+        data: {
+          componentName: 'CheckoutPaymentComponent',
+        },
       },
       {
         path: 'confirmation/:code',
         loadComponent: () =>
-          import('./checkout-confirmation/checkout-confirmation.component').then(
-            (m) => m.CheckoutConfirmationComponent
-          ),
+          import(
+            './checkout-confirmation/checkout-confirmation.component'
+          ).then((m) => m.CheckoutConfirmationComponent),
         canActivate: [checkoutGuard],
+        data: {
+          componentName: 'CheckoutConfirmationComponent',
+        },
       },
     ],
   },

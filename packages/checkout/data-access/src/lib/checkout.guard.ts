@@ -22,8 +22,10 @@ export const checkoutGuard: CanActivateFn = (route) => {
 
   return combineLatest([orderState$, signedIn$]).pipe(
     map(([orderState, signedIn]) => {
-      const componentName = route.component?.constructor.name;
-
+      const componentName = route?.data['componentName'];
+      
+      console.log('signedIn',signedIn);
+      
       switch (componentName) {
         case 'CheckoutSignInComponent':
           if (signedIn) {

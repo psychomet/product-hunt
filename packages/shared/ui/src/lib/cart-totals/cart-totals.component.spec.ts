@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CheckoutUiComponent } from './checkout-ui.component';
+import { CartTotalsComponent } from './cart-totals.component';
 
-describe('CheckoutUiComponent', () => {
-  let component: CheckoutUiComponent;
-  let fixture: ComponentFixture<CheckoutUiComponent>;
+describe('CartTotalsComponent', () => {
+  let component: CartTotalsComponent;
+  let fixture: ComponentFixture<CartTotalsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CheckoutUiComponent],
+      imports: [CartTotalsComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CheckoutUiComponent);
+    fixture = TestBed.createComponent(CartTotalsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

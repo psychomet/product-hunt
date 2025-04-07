@@ -1,135 +1,82 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import {
+  RouterModule,
+  Router,
+  ActivatedRoute,
+  NavigationEnd,
+} from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
-import { CheckoutService } from '@bigi-shop/checkout-data-access';
-import { Cart } from '@bigi-shop/shared-util-types';
+import {
+  GetNextOrderStatesQuery,
+  GetOrderForCheckoutQuery,
+  TransitionToAddingItemsMutation,
+} from '@bigi-shop/shared-util-types';
+import { DataService, StateService } from '@bigi-shop/shared-data-access';
+import {
+  GET_NEXT_ORDER_STATES,
+  TRANSITION_TO_ADDING_ITEMS,
+} from './checkout-process.graphql';
+import { CheckoutStageIndicatorComponent } from '@bigi-shop/checkout-ui';
+import {
+  AddressCardComponent,
+  CartContentsComponent,
+  CartTotalsComponent,
+} from '@bigi-shop/shared-ui';
 
 @Component({
   selector: 'bigi-checkout-process',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    CheckoutStageIndicatorComponent,
+    CartContentsComponent,
+    CartTotalsComponent,
+    AddressCardComponent,
+  ],
   template: `
     <div class="bg-gray-50" *ngIf="activeStage$ | async as activeStage">
-      <div class="lg:max-w-7xl max-w-2xl mx-auto pt-8 pb-24 px-4 sm:px-6 lg:px-8">
+      <div
+        class="lg:max-w-7xl max-w-2xl mx-auto pt-8 pb-24 px-4 sm:px-6 lg:px-8"
+      >
         <h2 class="sr-only">Checkout</h2>
-        
-        <!-- Stage Indicator -->
-        <div class="mb-8">
-          <nav aria-label="Progress">
-            <ol role="list" class="flex items-center">
-              <li class="relative pr-8 sm:pr-20" [class.text-primary-600]="activeStage >= 1">
-                <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                  <div class="h-0.5 w-full" [class.bg-primary-600]="activeStage > 1" [class.bg-gray-200]="activeStage <= 1"></div>
-                </div>
-                <div class="relative flex items-center justify-center">
-                  <span class="h-6 w-6 rounded-full text-center text-sm leading-6" 
-                    [class.bg-primary-600]="activeStage >= 1" 
-                    [class.text-white]="activeStage >= 1"
-                    [class.bg-gray-200]="activeStage < 1">1</span>
-                  <span class="absolute -bottom-6 text-sm font-medium">Sign In</span>
-                </div>
-              </li>
-              <li class="relative pr-8 sm:pr-20" [class.text-primary-600]="activeStage >= 2">
-                <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                  <div class="h-0.5 w-full" [class.bg-primary-600]="activeStage > 2" [class.bg-gray-200]="activeStage <= 2"></div>
-                </div>
-                <div class="relative flex items-center justify-center">
-                  <span class="h-6 w-6 rounded-full text-center text-sm leading-6" 
-                    [class.bg-primary-600]="activeStage >= 2" 
-                    [class.text-white]="activeStage >= 2"
-                    [class.bg-gray-200]="activeStage < 2">2</span>
-                  <span class="absolute -bottom-6 text-sm font-medium">Shipping</span>
-                </div>
-              </li>
-              <li class="relative pr-8 sm:pr-20" [class.text-primary-600]="activeStage >= 3">
-                <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                  <div class="h-0.5 w-full" [class.bg-primary-600]="activeStage > 3" [class.bg-gray-200]="activeStage <= 3"></div>
-                </div>
-                <div class="relative flex items-center justify-center">
-                  <span class="h-6 w-6 rounded-full text-center text-sm leading-6" 
-                    [class.bg-primary-600]="activeStage >= 3" 
-                    [class.text-white]="activeStage >= 3"
-                    [class.bg-gray-200]="activeStage < 3">3</span>
-                  <span class="absolute -bottom-6 text-sm font-medium">Payment</span>
-                </div>
-              </li>
-              <li class="relative" [class.text-primary-600]="activeStage >= 4">
-                <div class="relative flex items-center justify-center">
-                  <span class="h-6 w-6 rounded-full text-center text-sm leading-6" 
-                    [class.bg-primary-600]="activeStage >= 4" 
-                    [class.text-white]="activeStage >= 4"
-                    [class.bg-gray-200]="activeStage < 4">4</span>
-                  <span class="absolute -bottom-6 text-sm font-medium">Confirmation</span>
-                </div>
-              </li>
-            </ol>
-          </nav>
-        </div>
+        <bigi-checkout-stage-indicator
+          [activeStage]="activeStage"
+          [signedIn]="signedIn$ | async"
+        />
 
-        <!-- Main Content and Cart Summary -->
-        <div [ngClass]="activeStage === 4 ? 'max-w-2xl mx-auto' : 'lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16'">
+        <div
+          class="lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16"
+          [ngClass]="
+            activeStage === 4 ? 'max-w-2xl mx-auto' : 'lg:grid lg:grid-cols-2'
+          "
+        >
           <div class="main">
             <router-outlet></router-outlet>
           </div>
-          
-          <div class="summary mt-10 lg:mt-0" *ngIf="cart$ | async as cart">
-            <!-- Cart Summary -->
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">Order Summary</h3>
-              
-              <div class="flow-root">
-                <ul role="list" class="-my-6 divide-y divide-gray-200">
-                  <li class="py-6 flex" *ngFor="let line of cart.lines">
-                    <div class="flex-shrink-0 w-24 h-24 rounded-md overflow-hidden">
-                      <img [src]="line.productVariant.featuredAsset?.preview" [alt]="line.productVariant.name" class="w-full h-full object-center object-cover">
-                    </div>
-                    <div class="ml-4 flex-1 flex flex-col">
-                      <div>
-                        <div class="flex justify-between text-base font-medium text-gray-900">
-                          <h4>{{ line.productVariant.name }}</h4>
-                          <p class="ml-4">{{ line.linePriceWithTax | currency }}</p>
-                        </div>
-                        <p class="mt-1 text-sm text-gray-500">Qty: {{ line.quantity }}</p>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
-              <div class="border-t border-gray-200 mt-6 pt-6">
-                <div class="flex justify-between text-base font-medium text-gray-900 mb-2">
-                  <p>Subtotal</p>
-                  <p>{{ cart.subTotalWithTax | currency }}</p>
-                </div>
-                <div class="flex justify-between text-base font-medium text-gray-900 mb-2">
-                  <p>Shipping</p>
-                  <p>{{ cart.shippingWithTax | currency }}</p>
-                </div>
-                <div class="flex justify-between text-base font-medium text-gray-900">
-                  <p>Total</p>
-                  <p>{{ cart.totalWithTax | currency }}</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Shipping Address Card -->
-            <div *ngIf="cart.shipping?.streetLine1" class="bg-white rounded-lg shadow-sm p-6">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">Shipping Address</h3>
-              <div class="text-sm text-gray-700">
-                <p>{{ cart.shipping.fullName }}</p>
-                <p>{{ cart.shipping.streetLine1 }}</p>
-                <p *ngIf="cart.shipping.streetLine2">{{ cart.shipping.streetLine2 }}</p>
-                <p>{{ cart.shipping.city }}, {{ cart.shipping.province }} {{ cart.shipping.postalCode }}</p>
-              </div>
-              <button 
-                *ngIf="activeStage === 3"
+          <div class="summary" *ngIf="cart$ | async as cart">
+            <bigi-cart-contents [cart]="cart" class="mb-3" />
+            <bigi-cart-totals [cart]="cart" />
+            <bigi-address-card
+              *ngIf="cart.shippingAddress?.streetLine1"
+              class="w-48 block"
+              title="Shipping address"
+              [address]="cart.shippingAddress"
+            >
+              <button
+                class="border px-2 py-1 mt-2 rounded text-sm hover:bg-gray-100"
+                *ngIf="(activeStage$ | async) === 3"
                 (click)="changeShippingAddress()"
-                class="mt-4 text-sm text-primary-600 hover:text-primary-500 font-medium">
+              >
                 Change
               </button>
-            </div>
+            </bigi-address-card>
           </div>
         </div>
       </div>
@@ -138,14 +85,30 @@ import { Cart } from '@bigi-shop/shared-util-types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckoutProcessComponent implements OnInit {
-  private checkoutService = inject(CheckoutService);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-
-  cart$ = this.checkoutService.getActiveOrder();
+  cart$: Observable<GetOrderForCheckoutQuery['activeOrder'] | null | undefined>;
+  nextStates$: Observable<string[]>;
   activeStage$: Observable<number>;
+  signedIn$: Observable<boolean>;
+  constructor(
+    private dataService: DataService,
+    private stateService: StateService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit() {
+    this.signedIn$ = this.stateService.select((state) => state.signedIn);
+    this.cart$ = this.route.data.pipe(
+      switchMap(
+        (data) =>
+          data['activeOrder'] as Observable<
+            GetOrderForCheckoutQuery['activeOrder']
+          >
+      )
+    );
+    this.nextStates$ = this.dataService
+      .query<GetNextOrderStatesQuery>(GET_NEXT_ORDER_STATES)
+      .pipe(map((data) => data.nextOrderStates as string[]));
     this.activeStage$ = this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
       startWith(true),
@@ -164,11 +127,15 @@ export class CheckoutProcessComponent implements OnInit {
           }
         }
         return 1;
-      }),
+      })
     );
   }
 
   changeShippingAddress() {
-    this.router.navigate(['./shipping'], { relativeTo: this.route });
+    this.dataService
+      .mutate<TransitionToAddingItemsMutation>(TRANSITION_TO_ADDING_ITEMS)
+      .subscribe(() => {
+        this.router.navigate(['./shipping'], { relativeTo: this.route });
+      });
   }
-} 
+}

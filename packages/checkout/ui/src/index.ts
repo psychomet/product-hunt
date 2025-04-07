@@ -1,1 +1,1 @@
-export * from './lib/checkout-ui/checkout-ui.component';
+export * from './lib/checkout-stage-indicator/checkout-stage-indicator.component';

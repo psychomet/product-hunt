@@ -4,8 +4,24 @@
   "sourceRoot": "packages/checkout/ui/src",
   "prefix": "bigi",
   "projectType": "library",
-  "tags": ["type:ui", "scope:checkout"],
+  "tags": ["type:ui"],
   "targets": {
+    "build": {
+      "executor": "@nx/angular:ng-packagr-lite",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "options": {
+        "project": "packages/checkout/ui/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "packages/checkout/ui/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "packages/checkout/ui/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],

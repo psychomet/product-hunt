@@ -23,7 +23,7 @@ export class FormatPricePipe implements PipeTransform {
     private latestValue: any = null;
     private latestReturnedValue: any = null;
     private changeDetector = inject(ChangeDetectorRef);
-     private getActiveChannelToken =  Inject(GET_ACTIVE_CHANNEL_TOKEN)
+     private getActiveChannelToken =  inject(GET_ACTIVE_CHANNEL_TOKEN)
 
     transform(value: number) {
         if (this.latestValue !== value) {
@@ -47,7 +47,8 @@ export class FormatPricePipe implements PipeTransform {
 
     private getActiveChannel(): Promise<GetActiveChannelQuery['activeChannel']> {
         if (!channelDataPromise) {
-            channelDataPromise = this.getActiveChannelToken.toPromise();
+            
+            channelDataPromise = this.getActiveChannelToken.toPromise()
         }
         return channelDataPromise;
     }
