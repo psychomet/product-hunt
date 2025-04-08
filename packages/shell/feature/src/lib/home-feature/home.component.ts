@@ -1,62 +1,26 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DataService, GET_COLLECTIONS } from '@bigi-shop/shared-data-access';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CollectionCardComponent } from '@bigi-shop/shared-ui';
+import { GetCollectionsQuery } from '@bigi-shop/shared-util-types';
 
-interface Collection {
-  id: string;
-  name: string;
-  slug: string;
-  parent?: {
-    id: string;
-    slug: string;
-    name: string;
-  };
-  featuredAsset?: {
-    id: string;
-    preview: string;
-  };
-}
-
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  featuredAsset?: {
-    preview: string;
-  } | null;
-  variants: Array<{
-    id: string;
-    name: string;
-    price: number;
-    priceWithTax: number;
-  }>;
-}
-
-interface CollectionsResponse {
-  collections: {
-    items: Collection[];
-  };
-}
-
-interface SearchResponse {
-  search: {
-    items: Product[];
-  };
-}
 
 @Component({
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, CollectionCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h2 class="text-2xl font-bold text-gray-900 mb-8">Shop by Category</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <ng-container *ngIf="collections$ | async as collections">
+          <bigi-collection-card
+            *ngFor="let collection of collections"
+            [collection]="collection"
+          />
           <a
             *ngFor="let collection of collections"
             [routerLink]="['/category', collection.slug]"
@@ -86,9 +50,8 @@ interface SearchResponse {
   ],
 })
 export class HomeComponent implements OnInit {
-  collections$: Observable<Collection[]>;
-
-  constructor(private dataService: DataService) {}
+  private dataService = inject(DataService);
+  collections$: Observable<GetCollectionsQuery['collections']['items'] | any>;
 
   ngOnInit(): void {
     this.collections$ = this.dataService

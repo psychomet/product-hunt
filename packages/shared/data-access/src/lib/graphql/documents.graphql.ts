@@ -1,70 +1,73 @@
-import { gql } from "apollo-angular";
-import { ERROR_RESULT_FRAGMENT } from "./fragments";
+import { gql } from 'apollo-angular';
+import { ERROR_RESULT_FRAGMENT } from './fragments';
 
-
-import { ADDRESS_FRAGMENT, ASSET_FRAGMENT, COUNTRY_FRAGMENT } from './fragments.graphql';
+import {
+  ADDRESS_FRAGMENT,
+  ASSET_FRAGMENT,
+  COUNTRY_FRAGMENT,
+} from './fragments.graphql';
 
 export const GET_CUSTOMER_ADDRESSES = gql`
-    query GetCustomerAddresses {
-        activeCustomer {
-            id
-            addresses {
-                ...Address
-            }
-        }
+  query GetCustomerAddresses {
+    activeCustomer {
+      id
+      addresses {
+        ...Address
+      }
     }
-    ${ADDRESS_FRAGMENT}
+  }
+  ${ADDRESS_FRAGMENT}
 `;
 
 export const GET_AVAILABLE_COUNTRIES = gql`
-    query GetAvailableCountries {
-        availableCountries {
-            ...Country
-        }
+  query GetAvailableCountries {
+    availableCountries {
+      ...Country
     }
-    ${COUNTRY_FRAGMENT}
+  }
+  ${COUNTRY_FRAGMENT}
 `;
 
 export const GET_ACTIVE_CUSTOMER = gql`
-    query GetActiveCustomer {
-        activeCustomer {
-            id
-            firstName
-            lastName
-            emailAddress
-            phoneNumber
-        }
+  query GetActiveCustomer {
+    activeCustomer {
+      id
+      firstName
+      lastName
+      emailAddress
+      phoneNumber
     }
+  }
 `;
 export const GET_COLLECTIONS = gql`
-    query GetCollections($options: CollectionListOptions) {
-        collections(options: $options) {
-            items {
-                id
-                name
-                slug
-                parent {
-                    id
-                    name
-                    slug
-                }
-                featuredAsset {
-                    ...Asset
-                }
-            }
+  query GetCollections($options: CollectionListOptions) {
+    collections(options: $options) {
+      items {
+        id
+        name
+        slug
+        parent {
+          id
+          name
+          slug
         }
+        featuredAsset {
+          ...Asset
+        }
+      }
     }
-    ${ASSET_FRAGMENT}
+  }
+  ${ASSET_FRAGMENT}
 `;
 
 export const REGISTER = gql`
-    mutation Register($input: RegisterCustomerInput!) {
-        registerCustomerAccount(input: $input) {
-            ... on Success {
-                success
-            }
-            ...ErrorResult
-        }
+  mutation Register($input: RegisterCustomerInput!) {
+    registerCustomerAccount(input: $input) {
+      ... on Success {
+        success
+      }
+      ...ErrorResult
     }
-    ${ERROR_RESULT_FRAGMENT}
+  }
+  ${ERROR_RESULT_FRAGMENT}
 `;

@@ -1,4 +1,10 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -8,257 +14,312 @@ import {
   StateService,
 } from '@bigi-shop/shared-data-access';
 import { GET_PRODUCT_DETAIL, ADD_TO_CART } from './product-detail.graphql';
-
-interface Variant {
-  id: string;
-  name: string;
-  sku: string;
-  price: number;
-  priceWithTax: number;
-  stockLevel: string;
-  featuredAsset?: {
-    id: string;
-    preview: string;
-  };
-}
-
-interface Collection {
-  id: string;
-  name: string;
-  slug: string;
-  breadcrumbs: Array<{
-    id: string;
-    name: string;
-    slug: string;
-  }>;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  featuredAsset?: {
-    id: string;
-    preview: string;
-  };
-  variants: Variant[];
-  collections: Collection[];
-}
+import {
+  AddToCartMutation,
+  AddToCartMutationVariables,
+  GetProductDetailQuery,
+  GetProductDetailQueryVariables,
+  notNullOrUndefined,
+} from '@bigi-shop/shared-util-types';
+import { filter, map, Subscription, switchMap, withLatestFrom } from 'rxjs';
+import {
+  AssetGalleryComponent,
+  CollectionBreadcrumbsComponent,
+  FormatPricePipe,
+  NotificationService,
+  SafeHtmlPipe,
+} from '@bigi-shop/shared-ui';
+type Variant = NonNullable<
+  GetProductDetailQuery['product']
+>['variants'][number];
+type Collection = NonNullable<
+  GetProductDetailQuery['product']
+>['collections'][number];
 
 @Component({
   selector: 'lib-product-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    AssetGalleryComponent,
+    CollectionBreadcrumbsComponent,
+    SafeHtmlPipe,
+    FormatPricePipe,
+  ],
   template: `
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Breadcrumbs -->
-      <nav class="py-4" *ngIf="breadcrumbs()">
-        <ol class="flex space-x-2 text-sm text-gray-500">
-          <li *ngFor="let crumb of breadcrumbs(); let last = last">
-            <div class="flex items-center">
-              <a
-                [routerLink]="last ? null : ['/category', crumb.slug]"
-                [class.text-gray-900]="last"
-                [class.font-medium]="last"
-                >{{ crumb.name }}</a
-              >
-              <span *ngIf="!last" class="mx-2">/</span>
-            </div>
-          </li>
-        </ol>
-      </nav>
-
-      <div class="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
-        <!-- Image gallery -->
-        <div class="flex flex-col-reverse">
-          <div class="aspect-w-1 aspect-h-1 w-full">
-            <img
-              *ngIf="selectedAsset()"
-              [src]="selectedAsset()?.preview"
-              [alt]="product()?.name"
-              class="w-full h-full object-center object-cover sm:rounded-lg"
-            />
-          </div>
+    <div class="max-w-6xl mx-auto px-4">
+      <h2
+        *ngIf="product; else titlePlaceholder"
+        class="text-3xl sm:text-5xl font-light tracking-tight text-gray-900 my-8"
+      >
+        {{ product?.name ?? '  ' }}
+      </h2>
+      <ng-template #titlePlaceholder>
+        <div class="h-8 w-72 bg-gray-200 animate-pulse my-8">
+          {{ product?.name ?? '  ' }}
         </div>
-
-        <!-- Product info -->
-        <div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
-          <h1 class="text-3xl font-extrabold tracking-tight text-gray-900">
-            {{ product()?.name }}
-          </h1>
-
-          <div class="mt-3">
-            <p class="text-3xl text-gray-900">
-              {{ selectedVariant()?.priceWithTax | currency }}
-            </p>
-          </div>
-
-          <div class="mt-6">
+      </ng-template>
+      <bigi-collection-breadcrumbs
+        [breadcrumbs]="breadcrumbs"
+        class="mb-2"
+        [linkLast]="true"
+      />
+      <div
+        class="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start mt-4 md:mt-12"
+      >
+        <bigi-asset-gallery
+          [assets]="product?.assets"
+          [selectedAssetId]="product?.featuredAsset?.id"
+        />
+        <div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0" #zoomPreviewArea>
+          <div class="">
             <h3 class="sr-only">Description</h3>
+
             <div
               class="text-base text-gray-700"
-              [innerHTML]="product()?.description"
+              [innerHTML]="product?.description | safeHtml"
             ></div>
           </div>
-
-          <div class="mt-6">
-            <div class="flex items-center">
-              <h3 class="text-sm text-gray-900 font-medium">SKU:</h3>
-              <p class="ml-2 text-sm text-gray-500">
-                {{ selectedVariant()?.sku }}
-              </p>
-            </div>
+          <div class="mt-4" *ngIf="product?.variants.length > 1">
+            <label
+              htmlFor="option"
+              class="block text-sm font-medium text-gray-700"
+            >
+              Select option
+            </label>
+            <select
+              [(ngModel)]="selectedVariant"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
+            >
+              <option
+                *ngFor="let variant of product?.variants"
+                [ngValue]="variant"
+              >
+                {{ variant.name }}
+              </option>
+            </select>
           </div>
 
-          <form class="mt-6">
-            <!-- Variants -->
-            <div *ngIf="product()?.variants.length > 1">
-              <label
-                class="block text-sm font-medium text-gray-700"
-                for="variant"
-              >
-                Select option
-              </label>
-              <select
-                id="variant"
-                [(ngModel)]="selectedVariantId"
-                name="variant"
-                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
-              >
-                <option
-                  *ngFor="let variant of product()?.variants"
-                  [value]="variant.id"
-                >
-                  {{ variant.name }}
-                </option>
-              </select>
-            </div>
-
-            <!-- Add to cart -->
-            <div class="mt-10 flex sm:flex-col1">
+          <div class="mt-10 flex flex-col sm:flex-row sm:items-center">
+            <p class="text-3xl text-gray-900 mr-4">
+              {{ selectedVariant?.priceWithTax | formatPrice }}
+            </p>
+            <div class="flex sm:flex-col1 align-baseline">
               <button
                 type="submit"
-                [disabled]="inFlight()"
-                (click)="addToCart()"
-                class="max-w-xs flex-1 bg-primary-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-primary-500 sm:w-full"
-                [class.opacity-50]="inFlight()"
+                class="max-w-xs flex-1 transition-colors border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-primary-500 sm:w-full"
+                [ngClass]="{
+                  'bg-gray-400': inFlight,
+                  'bg-primary-600 hover:bg-primary-700': !inFlight
+                }"
+                (click)="addToCart(selectedVariant, qty)"
               >
                 <div
-                  *ngIf="!qtyInCart()[selectedVariantId()]; else inCartCount"
+                  *ngIf="
+                    !product || !qtyInCart[selectedVariant.id];
+                    else inCartCount
+                  "
                 >
                   Add to cart
                 </div>
                 <ng-template #inCartCount>
-                  <span>{{ qtyInCart()[selectedVariantId()] }} in cart</span>
+                  <span>{{ qtyInCart[selectedVariant.id] }} in cart</span>
                 </ng-template>
               </button>
             </div>
-          </form>
+          </div>
+          <div class="mt-2 flex items-center space-x-2">
+            <span class="text-gray-500">
+              {{ selectedVariant?.sku }}
+            </span>
+          </div>
+          <section class="mt-12 pt-12 border-t text-xs">
+            <h3 class="text-gray-600 font-bold mb-2">Shipping & Returns</h3>
+            <div class="text-gray-500 space-y-1">
+              <p>
+                Standard shipping: 3 - 5 working days. Express shipping: 1 - 3
+                working days.
+              </p>
+              <p>
+                Shipping costs depend on delivery address and will be calculated
+                during checkout.
+              </p>
+              <p>
+                Returns are subject to terms. Please see the
+                <span class="underline">returns page</span>
+                for further information.
+              </p>
+            </div>
+          </section>
         </div>
       </div>
     </div>
+
+    <ng-template
+      #addedToCartTemplate
+      let-variant="variant"
+      let-quantity="quantity"
+      let-close="closeFn"
+    >
+      <div class="flex">
+        <div class="mr-8">
+          <img
+            class="rounded"
+            [src]="
+              (variant.featuredAsset?.preview ||
+                product?.featuredAsset?.preview) + '?preset=tiny'
+            "
+            alt="product thumbnail"
+          />
+        </div>
+        <div class="text-sm">{{ quantity }} x {{ variant.name }}</div>
+      </div>
+      <div class="flex justify-end">
+        <button
+          type="button"
+          (click)="viewCartFromNotification(close)"
+          class="inline-flex items-center rounded border border-transparent bg-primary-100 px-2.5 py-1.5 text-xs font-medium text-primary-700 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+        >
+          View cart
+        </button>
+      </div>
+    </ng-template>
   `,
   styles: [
-    `
-      :host {
-        @apply block;
-      }
-    `,
+    ``,
   ],
 })
-export class ProductDetailComponent {
-  private route = inject(ActivatedRoute);
-  private dataService = inject(DataService);
-  private stateService = inject(StateService);
-  private activeService = inject(ActiveService);
-  // State
-  product = signal<Product | null>(null);
-  selectedVariantId = signal<string>('');
-  qtyInCart = signal<{ [id: string]: number }>({});
-  inFlight = signal(false);
+export class ProductDetailComponent implements OnInit, OnDestroy {
+  product: GetProductDetailQuery['product'];
+  selectedAsset: { id: string; preview: string };
+  qtyInCart: { [id: string]: number } = {};
+  selectedVariant: Variant;
+  qty = 1;
+  breadcrumbs: Collection['breadcrumbs'] | null = null;
+  inFlight = false;
+  @ViewChild('addedToCartTemplate', { static: true })
+  private addToCartTemplate: TemplateRef<any>;
+  private sub: Subscription;
 
-  // Computed
-  selectedVariant = computed(() => {
-    const product = this.product();
-    if (!product) return null;
-    return (
-      product.variants.find((v) => v.id === this.selectedVariantId()) ||
-      product.variants[0]
+  constructor(
+    private dataService: DataService,
+    private stateService: StateService,
+    private notificationService: NotificationService,
+    private activeService: ActiveService,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit() {
+    const lastCollectionSlug$ = this.stateService.select(
+      (state) => state.lastCollectionSlug
     );
-  });
+    const productSlug$ = this.route.paramMap.pipe(
+      map((paramMap) => paramMap.get('slug')),
+      filter(notNullOrUndefined)
+    );
 
-  selectedAsset = computed(() => {
-    const variant = this.selectedVariant();
-    const product = this.product();
-    return variant?.featuredAsset || product?.featuredAsset;
-  });
-
-  breadcrumbs = computed(() => {
-    const product = this.product();
-    if (!product) return null;
-
-    const collection = this.getMostRelevantCollection(product.collections);
-    return collection?.breadcrumbs || [];
-  });
-
-  constructor() {
-    // Effect for fetching product details
-    effect(() => {
-      const slug = this.route.snapshot.paramMap.get('slug');
-      if (!slug) return;
-
-      this.dataService
-        .query<{ product: Product }>(GET_PRODUCT_DETAIL, { slug })
-        .subscribe(({ product }) => {
-          this.product.set(product);
-          if (product.variants.length) {
-            this.selectedVariantId.set(product.variants[0].id);
-          }
-        });
-    });
-
-    effect(() => {
-      this.activeService.activeOrder$.subscribe((order) => {
-        const qtyInCart: { [id: string]: number } = {};
-        for (const line of order?.lines ?? []) {
-          qtyInCart[line.productVariant.id] = line.quantity;
+    this.sub = productSlug$
+      .pipe(
+        switchMap((slug) => {
+          return this.dataService.query<
+            GetProductDetailQuery,
+            GetProductDetailQueryVariables
+          >(GET_PRODUCT_DETAIL, {
+            slug,
+          });
+        }),
+        map((data) => data.product),
+        filter(notNullOrUndefined),
+        withLatestFrom(lastCollectionSlug$)
+      )
+      .subscribe(([product, lastCollectionSlug]) => {
+        this.product = product;
+        if (this.product.featuredAsset) {
+          this.selectedAsset = this.product.featuredAsset;
         }
-        this.qtyInCart.set(qtyInCart);
+        this.selectedVariant = product.variants[0];
+        const collection = this.getMostRelevantCollection(
+          product.collections,
+          lastCollectionSlug
+        );
+        this.breadcrumbs = collection ? collection.breadcrumbs : [];
       });
+
+    this.activeService.activeOrder$.subscribe((order) => {
+      this.qtyInCart = {};
+      for (const line of order?.lines ?? []) {
+        this.qtyInCart[line.productVariant.id] = line.quantity;
+      }
     });
   }
 
-  addToCart(): void {
-    const variant = this.selectedVariant();
-    if (!variant) return;
+  ngOnDestroy() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
+  }
 
-    this.inFlight.set(true);
+  addToCart(variant: Variant, qty: number) {
+    this.inFlight = true;
     this.dataService
-      .mutate(ADD_TO_CART, {
+      .mutate<AddToCartMutation, AddToCartMutationVariables>(ADD_TO_CART, {
         variantId: variant.id,
-        qty: 1,
+        qty,
       })
-      .subscribe({
-        next: (result) => {
-          if (result.addItemToOrder.__typename === 'Order') {
+      .subscribe(({ addItemToOrder }) => {
+        this.inFlight = false;
+        switch (addItemToOrder.__typename) {
+          case 'Order':
             this.stateService.setState(
               'activeOrderId',
-              result.addItemToOrder ? result.addItemToOrder.id : null
+              addItemToOrder ? addItemToOrder.id : null
             );
-          }
-          this.inFlight.set(false);
-        },
-        error: () => {
-          this.inFlight.set(false);
-        },
+            if (variant) {
+              this.notificationService
+                .notify({
+                  title: 'Added to cart',
+                  type: 'info',
+                  duration: 3000,
+                  templateRef: this.addToCartTemplate,
+                  templateContext: {
+                    variant,
+                    quantity: qty,
+                  },
+                })
+                .subscribe();
+            }
+            break;
+          case 'OrderModificationError':
+          case 'OrderLimitError':
+          case 'NegativeQuantityError':
+          case 'InsufficientStockError':
+            this.notificationService.error(addItemToOrder.message).subscribe();
+            break;
+        }
       });
   }
 
-  private getMostRelevantCollection(
-    collections: Collection[]
-  ): Collection | null {
-    if (!collections.length) return null;
+  viewCartFromNotification(closeFn: () => void) {
+    this.stateService.setState('cartDrawerOpen', true);
+    closeFn();
+  }
 
+  /**
+   * If there is a collection matching the `lastCollectionId`, return that. Otherwise return the collection
+   * with the longest `breadcrumbs` array, which corresponds to the most specific collection.
+   */
+  private getMostRelevantCollection(
+    collections: Collection[],
+    lastCollectionSlug: string | null
+  ) {
+    const lastCollection = collections.find(
+      (c) => c.slug === lastCollectionSlug
+    );
+    if (lastCollection) {
+      return lastCollection;
+    }
     return collections.slice().sort((a, b) => {
       if (a.breadcrumbs.length < b.breadcrumbs.length) {
         return 1;

@@ -2,7 +2,7 @@
   "name": "products-ui",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/products/ui/src",
-  "prefix": "lib",
+  "prefix": "bigi",
   "projectType": "library",
   "tags": ["type:ui"],
   "targets": {

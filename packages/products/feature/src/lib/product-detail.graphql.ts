@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client/core';
 import {
+  ASSET_FRAGMENT,
   CART_FRAGMENT,
   ERROR_RESULT_FRAGMENT,
 } from '@bigi-shop/shared-data-access';
@@ -10,25 +11,25 @@ export const GET_PRODUCT_DETAIL = gql`
       id
       name
       description
-      featuredAsset {
-        id
-        preview
-      }
       variants {
         id
         name
-        sku
+        options {
+          code
+          name
+        }
         price
         priceWithTax
-        stockLevel
-        featuredAsset {
-          id
-          preview
-        }
+        sku
+      }
+      featuredAsset {
+        ...Asset
+      }
+      assets {
+        ...Asset
       }
       collections {
         id
-        name
         slug
         breadcrumbs {
           id
@@ -38,6 +39,7 @@ export const GET_PRODUCT_DETAIL = gql`
       }
     }
   }
+  ${ASSET_FRAGMENT}
 `;
 
 export const ADD_TO_CART = gql`
@@ -53,5 +55,5 @@ export const ADD_TO_CART = gql`
     }
   }
   ${CART_FRAGMENT}
-  ${ERROR_RESULT_FRAGMENT}  
+  ${ERROR_RESULT_FRAGMENT}
 `;

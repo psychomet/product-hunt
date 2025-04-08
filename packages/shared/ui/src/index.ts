@@ -14,3 +14,12 @@ export * from './lib/modal/modal.service';
 export * from './lib/cart-totals/cart-totals.component';
 export * from './lib/asset-preview.pipe';
 export * from './lib/address-card/address-card.component';
+
+export * from './lib/collection-card/collection-card.component';
+
+export * from './lib/product-card/product-card.component';
+
+export * from './lib/collection-breadcrumbs/collection-breadcrumbs.component';
+
+export * from './lib/asset-gallery/asset-gallery.component';
+export * from './lib/safe-html.pipe';

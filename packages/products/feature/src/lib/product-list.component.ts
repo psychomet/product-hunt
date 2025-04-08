@@ -1,216 +1,108 @@
-import { Component, input, computed, signal, effect } from '@angular/core';
+import { Component, input, computed, signal, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
-import { DomSanitizer } from '@angular/platform-browser';
-import { DataService } from '@bigi-shop/shared-data-access';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
+import { DataService, StateService } from '@bigi-shop/shared-data-access';
 import { SEARCH_PRODUCTS, GET_COLLECTION } from './product-list.graphql';
-import { SearchProductsQuery } from '@bigi-shop/shared-util-types';
+import {
+  GetCollectionQuery,
+  GetCollectionQueryVariables,
+  getRouteArrayParam,
+  SearchProductsQuery,
+  SearchProductsQueryVariables
+} from '@bigi-shop/shared-util-types';
+import { AssetPreviewPipe, CollectionBreadcrumbsComponent, CollectionCardComponent, ProductCardComponent } from '@bigi-shop/shared-ui';
+import {
+  BehaviorSubject,
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  mapTo,
+  merge,
+  Observable,
+  of,
+  scan,
+  share,
+  shareReplay,
+  skip,
+  switchMap,
+  take,
+  tap
+} from 'rxjs';
+import { ProductListControlsComponent } from '@bigi-shop/products-ui';
 
-export interface FacetWithValues {
-  id: string;
-  name: string;
-  values: Array<{
-    id: string;
-    name: string;
-    count: number;
-  }>;
-}
-
-interface SearchFacetValue {
-  count: number;
-  facetValue: {
-    id: string;
-    name: string;
-    facet: {
-      id: string;
-      name: string;
-    };
-  };
-}
-
-interface SearchItem {
-  productId: string;
-  slug: string;
-  productName: string;
-  description: string;
-  priceWithTax: {
-    min: number;
-    max: number;
-  };
-  productAsset?: {
-    id: string;
-    preview: string;
-    focalPoint?: {
-      x: number;
-      y: number;
-    };
-  };
-}
-
-interface Collection {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  featuredAsset?: {
-    id: string;
-    preview: string;
-  };
-  breadcrumbs: Array<{
-    id: string;
-    name: string;
-    slug: string;
-  }>;
-}
-
-interface SearchResponse {
-  search: {
-    items: SearchItem[];
-    totalItems: number;
-    facetValues: SearchFacetValue[];
-  };
-}
-
-interface CollectionResponse {
-  collection: Collection;
-}
+type SearchItem = SearchProductsQuery['search']['items'][number];
 
 @Component({
   selector: 'lib-product-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ProductCardComponent, CollectionBreadcrumbsComponent, CollectionCardComponent, ProductListControlsComponent],
   template: `
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Breadcrumbs -->
-      <nav class="py-4" *ngIf="breadcrumbs()">
-        <ol class="flex space-x-2 text-sm text-gray-500">
-          <li *ngFor="let crumb of breadcrumbs(); let last = last">
-            <div class="flex items-center">
-              <a
-                [routerLink]="last ? null : ['/category', crumb.slug]"
-                [class.text-gray-900]="last"
-                [class.font-medium]="last"
-                >{{ crumb.name }}</a
-              >
-              <span *ngIf="!last" class="mx-2">/</span>
-            </div>
-          </li>
-        </ol>
-      </nav>
-
-      <!-- Collection Header -->
-      <div *ngIf="collection()" class="mb-8">
-        <div
-          *ngIf="collection()?.featuredAsset"
-          class="h-40 bg-cover bg-center rounded-lg mb-4"
-          [style.background-image]="mastheadBackground()"
-        ></div>
-        <h1 class="text-3xl font-bold text-gray-900">
-          {{ collection()?.name }}
-        </h1>
-        <p *ngIf="collection()?.description" class="mt-2 text-gray-500">
-          {{ collection()?.description }}
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <!-- Facets -->
-        <div class="lg:col-span-1" *ngIf="groupFacetValuesComputed()?.length">
-          <div class="space-y-6">
-            <div *ngFor="let facet of groupFacetValuesComputed()">
-              <h3 class="text-lg font-medium text-gray-900">
-                {{ facet.name }}
-              </h3>
-              <ng-container *ngFor="let facetValue of facet.values">
-                <div class="mt-2 space-y-2">
-                  <label class="flex items-center">
-                    <input
-                      type="checkbox"
-                      class="h-4 w-4 text-indigo-600 rounded border-gray-300"
-                      [checked]="isActiveFacetValue(facetValue.id)"
-                      (change)="toggleFacetValue(facetValue.id)"
-                    />
-                    <span class="ml-2 text-gray-700">
-                      {{ facetValue.name }} ({{ facetValue.count }})
-                    </span>
-                  </label>
-                </div>
-              </ng-container>
-            </div>
-          </div>
+    <div class="max-w-6xl mx-auto px-4">
+    <ng-container *ngIf="collection$ | async as collection">
+        <div class="flex justify-between items-center">
+            <h2 class="text-3xl sm:text-5xl font-light tracking-tight text-gray-900 my-8">
+                {{collection.name}}
+            </h2>
         </div>
+        <bigi-collection-breadcrumbs [breadcrumbs]="breadcrumbs$ | async"></bigi-collection-breadcrumbs>
 
-        <!-- Product Grid -->
-        <div class="lg:col-span-3">
-          <div class="flex justify-between items-center mb-6">
-            <div class="text-sm text-gray-500">
-              {{ totalResults() }} products
+        <ng-container *ngIf="collection.children?.length">
+            <div class="max-w-2xl mx-auto py-16 sm:py-16 lg:max-w-none border-b mb-16">
+                <h2 class="text-2xl font-light text-gray-900">
+                    Collections
+                </h2>
+                <div class="mt-6 grid max-w-xs sm:max-w-none mx-auto sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
+                    <bigi-collection-card *ngFor="let child of collection.children"
+                                         [collection]="child">
+                    </bigi-collection-card>
+                </div>
             </div>
-          </div>
+        </ng-container>
+    </ng-container>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <ng-container *ngIf="!loading(); else loadingTpl">
-              <a
-                *ngFor="let product of products(); trackBy: trackByProductId"
-                [routerLink]="['/product', product.slug]"
-                class="group"
-              >
-                <div
-                  class="aspect-w-1 aspect-h-1 rounded-lg overflow-hidden bg-gray-100"
-                >
-                  <img
-                    *ngIf="product?.productAsset?.preview"
-                    [src]="product.productAsset.preview"
-                    [alt]="product.productName"
-                    class="w-full h-full object-center object-cover group-hover:opacity-75"
-                  />
-                </div>
-                <div class="mt-4 space-y-2">
-                  <h3 class="text-sm font-medium text-gray-900">
-                    {{ product.productName }}
-                  </h3>
-                  <p class="text-sm text-gray-500">{{ product.description }}</p>
-                  <p class="text-lg font-medium text-gray-900">
-                    {{ product.priceWithTax.min | currency }}
-                    <span
-                      *ngIf="
-                        product.priceWithTax.max !== product.priceWithTax.min
-                      "
-                    >
-                      - {{ product.priceWithTax.max | currency }}
-                    </span>
-                  </p>
-                </div>
-              </a>
-            </ng-container>
-          </div>
+    <h2 class="text-3xl sm:text-5xl font-light tracking-tight text-gray-900 my-8" *ngIf="searchTerm$ | async as term">
+        Results for <span class="font-medium">"{{ term }}"</span>
+    </h2>
 
-          <!-- Load More -->
-          <div *ngIf="displayLoadMore()" class="mt-8 text-center">
-            <button
-              (click)="loadMore()"
-              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-              [disabled]="loading()"
-            >
-              Load more
-            </button>
-          </div>
+    <div class="mt-6 grid sm:grid-cols-5 gap-x-4">
+        <bigi-product-list-controls
+            class="mb-4"
+            [facetValues]="facetValues"
+            [activeFacetValueIds]="activeFacetValueIds$ | async"
+            [totalResults]="unfilteredTotalItems" />
+        <div class="sm:col-span-5 lg:col-span-4">
+            <div class="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                <ng-container *ngIf="(totalResults$ | async) !== null; else placeholders">
+                    <bigi-product-card *ngFor="let product of products$ | async; trackBy: trackByProductId"
+                                      [product]="product"></bigi-product-card>
+                </ng-container>
+                <ng-template #placeholders>
+                    <bigi-product-card *ngFor="let product of placeholderProducts"
+                                      [product]="product"></bigi-product-card>
+                </ng-template>
+            </div>
+            <div class="load-more flex-fill" *ngIf="displayLoadMore$ | async">
+                <button class="btn btn-light btn-lg d-inline-flex align-items-center"
+                        (click)="loadMore()"
+                        [disabled]="loading$ | async">
+                    Load more
+                    <span [class.show]="loading$ | async"
+                          class="loading-indicator spinner-grow spinner-grow-sm"
+                          role="status"
+                          aria-hidden="true"></span>
+                </button>
+            </div>
         </div>
-      </div>
     </div>
 
-    <ng-template #loadingTpl>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div *ngFor="let _ of placeholderProducts" class="animate-pulse">
-          <div class="aspect-w-1 aspect-h-1 rounded-lg bg-gray-200"></div>
-          <div class="mt-4 space-y-4">
-            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div class="h-4 bg-gray-200 rounded"></div>
-            <div class="h-4 bg-gray-200 rounded w-1/4"></div>
-          </div>
+    <ng-template #noResults>
+        <div class="no-results col-12">
+            <p class="h1">No results</p>
         </div>
-      </div>
     </ng-template>
+</div>
+
   `,
   styles: [
     `
@@ -220,202 +112,177 @@ interface CollectionResponse {
     `,
   ],
 })
-export class ProductListComponent {
-  readonly slug = input<string | null>();
-  readonly facets = input<string>();
-  readonly search = input<string>();
+export class ProductListComponent implements OnInit {
+  products$: Observable<SearchItem[]>;
+  totalResults$: Observable<number>;
+  collection$: Observable<GetCollectionQuery['collection']>;
+  facetValues: SearchProductsQuery['search']['facetValues'];
+  unfilteredTotalItems = 0;
+  activeFacetValueIds$: Observable<string[]>;
+  searchTerm$: Observable<string>;
+  displayLoadMore$: Observable<boolean>;
+  loading$: Observable<boolean>;
+  breadcrumbs$: Observable<Array<{id: string; name: string; }>>;
+  mastheadBackground$: Observable<SafeStyle>;
+  private currentPage = 0;
+  private refresh = new BehaviorSubject<void>(undefined);
+  readonly placeholderProducts = Array.from({ length: 12 }).map(() => null as any);
 
-  private currentPage = signal(0);
-  private activeFacetIds = computed(() =>
-    this.facets() ? this.facets().split(',') : []
-  );
+  constructor(private dataService: DataService,
+              private route: ActivatedRoute,
+              private stateService: StateService,
+              private sanitizer: DomSanitizer) { }
 
-  products = signal<SearchItem[]>([]);
-  totalResults = signal(0);
-  collection = signal<Collection | null>(null);
-  facetValues = signal<SearchFacetValue[]>([]);
-  loading = signal(false);
+  ngOnInit() {
+      const perPage = 24;
+      const collectionSlug$ = this.route.paramMap.pipe(
+          map(pm => pm.get('slug')),
+          distinctUntilChanged(),
+          tap(slug => {
+              this.stateService.setState('lastCollectionSlug', slug || null);
+              this.currentPage = 0;
+          }),
+          shareReplay(1),
+      );
+      this.activeFacetValueIds$ = this.route.paramMap.pipe(
+          map(pm => getRouteArrayParam(pm, 'facets')),
+          distinctUntilChanged((x, y) => x.toString() === y.toString()),
+          tap(() => {
+              this.currentPage = 0;
+          }),
+          shareReplay(1),
+      );
+      this.searchTerm$ = this.route.queryParamMap.pipe(
+          map(pm => pm.get('search') || ''),
+          distinctUntilChanged(),
+          shareReplay(1),
+      );
 
-  groupFacetValuesComputed = computed(() =>
-    this.groupFacetValues(this.facetValues())
-  );
-  displayLoadMore = computed(() => {
-    return (
-      this.products().length > 0 && this.products().length < this.totalResults()
-    );
-  });
+      this.collection$ = collectionSlug$.pipe(
+          switchMap(slug => {
+              if (slug) {
+                  return this.dataService.query<GetCollectionQuery, GetCollectionQueryVariables>(GET_COLLECTION, {
+                      slug,
+                  }).pipe(
+                      map(data => data.collection),
+                  );
+              } else {
+                  return of(undefined);
+              }
+          }),
+          shareReplay(1),
+      );
 
-  breadcrumbs = computed(() => {
-    const collection = this.collection();
-    if (collection) {
-      return collection.breadcrumbs;
-    }
-    return [
-      {
-        id: '',
-        name: 'Home',
-        slug: '',
-      },
-      {
-        id: '',
-        name: 'Search',
-        slug: '',
-      },
-    ];
-  });
+      const assetPreviewPipe = new AssetPreviewPipe();
 
-  mastheadBackground = computed(() => {
-    const collection = this.collection();
-    return collection?.featuredAsset
-      ? `url(${collection.featuredAsset.preview})`
-      : '';
-  });
+      this.mastheadBackground$ = this.collection$.pipe(
+          map(c => 'url(' + assetPreviewPipe.transform(c?.featuredAsset || undefined, 1000, 300) + ')'),
+          map(style => this.sanitizer.bypassSecurityTrustStyle(style)),
+      );
 
-  readonly placeholderProducts = Array.from({ length: 12 }).map(
-    (): null => null
-  );
+      this.breadcrumbs$ = this.collection$.pipe(
+          map(collection => {
+              if (collection) {
+                  return collection.breadcrumbs;
+              } else {
+                  return [{
+                      id: '',
+                      name: 'Home',
+                  }, {
+                      id: '',
+                      name: 'Search',
+                  }];
+              }
+          }),
+      );
 
-  constructor(
-    private dataService: DataService,
-    private sanitizer: DomSanitizer,
-    private router: Router
-  ) {
-    // Effect for fetching collection and initial facets
-    effect(() => {
-      const currentSlug = this.slug();
-      if (currentSlug) {
-        this.loading.set(true);
-        this.dataService
-          .query<CollectionResponse>(GET_COLLECTION, { slug: currentSlug })
-          .subscribe((data) => {
-            this.collection.set(data.collection);
-            this.loading.set(false);
-            // Fetch initial facet values if no facets are selected
-            if (!this.facets()) {
-              this.fetchFacetValues();
-            } else {
-              this.fetchProducts();
-            }
-          });
-      } else {
-        this.collection.set(null);
-        if (!this.facets()) {
-          this.fetchFacetValues();
-        } else {
-          this.fetchProducts();
-        }
-      }
-    });
+      const triggerFetch$ = combineLatest(this.collection$, this.activeFacetValueIds$, this.searchTerm$, this.refresh);
+      const getInitialFacetValueIds = () => {
+          combineLatest(this.collection$, this.searchTerm$).pipe(
+              take(1),
+              switchMap(([collection, term]) => {
+                  return this.dataService.query<SearchProductsQuery, SearchProductsQueryVariables>(SEARCH_PRODUCTS, {
+                      input: {
+                          term,
+                          groupByProduct: true,
+                          collectionId: collection?.id,
+                          take: perPage,
+                          skip: this.currentPage * perPage,
+                      },
+                  });
+              }),
+              ).subscribe(data => {
+                  this.facetValues = data.search.facetValues;
+                  this.unfilteredTotalItems = data.search.totalItems;
+              });
+      };
+      this.loading$ = merge(
+          triggerFetch$.pipe(mapTo(true)),
+      );
+      const queryResult$ = triggerFetch$.pipe(
+          switchMap(([collection, facetValueIds, term]) => {
+              return this.dataService.query<SearchProductsQuery, SearchProductsQueryVariables>(SEARCH_PRODUCTS, {
+                  input: {
+                      term,
+                      groupByProduct: true,
+                      collectionId: collection?.id,
+                      facetValueFilters: facetValueIds.map(id => ({ and: id })),
+                      take: perPage,
+                      skip: this.currentPage * perPage,
+                  },
+              }).pipe(
+                  tap(data => {
+                      if (facetValueIds.length === 0) {
+                          this.facetValues = data.search.facetValues;
+                          this.unfilteredTotalItems = data.search.totalItems;
+                      } else if (!this.facetValues) {
+                          getInitialFacetValueIds();
+                      } else {
+                          this.facetValues = this.facetValues.map(fv => fv);
+                      }
+                  }),
+              );
+          }),
+          shareReplay(1),
+      );
 
-    // Effect for fetching products when inputs change
-    effect(() => {
-      if (this.slug() || this.facets() || this.search()) {
-        this.currentPage.set(0);
-        this.fetchProducts();
-      }
-    });
+      this.loading$ = merge(
+          triggerFetch$.pipe(mapTo(true)),
+          queryResult$.pipe(mapTo(false)),
+      );
+
+      const RESET = 'RESET';
+      const items$ = this.products$ = queryResult$.pipe(map(data => data.search.items));
+      const reset$ = merge(collectionSlug$, this.activeFacetValueIds$, this.searchTerm$).pipe(
+          mapTo(RESET),
+          skip(1),
+          share(),
+      );
+      this.products$ = merge(items$, reset$).pipe(
+          scan<SearchItem[] | string, SearchItem[]>((acc, val) => {
+              if (typeof val === 'string') {
+                  return [];
+              } else {
+                  return acc.concat(val);
+              }
+          }, [] as SearchItem[]),
+      );
+      this.totalResults$ = queryResult$.pipe(map(data => data.search.totalItems));
+      this.displayLoadMore$ = combineLatest(this.products$, this.totalResults$).pipe(
+          map(([products, totalResults]: any) => {
+              return 0 < products.length && products.length < totalResults;
+          }),
+      );
 
   }
 
-  private fetchFacetValues(): void {
-    this.loading.set(true);
-    this.dataService
-      .query<SearchResponse>(SEARCH_PRODUCTS, {
-        input: {
-          term: this.search() || '',
-          groupByProduct: true,
-          collectionId: this.collection()?.id,
-          take: 0, // We only need facets, not products
-        },
-      })
-      .subscribe((data) => {
-        this.facetValues.set(data.search.facetValues);
-        this.fetchProducts();
-      });
+  trackByProductId(index: number, item: SearchItem) {
+      return item.productId;
   }
 
-  private fetchProducts(): void {
-    const perPage = 24;
-    this.loading.set(true);
-
-    this.dataService
-      .query<SearchResponse>(SEARCH_PRODUCTS, {
-        input: {
-          term: this.search() || '',
-          groupByProduct: true,
-          collectionId: this.collection()?.id,
-          facetValueFilters: this.activeFacetIds().map((id) => ({ and: id })),
-          take: perPage,
-          skip: this.currentPage() * perPage,
-        },
-      })
-      .subscribe((data) => {
-        // Always update facet values to get accurate counts
-        this.facetValues.set(data.search.facetValues);
-        this.products.set(
-          this.currentPage() === 0
-            ? data.search.items
-            : [...this.products(), ...data.search.items]
-        );
-        this.totalResults.set(data.search.totalItems);
-        this.loading.set(false);
-      });
+  loadMore() {
+      this.currentPage ++;
+      this.refresh.next();
   }
 
-  trackByProductId(_: number, item: SearchItem): string {
-    return item.productId;
-  }
-
-  loadMore(): void {
-    this.currentPage.update((page) => page + 1);
-    this.fetchProducts();
-  }
-
-  isActiveFacetValue(id: string): boolean {
-    return this.activeFacetIds().includes(id);
-  }
-
-  toggleFacetValue(id: string): void {
-    const currentIds = this.activeFacetIds();
-    const newIds = currentIds.includes(id)
-      ? currentIds.filter((x) => x !== id)
-      : [...currentIds, id];
-
-    this.router.navigate([], {
-      queryParams: { facets: newIds.length ? newIds.join(',') : null },
-      queryParamsHandling: 'merge',
-      replaceUrl: true,
-    });
-  }
-
-  private groupFacetValues(
-    facetValues: SearchProductsQuery['search']['facetValues'] | null
-  ): FacetWithValues[] {
-    if (!facetValues) {
-      return [];
-    }
-    const activeFacetValueIds = this.activeFacetIds();
-    const facetMap = new Map<string, FacetWithValues>();
-    for (const {
-      count,
-      facetValue: { id, name, facet },
-    } of facetValues) {
-      if (count === this.totalResults() && !activeFacetValueIds.includes(id)) {
-        // skip FacetValues that do not have any effect on the
-        // result set and are not active
-        continue;
-      }
-      const facetFromMap = facetMap.get(facet.id);
-      if (facetFromMap) {
-        facetFromMap.values.push({ id, name, count });
-      } else {
-        facetMap.set(facet.id, {
-          id: facet.id,
-          name: facet.name,
-          values: [{ id, name, count }],
-        });
-      }
-    }
-    return Array.from(facetMap.values());
-  }
 }

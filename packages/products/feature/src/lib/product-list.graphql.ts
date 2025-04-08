@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client/core';
+import { ASSET_FRAGMENT } from '@bigi-shop/shared-data-access';
 
 export const SEARCH_PRODUCTS = gql`
   query SearchProducts($input: SearchInput!) {
@@ -47,8 +48,7 @@ export const GET_COLLECTION = gql`
       slug
       description
       featuredAsset {
-        id
-        preview
+        ...Asset
       }
       breadcrumbs {
         id
@@ -58,12 +58,12 @@ export const GET_COLLECTION = gql`
       children {
         id
         slug
-        name
         featuredAsset {
-          id
-          preview
+          ...Asset
         }
+        name
       }
     }
   }
-`; 
+  ${ASSET_FRAGMENT}
+`;

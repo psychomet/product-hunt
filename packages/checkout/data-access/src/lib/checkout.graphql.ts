@@ -6,18 +6,17 @@ import {
 } from '@bigi-shop/shared-data-access';
 
 export const GET_ORDER_FOR_CHECKOUT = gql`
-    query GetOrderForCheckout {
-        activeOrder {
-            ...Cart
-            shippingAddress {
-                ...OrderAddress
-            }
-        }
+  query GetOrderForCheckout {
+    activeOrder {
+      ...Cart
+      shippingAddress {
+        ...OrderAddress
+      }
     }
-    ${CART_FRAGMENT}
-    ${ORDER_ADDRESS_FRAGMENT}
+  }
+  ${CART_FRAGMENT}
+  ${ORDER_ADDRESS_FRAGMENT}
 `;
-
 
 export const GET_ORDER_SHIPPING_DATA = gql`
   query GetOrderShippingData {
@@ -89,7 +88,6 @@ export const SET_CUSTOMER_FOR_ORDER = gql`
           firstName
           lastName
         }
-
       }
       ...ErrorResult
     }
@@ -113,10 +111,8 @@ export const GET_ELIGIBLE_PAYMENT_METHODS = gql`
     eligiblePaymentMethods {
       id
       code
-      name
-      description
-      isEligible
       eligibilityMessage
+      isEligible
     }
   }
 `;
@@ -126,15 +122,6 @@ export const ADD_PAYMENT = gql`
     addPaymentToOrder(input: $input) {
       ...Cart
       ...ErrorResult
-      ... on Order {
-        payments {
-          id
-          state
-          method
-          amount
-          metadata
-        }
-      }
     }
   }
   ${CART_FRAGMENT}
@@ -161,6 +148,3 @@ export const GET_ORDER_BY_CODE = gql`
   }
   ${CART_FRAGMENT}
 `;
-
-
-

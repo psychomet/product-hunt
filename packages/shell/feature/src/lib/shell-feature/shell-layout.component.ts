@@ -1,8 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  inject,
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import {
@@ -32,9 +28,12 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import type { RemoveItemFromCartMutation, RemoveItemFromCartMutationVariables } from '@bigi-shop/shared-util-types';
+import type {
+  RemoveItemFromCartMutation,
+  RemoveItemFromCartMutationVariables,
+} from '@bigi-shop/shared-util-types';
 import { CartToggleComponent } from '../cart-toggle-feature/cart-toggle.component';
-import { AccountLinkComponent } from "../account-link/account-link.component";
+import { AccountLinkComponent } from '../account-link/account-link.component';
 
 @Component({
   standalone: true,
@@ -45,8 +44,8 @@ import { AccountLinkComponent } from "../account-link/account-link.component";
     CollectionsMenuComponent,
     CartDrawerComponent,
     CartToggleComponent,
-    AccountLinkComponent
-],
+    AccountLinkComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="bg-white shadow-sm">
@@ -62,31 +61,9 @@ import { AccountLinkComponent } from "../account-link/account-link.component";
           </div>
 
           <div class="flex items-center space-x-4">
-            <!-- <ng-container
-              *ngIf="currentUser$ | async as user; else loginButton"
-            >
-              <span class="text-gray-600">{{ user.identifier }}</span>
-              <button
-                (click)="signOut()"
-                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
-              >
-                Sign Out
-              </button>
-            </ng-container>
-
-            <ng-template #loginButton>
-              <a
-                routerLink="/account/sign-in"
-                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
-              >
-                Sign In
-              </a>
-            </ng-template> -->
             <bigi-account-link />
 
-            <bigi-cart-toggle
-              (cartToggle)="openCartDrawer()"
-            />
+            <bigi-cart-toggle (cartToggle)="openCartDrawer()" />
           </div>
         </div>
       </div>
@@ -167,7 +144,6 @@ export class ShellLayoutComponent {
     this.stateService.setState('cartDrawerOpen', false);
   }
 
-
   setQuantity(event: { itemId: string; quantity: number }) {
     if (0 < event.quantity) {
       this.adjustItemQuantity(event.itemId, event.quantity);
@@ -193,12 +169,12 @@ export class ShellLayoutComponent {
 
   private removeItem(id: string) {
     this.dataService
-      .mutate<
-        RemoveItemFromCartMutation,
-        RemoveItemFromCartMutationVariables
-      >(REMOVE_ITEM_FROM_CART, {
-        id,
-      })
+      .mutate<RemoveItemFromCartMutation, RemoveItemFromCartMutationVariables>(
+        REMOVE_ITEM_FROM_CART,
+        {
+          id,
+        }
+      )
       .pipe(take(1))
       .subscribe();
   }

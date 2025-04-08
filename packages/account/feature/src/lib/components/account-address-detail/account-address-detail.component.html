@@ -1,1 +1,6 @@
-<p>account-address-detail works!</p>
+<bigi-address-form #addressForm
+                  [address]="address$ | async"
+                  [availableCountries]="availableCountries$ | async" />
+<button class="btn-primary mt-3"
+        [disabled]="addressForm.addressForm.invalid || addressForm.addressForm.pristine"
+        (click)="updateAddress()">Update Address</button>

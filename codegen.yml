@@ -1,17 +1,28 @@
-schema:
+overwrite: true
+schema: 
   - http://localhost:3000/shop-api
 documents:
   - apps/shop/src/app/graphql/**/*.graphql
   - apps/shop/src/app/**/*.ts
   - packages/**/*.ts
   - "!packages/shared/util-types/src/lib/generated-types.ts"
+  - "!packages/shared/util-types/src/lib/introspection-results.ts"
 generates:
   packages/shared/util-types/src/lib/generated-types.ts:
     plugins:
-      - typescript
-      - typescript-operations
+      - add:
+            content: "// eslint-disable"
+      - "typescript"
+      - "typescript-operations"
     config:
-      skipTypename: false
-      immutableTypes: true
-      nonOptionalTypename: false
-      avoidOptionals: true 
+      namingConvention:
+        enumValues: 'keep'
+      maybeValue: 'T'
+      strict: true
+  packages/shared/util-types/src/lib/introspection-results.ts:
+    plugins:
+      - add:
+            content: "// eslint-disable"
+      - "fragment-matcher"
+    config:
+        apolloClientVersion: 3

@@ -22,7 +22,7 @@
             "input": "apps/shop/public"
           }
         ],
-        "styles": ["apps/shop/src/styles.scss"],
+        "styles": ["apps/shop/src/styles.scss","node_modules/photoswipe/dist/photoswipe.css"],
         "scripts": [],
         "server": "apps/shop/src/main.server.ts",
         "ssr": {
