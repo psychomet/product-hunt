@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
-import {
-  ProductListComponent,
-  ProductDetailComponent,
-} from '@bigi-shop/products-feature';
+
 import { accountRoutes } from '@bigi-shop/account-feature';
-import { ShellLayoutComponent } from '../shell-feature/shell-layout.component';
+import {
+  ProductDetailComponent,
+  ProductListComponent,
+} from '@bigi-shop/products-feature';
+
 import { HomeComponent } from '../home-feature/home.component';
+import { ShellLayoutComponent } from '../shell-feature/shell-layout.component';
 
 export const routes: Routes = [
   {

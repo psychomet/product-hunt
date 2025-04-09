@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { AccountLinkComponent } from './account-link.component';
 
 describe('AccountLinkComponent', () => {

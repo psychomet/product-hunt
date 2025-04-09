@@ -1,29 +1,32 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {
-  RouterModule,
-  Router,
   ActivatedRoute,
   NavigationEnd,
+  Router,
+  RouterModule,
 } from '@angular/router';
+
 import { Observable } from 'rxjs';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
-import {
-  GetNextOrderStatesQuery,
-  GetOrderForCheckoutQuery,
-  TransitionToAddingItemsMutation,
-} from '@bigi-shop/shared-util-types';
-import { DataService, StateService } from '@bigi-shop/shared-data-access';
-import {
-  GET_NEXT_ORDER_STATES,
-  TRANSITION_TO_ADDING_ITEMS,
-} from './checkout-process.graphql';
+
 import { CheckoutStageIndicatorComponent } from '@bigi-shop/checkout-ui';
+import { DataService, StateService } from '@bigi-shop/shared-data-access';
 import {
   AddressCardComponent,
   CartContentsComponent,
   CartTotalsComponent,
 } from '@bigi-shop/shared-ui';
+import {
+  GetNextOrderStatesQuery,
+  GetOrderForCheckoutQuery,
+  TransitionToAddingItemsMutation,
+} from '@bigi-shop/shared-util-types';
+
+import {
+  GET_NEXT_ORDER_STATES,
+  TRANSITION_TO_ADDING_ITEMS,
+} from './checkout-process.graphql';
 
 @Component({
   selector: 'bigi-checkout-process',

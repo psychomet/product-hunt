@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CartContentsComponent } from '@bigi-shop/shared-ui';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { RouterModule } from '@angular/router';
+
+import { CartContentsComponent } from '@bigi-shop/shared-ui';
 import { GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
 
 @Component({
@@ -20,6 +21,10 @@ import { GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
           [class.opacity-0]="!visible()"
           [class.opacity-100]="visible()"
           (click)="drawerClose.emit()"
+          (keydown.escape)="drawerClose.emit()"
+          tabindex="0"
+          role="button"
+          aria-label="Close cart"
         ></div>
 
         <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
@@ -132,4 +137,4 @@ export class CartDrawerComponent {
   setQuantity = output<{ itemId: string; quantity: number }>();
 
   isEmpty = computed(() => this.cart()?.lines.length === 0);
-} 
+}

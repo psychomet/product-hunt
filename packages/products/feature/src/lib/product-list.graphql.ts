@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client/core';
+
 import { ASSET_FRAGMENT } from '@bigi-shop/shared-data-access';
 
 export const SEARCH_PRODUCTS = gql`

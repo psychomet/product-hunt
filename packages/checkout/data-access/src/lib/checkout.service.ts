@@ -1,18 +1,21 @@
-import { Injectable, inject } from '@angular/core';
+import { inject,Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { ActiveService, DataService, REGISTER } from '@bigi-shop/shared-data-access';
-import { Cart, GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
+
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+import { ActiveService, DataService, REGISTER } from '@bigi-shop/shared-data-access';
+import { Cart, GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
+
 import {
+  ADD_PAYMENT,
+  GET_ELIGIBLE_PAYMENT_METHODS,
   GET_ELIGIBLE_SHIPPING_METHODS,
+  GET_ORDER_BY_CODE,
   SET_CUSTOMER_FOR_ORDER,
   SET_SHIPPING_ADDRESS,
   SET_SHIPPING_METHOD,
   TRANSITION_TO_ARRANGING_PAYMENT,
-  GET_ELIGIBLE_PAYMENT_METHODS,
-  ADD_PAYMENT,
-  GET_ORDER_BY_CODE,
 } from './checkout.graphql';
 
 export interface CustomerDetails {

@@ -1,13 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-
-import { CREATE_ADDRESS } from './address-modal.graphql';
+import { DataService, GET_AVAILABLE_COUNTRIES } from '@bigi-shop/shared-data-access';
 import { AddressFormComponent, Dialog } from '@bigi-shop/shared-ui';
 import { AddressFragment, CountryFragment, CreateAddressMutation, CreateAddressMutationVariables, GetAvailableCountriesQuery } from '@bigi-shop/shared-util-types';
-import { DataService, GET_AVAILABLE_COUNTRIES } from '@bigi-shop/shared-data-access';
-import { CommonModule } from '@angular/common';
+
+import { CREATE_ADDRESS } from './address-modal.graphql';
 
 @Component({
     selector: 'bigi-address-modal',

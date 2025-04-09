@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -7,7 +8,6 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
   UntypedFormBuilder,
@@ -15,6 +15,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
+import { Observable, of, Subject } from 'rxjs';
+import { map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
+
 import {
   CheckoutService,
   GET_ELIGIBLE_SHIPPING_METHODS,
@@ -24,8 +28,20 @@ import {
   SET_SHIPPING_METHOD,
   TRANSITION_TO_ARRANGING_PAYMENT,
 } from '@bigi-shop/checkout-data-access';
-import { Observable, of, Subject } from 'rxjs';
-import { map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
+import {
+  DataService,
+  GET_AVAILABLE_COUNTRIES,
+  GET_CUSTOMER_ADDRESSES,
+  StateService,
+} from '@bigi-shop/shared-data-access';
+import {
+  AddressFormComponent,
+  FormatPricePipe,
+  ModalService,
+  NotificationService,
+  RadioCardComponent,
+  RadioCardFieldsetComponent,
+} from '@bigi-shop/shared-ui';
 import {
   AddressFragment,
   CreateAddressInput,
@@ -42,21 +58,7 @@ import {
   SetShippingMethodMutationVariables,
   TransitionToArrangingPaymentMutation,
 } from '@bigi-shop/shared-util-types';
-import {
-  DataService,
-  GET_AVAILABLE_COUNTRIES,
-  GET_CUSTOMER_ADDRESSES,
-  StateService,
-} from '@bigi-shop/shared-data-access';
 
-import {
-  AddressFormComponent,
-  FormatPricePipe,
-  ModalService,
-  NotificationService,
-  RadioCardComponent,
-  RadioCardFieldsetComponent,
-} from '@bigi-shop/shared-ui';
 import { AddressModalComponent } from './address-modal/address-modal.component';
 
 export type AddressFormValue = Pick<
@@ -91,6 +93,10 @@ export type AddressFormValue = Pick<
             class="customer-address"
             *ngFor="let address of customerAddresses$ | async"
             (click)="setShippingAddress(address)"
+            (keydown.enter)="setShippingAddress(address)"
+            tabindex="0"
+            role="button"
+            [attr.aria-label]="'Select address: ' + getLines(address).join(', ')"
           >
             <div class="address-line" *ngFor="let line of getLines(address)">
               {{ line }}
@@ -104,7 +110,7 @@ export type AddressFormValue = Pick<
         </div>
       </div>
     </div>
-    <div class="" *ngIf="!(signedIn$ | async)">
+    <div class="" *ngIf="(signedIn$ | async) === false">
       <h2 class="text-lg font-medium text-gray-900">Contact information</h2>
       <form [formGroup]="contactForm" (focusout)="onCustomerFormBlur()">
         <div class="mt-4">

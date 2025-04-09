@@ -1,22 +1,26 @@
-import { ApplicationConfig, FactoryProvider, inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { routes } from '../routes/app.routes';
-import {
-  provideClientHydration,
-  withEventReplay,
-} from '@angular/platform-browser';
 import {
   provideHttpClient,
   withFetch,
   withInterceptors,
 } from '@angular/common/http';
-import { apolloConfig } from './apollo.config';
+import { ApplicationConfig, FactoryProvider, inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
+import {
+  provideClientHydration,
+  withEventReplay,
+} from '@angular/platform-browser';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
+
+import { firstValueFrom, map, take } from 'rxjs';
+
 import { ActiveCustomerService, DataService, defaultInterceptor, GET_ACTIVE_CHANNEL } from '@bigi-shop/shared-data-access';
 import {
   GET_ACTIVE_CHANNEL_TOKEN,
   GetActiveChannelQuery,
 } from '@bigi-shop/shared-util-types';
-import { firstValueFrom, map, take } from 'rxjs';
+
+import { routes } from '../routes/app.routes';
+
+import { apolloConfig } from './apollo.config';
 
 function getActiveChannelFactory(
   dataService: DataService

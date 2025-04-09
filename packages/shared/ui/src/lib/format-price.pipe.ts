@@ -1,7 +1,5 @@
 import { ChangeDetectorRef, Inject, inject, Pipe, PipeTransform } from '@angular/core';
 
-
-
 import { GET_ACTIVE_CHANNEL_TOKEN, GetActiveChannelQuery } from '@bigi-shop/shared-util-types';
 
 /**

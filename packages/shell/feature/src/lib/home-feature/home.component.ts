@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataService, GET_COLLECTIONS } from '@bigi-shop/shared-data-access';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+import { DataService, GET_COLLECTIONS } from '@bigi-shop/shared-data-access';
 import { CollectionCardComponent } from '@bigi-shop/shared-ui';
 import { GetCollectionsQuery } from '@bigi-shop/shared-util-types';
 

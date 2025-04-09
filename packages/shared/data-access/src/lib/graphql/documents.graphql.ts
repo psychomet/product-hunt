@@ -1,6 +1,6 @@
 import { gql } from 'apollo-angular';
-import { ERROR_RESULT_FRAGMENT } from './fragments';
 
+import { ERROR_RESULT_FRAGMENT } from './fragments';
 import {
   ADDRESS_FRAGMENT,
   ASSET_FRAGMENT,

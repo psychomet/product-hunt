@@ -1,17 +1,8 @@
-import { Component, input, computed, signal, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { Component, computed, effect, input, OnInit,signal } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
-import { DataService, StateService } from '@bigi-shop/shared-data-access';
-import { SEARCH_PRODUCTS, GET_COLLECTION } from './product-list.graphql';
-import {
-  GetCollectionQuery,
-  GetCollectionQueryVariables,
-  getRouteArrayParam,
-  SearchProductsQuery,
-  SearchProductsQueryVariables
-} from '@bigi-shop/shared-util-types';
-import { AssetPreviewPipe, CollectionBreadcrumbsComponent, CollectionCardComponent, ProductCardComponent } from '@bigi-shop/shared-ui';
+import { ActivatedRoute,Router, RouterModule } from '@angular/router';
+
 import {
   BehaviorSubject,
   combineLatest,
@@ -29,7 +20,19 @@ import {
   take,
   tap
 } from 'rxjs';
+
 import { ProductListControlsComponent } from '@bigi-shop/products-ui';
+import { DataService, StateService } from '@bigi-shop/shared-data-access';
+import { AssetPreviewPipe, CollectionBreadcrumbsComponent, CollectionCardComponent, ProductCardComponent } from '@bigi-shop/shared-ui';
+import {
+  GetCollectionQuery,
+  GetCollectionQueryVariables,
+  getRouteArrayParam,
+  SearchProductsQuery,
+  SearchProductsQueryVariables
+} from '@bigi-shop/shared-util-types';
+
+import { GET_COLLECTION,SEARCH_PRODUCTS } from './product-list.graphql';
 
 type SearchItem = SearchProductsQuery['search']['items'][number];
 
@@ -45,7 +48,9 @@ type SearchItem = SearchProductsQuery['search']['items'][number];
                 {{collection.name}}
             </h2>
         </div>
-        <bigi-collection-breadcrumbs [breadcrumbs]="breadcrumbs$ | async"></bigi-collection-breadcrumbs>
+      <ng-container *ngIf="breadcrumbs$ | async as breadcrumbs">
+        <bigi-collection-breadcrumbs [breadcrumbs]="breadcrumbs"></bigi-collection-breadcrumbs>
+      </ng-container>
 
         <ng-container *ngIf="collection.children?.length">
             <div class="max-w-2xl mx-auto py-16 sm:py-16 lg:max-w-none border-b mb-16">
@@ -69,7 +74,7 @@ type SearchItem = SearchProductsQuery['search']['items'][number];
         <bigi-product-list-controls
             class="mb-4"
             [facetValues]="facetValues"
-            [activeFacetValueIds]="activeFacetValueIds$ | async"
+            [activeFacetValueIds]="(activeFacetValueIds$ | async) || []"
             [totalResults]="unfilteredTotalItems" />
         <div class="sm:col-span-5 lg:col-span-4">
             <div class="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
@@ -102,13 +107,9 @@ type SearchItem = SearchProductsQuery['search']['items'][number];
         </div>
     </ng-template>
 </div>
-
   `,
   styles: [
     `
-      :host {
-        @apply block;
-      }
     `,
   ],
 })
@@ -122,7 +123,7 @@ export class ProductListComponent implements OnInit {
   searchTerm$: Observable<string>;
   displayLoadMore$: Observable<boolean>;
   loading$: Observable<boolean>;
-  breadcrumbs$: Observable<Array<{id: string; name: string; }>>;
+  breadcrumbs$: Observable<Array<{id: string; name: string; slug: string }>>;
   mastheadBackground$: Observable<SafeStyle>;
   private currentPage = 0;
   private refresh = new BehaviorSubject<void>(undefined);
@@ -188,9 +189,11 @@ export class ProductListComponent implements OnInit {
                   return [{
                       id: '',
                       name: 'Home',
+                      slug: ''
                   }, {
                       id: '',
                       name: 'Search',
+                      slug: ''
                   }];
               }
           }),

@@ -1,15 +1,18 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnInit,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
   UntypedFormBuilder,
   UntypedFormGroup,
 } from '@angular/forms';
+
+import { filter, map } from 'rxjs';
+
 import {
   DataService,
   GET_ACTIVE_CUSTOMER,
@@ -21,7 +24,7 @@ import {
   UpdateCustomerDetailsMutationVariables,
   UpdateCustomerInput,
 } from '@bigi-shop/shared-util-types';
-import { filter, map } from 'rxjs';
+
 import { UPDATE_CUSTOMER_DETAILS } from './account-customer-details.graphql';
 
 @Component({

@@ -1,11 +1,13 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { DataService, StateService } from '@bigi-shop/shared-data-access';
 import {
   VerifyChangeEmailAddressMutation,
   VerifyChangeEmailAddressMutationVariables,
 } from '@bigi-shop/shared-util-types';
+
 import { VERIFY_CHANGE_EMAIL_ADDRESS } from './change-email-address.graphql';
 
 @Component({

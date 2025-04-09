@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -8,10 +9,10 @@ import {
     OnInit,
     TemplateRef,
 } from '@angular/core';
+
 import { Subject, Subscription } from 'rxjs';
 
 import { RadioCardFieldsetComponent } from './radio-card-fieldset.component';
-import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'bigi-radio-card',

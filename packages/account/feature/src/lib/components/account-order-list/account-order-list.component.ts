@@ -1,11 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { map, Observable } from 'rxjs';
-import { GetOrderListQuery, GetOrderListQueryVariables, SortOrder } from '@bigi-shop/shared-util-types';
-import { DataService } from '@bigi-shop/shared-data-access';
-import { GET_ORDER_LIST } from './account-order-list.graphql';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
+import { map, Observable } from 'rxjs';
+
+import { DataService } from '@bigi-shop/shared-data-access';
 import { FormatPricePipe } from '@bigi-shop/shared-ui';
+import { GetOrderListQuery, GetOrderListQueryVariables, SortOrder } from '@bigi-shop/shared-util-types';
+
+import { GET_ORDER_LIST } from './account-order-list.graphql';
 @Component({
   selector: 'bigi-account-order-list',
   imports: [CommonModule, RouterLink, FormatPricePipe],

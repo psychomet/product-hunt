@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,14 +9,15 @@ import {
   Output,
   output,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
 import {
   CartFragment,
   GetActiveOrderQuery,
 } from '@bigi-shop/shared-util-types';
-import { RouterLink } from '@angular/router';
-import { FormatPricePipe } from '../format-price.pipe';
+
 import { AssetPreviewPipe } from '../asset-preview.pipe';
+import { FormatPricePipe } from '../format-price.pipe';
 
 @Component({
   selector: 'bigi-cart-contents',

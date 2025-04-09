@@ -1,24 +1,26 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
   output,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { GetCartTotalsQuery } from '@bigi-shop/shared-util-types';
-import { timer, merge, zip, from } from 'rxjs';
+
+import { from,merge, timer, zip } from 'rxjs';
+import { Observable } from 'rxjs';
 import {
-  switchMap,
-  map,
   distinctUntilChanged,
+  map,
   shareReplay,
+  switchMap,
 } from 'rxjs/operators';
+
 import {
   DataService,
   GET_CART_TOTALS,
   StateService,
 } from '@bigi-shop/shared-data-access';
-import { Observable } from 'rxjs';
+import { GetCartTotalsQuery } from '@bigi-shop/shared-util-types';
 
 @Component({
   selector: 'bigi-cart-toggle',

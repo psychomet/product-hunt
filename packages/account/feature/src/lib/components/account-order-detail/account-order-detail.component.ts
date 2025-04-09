@@ -1,11 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { filter, map, Observable, switchMap } from 'rxjs';
-import { GetOrderQuery, GetOrderQueryVariables, notNullOrUndefined } from '@bigi-shop/shared-util-types';
-import { DataService } from '@bigi-shop/shared-data-access';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { GET_ORDER } from './account-order-detail.graphql';
+
+import { filter, map, Observable, switchMap } from 'rxjs';
+
+import { DataService } from '@bigi-shop/shared-data-access';
 import { AddressCardComponent, CartContentsComponent, CartTotalsComponent } from '@bigi-shop/shared-ui';
+import { GetOrderQuery, GetOrderQueryVariables, notNullOrUndefined } from '@bigi-shop/shared-util-types';
+
+import { GET_ORDER } from './account-order-detail.graphql';
 
 @Component({
   selector: 'bigi-account-order-detail',

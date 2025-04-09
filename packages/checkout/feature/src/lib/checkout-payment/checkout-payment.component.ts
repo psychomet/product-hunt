@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute,Router } from '@angular/router';
+
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CheckoutService, PaymentMethod, Order, GET_ELIGIBLE_PAYMENT_METHODS, ADD_PAYMENT } from '@bigi-shop/checkout-data-access';
-import { AddPaymentMutation, AddPaymentMutationVariables, GetEligiblePaymentMethodsQuery } from '@bigi-shop/shared-util-types';
+
+import { ADD_PAYMENT,CheckoutService, GET_ELIGIBLE_PAYMENT_METHODS, Order, PaymentMethod } from '@bigi-shop/checkout-data-access';
 import { DataService, StateService } from '@bigi-shop/shared-data-access';
+import { AddPaymentMutation, AddPaymentMutationVariables, GetEligiblePaymentMethodsQuery } from '@bigi-shop/shared-util-types';
 
 @Component({
   selector: 'bigi-checkout-payment',
@@ -99,7 +101,7 @@ export class CheckoutPaymentComponent implements OnInit {
           .subscribe(async ({ addPaymentToOrder }) => {
               switch (addPaymentToOrder?.__typename) {
                   case 'Order':
-                      const order = addPaymentToOrder;
+                      { const order = addPaymentToOrder;
                       if (order && (order.state === 'PaymentSettled' || order.state === 'PaymentAuthorized')) {
                           await new Promise<void>(resolve => setTimeout(() => {
                               this.stateService.setState('activeOrderId', null);
@@ -107,7 +109,7 @@ export class CheckoutPaymentComponent implements OnInit {
                           }, 500));
                           this.router.navigate(['../confirmation', order.code], { relativeTo: this.route });
                       }
-                      break;
+                      break; }
                   case 'OrderPaymentStateError':
                   case 'PaymentDeclinedError':
                   case 'PaymentFailedError':

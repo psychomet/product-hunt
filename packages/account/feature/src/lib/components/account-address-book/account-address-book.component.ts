@@ -1,13 +1,15 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
 import { map, Observable } from 'rxjs';
+
 import {
   DataService,
   GET_CUSTOMER_ADDRESSES,
 } from '@bigi-shop/shared-data-access';
-import { GetCustomerAddressesQuery } from '@bigi-shop/shared-util-types';
 import { AddressCardComponent } from '@bigi-shop/shared-ui';
-import { RouterLink } from '@angular/router';
+import { GetCustomerAddressesQuery } from '@bigi-shop/shared-util-types';
 
 @Component({
   selector: 'bigi-account-address-book',

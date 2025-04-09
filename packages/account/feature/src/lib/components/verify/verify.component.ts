@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DataService } from '@bigi-shop/shared-data-access';
-import { VERIFY } from './verify.graphql';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { DataService } from '@bigi-shop/shared-data-access';
+
+import { VERIFY } from './verify.graphql';
 
 @Component({
   selector: 'bigi-verify',

@@ -1,5 +1,6 @@
-import { ERROR_RESULT_FRAGMENT } from '@bigi-shop/shared-data-access';
 import {gql} from 'apollo-angular';
+
+import { ERROR_RESULT_FRAGMENT } from '@bigi-shop/shared-data-access';
 
 
 export const VERIFY_CHANGE_EMAIL_ADDRESS = gql`

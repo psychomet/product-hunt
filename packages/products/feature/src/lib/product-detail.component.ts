@@ -1,31 +1,25 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnDestroy,
-  OnInit,
-  TemplateRef,
-  ViewChild,
-  inject,
-  signal,
   computed,
   effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  TemplateRef,
+  ViewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+
+import { filter, map, Subscription, switchMap, withLatestFrom } from 'rxjs';
+
 import {
   ActiveService,
   DataService,
   StateService,
 } from '@bigi-shop/shared-data-access';
-import { GET_PRODUCT_DETAIL, ADD_TO_CART } from './product-detail.graphql';
-import {
-  AddToCartMutation,
-  AddToCartMutationVariables,
-  GetProductDetailQuery,
-  GetProductDetailQueryVariables,
-  notNullOrUndefined,
-} from '@bigi-shop/shared-util-types';
-import { filter, map, Subscription, switchMap, withLatestFrom } from 'rxjs';
 import {
   AssetGalleryComponent,
   CollectionBreadcrumbsComponent,
@@ -33,6 +27,15 @@ import {
   NotificationService,
   SafeHtmlPipe,
 } from '@bigi-shop/shared-ui';
+import {
+  AddToCartMutation,
+  AddToCartMutationVariables,
+  GetProductDetailQuery,
+  GetProductDetailQueryVariables,
+  notNullOrUndefined,
+} from '@bigi-shop/shared-util-types';
+
+import { ADD_TO_CART,GET_PRODUCT_DETAIL } from './product-detail.graphql';
 
 type Variant = NonNullable<
   GetProductDetailQuery['product']

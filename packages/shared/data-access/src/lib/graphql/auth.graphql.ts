@@ -1,4 +1,5 @@
 import { gql } from 'apollo-angular';
+
 import { ERROR_RESULT_FRAGMENT, USER_FRAGMENT } from './fragments';
 
 export const LOGIN = gql`

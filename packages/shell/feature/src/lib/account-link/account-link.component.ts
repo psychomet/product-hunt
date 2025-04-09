@@ -1,9 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+import { Observable } from 'rxjs';
+
 import { ActiveCustomerService } from '@bigi-shop/shared-data-access';
 import { GetActiveCustomerQuery } from '@bigi-shop/shared-util-types';
-import { Observable } from 'rxjs';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'bigi-account-link',

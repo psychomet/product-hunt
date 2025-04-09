@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client/core';
+
 import {
   ASSET_FRAGMENT,
   CART_FRAGMENT,

@@ -1,4 +1,5 @@
 import nx from '@nx/eslint-plugin';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default [
   ...nx.configs['flat/base'],
@@ -9,6 +10,9 @@ export default [
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
     rules: {
       '@nx/enforce-module-boundaries': [
         'error',
@@ -54,6 +58,30 @@ export default [
           ],
         },
       ],
+      'simple-import-sort/imports': [
+        'error',
+        {
+          groups: [
+            // Angular related packages come first.
+            ['^@angular'],
+            // RxJS imports.
+            ['^rxjs', '^apollo-angular','^@vendure'],
+            // Third-party packages.
+            ['^@?\\w'],
+            // Side effect imports.
+            ['^\\u0000'],
+            // Absolute imports with the prefix @ui.
+            ['^@bigi-shop'],
+            // Parent imports. Put `..` last.
+            ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
+            // Other relative imports. Put same-folder imports and `.` last.
+            ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
+            // Style imports.
+            ['^.+\\.s?css$'],
+          ],
+        },
+      ],
+      'simple-import-sort/exports': 'error',
     },
   },
   {

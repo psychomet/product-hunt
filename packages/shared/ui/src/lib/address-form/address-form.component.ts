@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AddressFragment, CountryFragment, OrderAddressFragment } from '@bigi-shop/shared-util-types';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+
+import { AddressFragment, CountryFragment, OrderAddressFragment } from '@bigi-shop/shared-util-types';
 
 @Component({
   selector: 'bigi-address-form',

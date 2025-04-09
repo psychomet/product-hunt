@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { CheckoutStageIndicatorComponent } from './checkout-stage-indicator.component';
 
 describe('CheckoutStageIndicatorComponent', () => {

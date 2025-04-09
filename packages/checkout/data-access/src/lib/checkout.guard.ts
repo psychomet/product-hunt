@@ -1,7 +1,9 @@
-import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { DataService, StateService } from '@bigi-shop/shared-data-access';
 
 import { GET_ORDER_FOR_CHECKOUT } from './checkout.graphql';

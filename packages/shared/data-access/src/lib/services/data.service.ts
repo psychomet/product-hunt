@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
-import { DocumentNode } from 'graphql';
+
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { StateService } from './state.service';
+import { Apollo } from 'apollo-angular';
+
 import { FetchPolicy, MutationFetchPolicy, NetworkStatus } from '@apollo/client/core';
+import { DocumentNode } from 'graphql';
+
+import { StateService } from './state.service';
 
 @Injectable({
   providedIn: 'root'

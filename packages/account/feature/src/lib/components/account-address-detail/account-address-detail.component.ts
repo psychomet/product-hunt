@@ -1,11 +1,20 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+
 import { filter, map, Observable, switchMap } from 'rxjs';
+
+import {
+  DataService,
+  GET_AVAILABLE_COUNTRIES,
+  GET_CUSTOMER_ADDRESSES,
+} from '@bigi-shop/shared-data-access';
+import { AddressFormComponent } from '@bigi-shop/shared-ui';
 import {
   CountryFragment,
   GetAvailableCountriesQuery,
@@ -15,13 +24,7 @@ import {
   UpdateAddressMutation,
   UpdateAddressMutationVariables,
 } from '@bigi-shop/shared-util-types';
-import { AddressFormComponent } from '@bigi-shop/shared-ui';
-import { ActivatedRoute } from '@angular/router';
-import {
-  DataService,
-  GET_AVAILABLE_COUNTRIES,
-  GET_CUSTOMER_ADDRESSES,
-} from '@bigi-shop/shared-data-access';
+
 import { UPDATE_ADDRESS } from './account-address-detail.graphql';
 
 @Component({

@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
 import { Observable, of } from 'rxjs';
 import { filter, map, mergeMap, shareReplay, switchMap, take } from 'rxjs/operators';
+
 import { CheckoutService, GET_ORDER_BY_CODE } from '@bigi-shop/checkout-data-access';
-import { GetOrderByCodeQuery, GetOrderByCodeQueryVariables, notNullOrUndefined, RegisterMutation, RegisterMutationVariables } from '@bigi-shop/shared-util-types';
 import { DataService, REGISTER, StateService } from '@bigi-shop/shared-data-access';
 import { CartContentsComponent, CartTotalsComponent } from '@bigi-shop/shared-ui';
+import { GetOrderByCodeQuery, GetOrderByCodeQueryVariables, notNullOrUndefined, RegisterMutation, RegisterMutationVariables } from '@bigi-shop/shared-util-types';
 
 @Component({
   selector: 'bigi-checkout-confirmation',

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { CartTotalsComponent } from './cart-totals.component';
 
 describe('CartTotalsComponent', () => {

@@ -1,10 +1,13 @@
-import { Injectable, inject } from '@angular/core';
-import { Observable, map, shareReplay, switchMap, take } from 'rxjs';
-import { DataService } from './data.service';
-import { StateService } from './state.service';
+import { inject,Injectable } from '@angular/core';
+
+import { map, Observable, shareReplay, switchMap, take } from 'rxjs';
 
 import { GetActiveCustomerQuery } from '@bigi-shop/shared-util-types';
+
 import { GET_ACTIVE_CUSTOMER } from '../graphql/documents.graphql';
+
+import { DataService } from './data.service';
+import { StateService } from './state.service';
 
 @Injectable({
   providedIn: 'root',

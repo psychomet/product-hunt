@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SearchProductsQuery } from '@bigi-shop/shared-util-types';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
+import { SearchProductsQuery } from '@bigi-shop/shared-util-types';
+
 import { AssetPreviewPipe } from '../asset-preview.pipe';
 import { FormatPricePipe } from '../format-price.pipe';
 
@@ -13,5 +15,5 @@ import { FormatPricePipe } from '../format-price.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductCardComponent {
-  product = input<SearchProductsQuery['search']['items'][number]>();
+  product = input<SearchProductsQuery['search']['items'][number] | any>();
 }

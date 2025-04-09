@@ -1,9 +1,13 @@
-import { Injectable, inject } from '@angular/core';
+import { inject,Injectable } from '@angular/core';
+
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DataService } from './data.service';
-import { GET_ACTIVE_ORDER } from '../graphql/active.graphql';
+
 import { GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
+
+import { GET_ACTIVE_ORDER } from '../graphql/active.graphql';
+
+import { DataService } from './data.service';
 
 
 @Injectable({

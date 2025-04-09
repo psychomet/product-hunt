@@ -1,4 +1,5 @@
 import { gql } from 'apollo-angular';
+
 import { ERROR_RESULT_FRAGMENT } from '@bigi-shop/shared-data-access';
 
 export const LOGIN = gql`

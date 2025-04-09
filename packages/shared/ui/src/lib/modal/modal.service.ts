@@ -1,11 +1,11 @@
 import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { Injectable, Injector, Type } from '@angular/core';
+
 import { Observable, race } from 'rxjs';
 import { finalize, mapTo, take, tap } from 'rxjs/operators';
 
 import { ModalDialogComponent } from './modal-dialog/modal-dialog.component';
-
 import { Dialog, DIALOG_COMPONENT, MODAL_OPTIONS, ModalOptions } from './modal-types';
 
 /**

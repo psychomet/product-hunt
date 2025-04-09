@@ -1,11 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, TemplateRef, Type } from '@angular/core';
+
 import { Subject } from 'rxjs';
 
 import { Dialog, DIALOG_COMPONENT, MODAL_OPTIONS, ModalOptions } from '../modal-types';
 
 import { DialogButtonsDirective } from './dialog-buttons.directive';
 import { DialogComponentOutletComponent } from "./dialog-component-outlet.component";
-import { CommonModule } from '@angular/common';
 
 /**
  * This component should only be instatiated dynamically by the ModalService. It should not be used

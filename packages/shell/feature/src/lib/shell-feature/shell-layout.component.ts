@@ -1,39 +1,43 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
+
 import {
-  DataService,
-  StateService,
-  ActiveService,
-  GET_COLLECTIONS,
-} from '@bigi-shop/shared-data-access';
-import {
-  CollectionsMenuComponent,
-  Collection,
-  arrayToTree,
-  TreeNode,
-} from '@bigi-shop/shared-ui';
-import { CartDrawerComponent } from '@bigi-shop/shell-ui';
-import {
-  SIGN_OUT,
-  ADJUST_ITEM_QUANTITY,
-  REMOVE_ITEM_FROM_CART,
-} from './shell-layout.graphql';
-import {
-  Observable,
   map,
   merge,
+  Observable,
   shareReplay,
   startWith,
   switchMap,
   take,
 } from 'rxjs';
+
+import {
+  ActiveService,
+  DataService,
+  GET_COLLECTIONS,
+  StateService,
+} from '@bigi-shop/shared-data-access';
+import {
+  arrayToTree,
+  Collection,
+  CollectionsMenuComponent,
+  TreeNode,
+} from '@bigi-shop/shared-ui';
 import type {
   RemoveItemFromCartMutation,
   RemoveItemFromCartMutationVariables,
 } from '@bigi-shop/shared-util-types';
-import { CartToggleComponent } from '../cart-toggle-feature/cart-toggle.component';
+import { CartDrawerComponent } from '@bigi-shop/shell-ui';
+
 import { AccountLinkComponent } from '../account-link/account-link.component';
+import { CartToggleComponent } from '../cart-toggle-feature/cart-toggle.component';
+
+import {
+  ADJUST_ITEM_QUANTITY,
+  REMOVE_ITEM_FROM_CART,
+  SIGN_OUT,
+} from './shell-layout.graphql';
 
 @Component({
   standalone: true,

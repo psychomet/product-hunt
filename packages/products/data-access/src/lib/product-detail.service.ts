@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+
 import { DataService } from '@bigi-shop/shared-data-access';
 import { GetProductQuery } from '@bigi-shop/shared-util-types';
+
 import { GET_PRODUCT } from './product-detail.graphql';
 
 

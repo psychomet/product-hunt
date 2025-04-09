@@ -1,10 +1,13 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { filter, map, Observable } from 'rxjs';
-import { DataService, StateService } from '@bigi-shop/shared-data-access';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { GET_ACCOUNT_OVERVIEW } from './account-dashboard.graphql';
+
+import { filter, map, Observable } from 'rxjs';
+
+import { DataService, StateService } from '@bigi-shop/shared-data-access';
 import { GetAccountOverviewQuery, notNullOrUndefined } from '@bigi-shop/shared-util-types';
+
+import { GET_ACCOUNT_OVERVIEW } from './account-dashboard.graphql';
 
 @Component({
   selector: 'bigi-account-dashboard',

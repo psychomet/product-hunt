@@ -1,7 +1,9 @@
-import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormatPricePipe } from '../format-price.pipe';
+import { Component, Input } from '@angular/core';
+
 import { CartFragment } from '@bigi-shop/shared-util-types';
+
+import { FormatPricePipe } from '../format-price.pipe';
 
 @Component({
   selector: 'bigi-cart-totals',

@@ -1,8 +1,10 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef,Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+
 import { DataService, StateService } from '@bigi-shop/shared-data-access';
+
 import { LOGIN } from './account-sign-in.graphql';
 
 @Component({

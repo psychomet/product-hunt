@@ -1,8 +1,10 @@
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 
-import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AssetFragment } from '@bigi-shop/shared-util-types';
+
 import { AssetPreviewPipe } from '../asset-preview.pipe';
 
 export type AssetWithDimensions = Pick<AssetFragment, 'id' | 'preview' | 'width' | 'height'>;
@@ -13,13 +15,13 @@ export type AssetWithDimensions = Pick<AssetFragment, 'id' | 'preview' | 'width'
   styleUrl: './asset-gallery.component.scss',
 })
 export class AssetGalleryComponent implements OnInit, OnChanges, AfterViewInit {
-  @Input() assets?: AssetWithDimensions[] = [];
+  @Input() assets?: AssetWithDimensions[] | any = [];
   @Input() selectedAssetId: string;
   @ViewChild('mainPreview', {static: false})
   featuredAssetLoaded = false;
   private mainPreview: ElementRef<HTMLImageElement>;
 
-  selectedAsset?: AssetWithDimensions;
+  selectedAsset?: AssetWithDimensions | any;
   private gallery: any;
 
   constructor(@Inject(PLATFORM_ID) private platformId: any) {
@@ -50,7 +52,7 @@ export class AssetGalleryComponent implements OnInit, OnChanges, AfterViewInit {
 
   private initPhotoswipe() {
       if (isPlatformBrowser(this.platformId)) {
-          const items = this.assets?.map(asset => ({
+          const items = this.assets?.map((asset: any) => ({
               src: asset.preview,
               msrc: asset.preview + '?preset=medium',
               width: asset.width || 1000,
@@ -67,7 +69,7 @@ export class AssetGalleryComponent implements OnInit, OnChanges, AfterViewInit {
 
   selectImage(assetId: string) {
       if (assetId != null) {
-          this.selectedAsset = this.assets?.find(a => a.id === assetId);
+          this.selectedAsset = this.assets?.find((a: any) => a.id === assetId);
       } else {
           this.selectedAsset = this.assets?.[0];
       }
@@ -77,7 +79,7 @@ export class AssetGalleryComponent implements OnInit, OnChanges, AfterViewInit {
       if (!this.assets) {
           return;
       }
-      const index = this.assets.findIndex(a => a.id === assetId);
+      const index = this.assets.findIndex((a: any) => a.id === assetId);
       this.gallery.loadAndOpen(index);
   }
 

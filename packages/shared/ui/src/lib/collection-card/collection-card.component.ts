@@ -1,9 +1,11 @@
-import { Component, computed, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AssetFragment, GetCollectionQuery } from '@bigi-shop/shared-util-types';
+import { Component, computed, inject, input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { AssetPreviewPipe } from '../asset-preview.pipe';
 import { RouterLink } from '@angular/router';
+
+import { AssetFragment, GetCollectionQuery } from '@bigi-shop/shared-util-types';
+
+import { AssetPreviewPipe } from '../asset-preview.pipe';
 
 @Component({
   selector: 'bigi-collection-card',
@@ -12,7 +14,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './collection-card.component.scss',
 })
 export class CollectionCardComponent {
-  collection = input<NonNullable<GetCollectionQuery['collection']>>();
+  collection = input<GetCollectionQuery['collection'] | any>();
   private sanitizer = inject(DomSanitizer);
     backgroundImage = computed(() => {
       if (this.collection().featuredAsset) {

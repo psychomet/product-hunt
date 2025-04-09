@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Output } from '@angular/core';
-import { Subject } from 'rxjs';
-import { NOTIFICATION_OPTIONS, NotificationOptions } from './notification-types';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Output } from '@angular/core';
+
+import { Subject } from 'rxjs';
+
+import { NOTIFICATION_OPTIONS, NotificationOptions } from './notification-types';
 
 
 @Component({
