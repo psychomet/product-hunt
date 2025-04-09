@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { DataService, GET_COLLECTIONS } from '@bigi-shop/shared-data-access';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -10,7 +9,7 @@ import { GetCollectionsQuery } from '@bigi-shop/shared-util-types';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, RouterLink, CollectionCardComponent],
+  imports: [CommonModule, CollectionCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
