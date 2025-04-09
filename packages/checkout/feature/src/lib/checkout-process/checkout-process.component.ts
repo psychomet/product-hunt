@@ -1,8 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   RouterModule,
@@ -49,7 +45,7 @@ import {
         <bigi-checkout-stage-indicator
           [activeStage]="activeStage"
           [signedIn]="signedIn$ | async"
-        />
+        ></bigi-checkout-stage-indicator>
 
         <div
           class="lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16"
@@ -61,8 +57,8 @@ import {
             <router-outlet></router-outlet>
           </div>
           <div class="summary" *ngIf="cart$ | async as cart">
-            <bigi-cart-contents [cart]="cart" class="mb-3" />
-            <bigi-cart-totals [cart]="cart" />
+            <bigi-cart-contents [cart]="cart" class="mb-3"></bigi-cart-contents>
+            <bigi-cart-totals [cart]="cart"></bigi-cart-totals>
             <bigi-address-card
               *ngIf="cart.shippingAddress?.streetLine1"
               class="w-48 block"

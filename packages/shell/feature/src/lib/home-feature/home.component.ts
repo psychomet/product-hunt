@@ -21,23 +21,6 @@ import { GetCollectionsQuery } from '@bigi-shop/shared-util-types';
             *ngFor="let collection of collections"
             [collection]="collection"
           />
-          <a
-            *ngFor="let collection of collections"
-            [routerLink]="['/category', collection.slug]"
-            class="group relative rounded-lg overflow-hidden bg-white shadow-lg hover:shadow-xl transition-shadow duration-300"
-          >
-            <div class="aspect-w-3 aspect-h-2">
-              <img
-                *ngIf="collection.featuredAsset?.preview"
-                [src]="collection.featuredAsset.preview"
-                [alt]="collection.name"
-                class="w-full h-full object-center object-cover group-hover:opacity-75 transition-opacity duration-300"
-              />
-            </div>
-            <div class="p-4">
-              <h3 class="text-lg font-medium text-gray-900">{{ collection.name }}</h3>
-            </div>
-          </a>
         </ng-container>
       </div>
   `,
