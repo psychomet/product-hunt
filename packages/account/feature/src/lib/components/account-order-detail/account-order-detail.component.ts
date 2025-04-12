@@ -4,9 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 
 import { filter, map, Observable, switchMap } from 'rxjs';
 
-import { DataService } from '@bigi-shop/shared-data-access';
-import { AddressCardComponent, CartContentsComponent, CartTotalsComponent } from '@bigi-shop/shared-ui';
-import { GetOrderQuery, GetOrderQueryVariables, notNullOrUndefined } from '@bigi-shop/shared-util-types';
+import { DataService } from '@product-hunt/shared-data-access';
+import { AddressCardComponent, CartContentsComponent, CartTotalsComponent } from '@product-hunt/shared-ui';
+import { GetOrderQuery, GetOrderQueryVariables, notNullOrUndefined } from '@product-hunt/shared-util-types';
 
 import { GET_ORDER } from './account-order-detail.graphql';
 

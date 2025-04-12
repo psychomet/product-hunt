@@ -4,9 +4,9 @@ import { RouterLink } from '@angular/router';
 
 import { map, Observable } from 'rxjs';
 
-import { DataService } from '@bigi-shop/shared-data-access';
-import { FormatPricePipe } from '@bigi-shop/shared-ui';
-import { GetOrderListQuery, GetOrderListQueryVariables, SortOrder } from '@bigi-shop/shared-util-types';
+import { DataService } from '@product-hunt/shared-data-access';
+import { FormatPricePipe } from '@product-hunt/shared-ui';
+import { GetOrderListQuery, GetOrderListQueryVariables, SortOrder } from '@product-hunt/shared-util-types';
 
 import { GET_ORDER_LIST } from './account-order-list.graphql';
 @Component({

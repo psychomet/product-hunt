@@ -1,5 +1,5 @@
 {
-  "name": "@bigi-shop/checkout-data-access",
+  "name": "@product-hunt/checkout-data-access",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/core": "^19.2.0"

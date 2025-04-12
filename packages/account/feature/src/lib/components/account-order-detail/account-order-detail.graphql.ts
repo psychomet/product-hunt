@@ -1,6 +1,6 @@
 import {gql} from 'apollo-angular';
 
-import { CART_FRAGMENT, ORDER_ADDRESS_FRAGMENT } from '@bigi-shop/shared-data-access';
+import { CART_FRAGMENT, ORDER_ADDRESS_FRAGMENT } from '@product-hunt/shared-data-access';
 
 
 

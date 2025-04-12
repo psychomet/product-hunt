@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { DataService } from '@bigi-shop/shared-data-access';
-import { GetProductsQuery, InputMaybe,ProductListOptions } from '@bigi-shop/shared-util-types';
+import { DataService } from '@product-hunt/shared-data-access';
+import { GetProductsQuery, InputMaybe,ProductListOptions } from '@product-hunt/shared-util-types';
 
 import { GET_PRODUCTS } from './product.graphql';
 

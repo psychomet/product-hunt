@@ -17,32 +17,32 @@
     "strictNullChecks": false,
     "baseUrl": ".",
     "paths": {
-      "@bigi-shop/account-data-access": [
+      "@product-hunt/account-data-access": [
         "packages/account/data-access/src/index.ts"
       ],
-      "@bigi-shop/account-feature": ["packages/account/feature/src/index.ts"],
-      "@bigi-shop/account-ui": ["packages/account/ui/src/index.ts"],
-      "@bigi-shop/checkout-data-access": [
+      "@product-hunt/account-feature": ["packages/account/feature/src/index.ts"],
+      "@product-hunt/account-ui": ["packages/account/ui/src/index.ts"],
+      "@product-hunt/checkout-data-access": [
         "packages/checkout/data-access/src/index.ts"
       ],
-      "@bigi-shop/checkout-feature": ["packages/checkout/feature/src/index.ts"],
-      "@bigi-shop/checkout-ui": ["packages/checkout/ui/src/index.ts"],
-      "@bigi-shop/products-data-access": [
+      "@product-hunt/checkout-feature": ["packages/checkout/feature/src/index.ts"],
+      "@product-hunt/checkout-ui": ["packages/checkout/ui/src/index.ts"],
+      "@product-hunt/products-data-access": [
         "packages/products/data-access/src/index.ts"
       ],
-      "@bigi-shop/products-feature": ["packages/products/feature/src/index.ts"],
-      "@bigi-shop/products-ui": ["packages/products/ui/src/index.ts"],
-      "@bigi-shop/products-util": ["packages/products/util/src/index.ts"],
-      "@bigi-shop/shared-data-access": [
+      "@product-hunt/products-feature": ["packages/products/feature/src/index.ts"],
+      "@product-hunt/products-ui": ["packages/products/ui/src/index.ts"],
+      "@product-hunt/products-util": ["packages/products/util/src/index.ts"],
+      "@product-hunt/shared-data-access": [
         "packages/shared/data-access/src/index.ts"
       ],
-      "@bigi-shop/shared-ui": ["packages/shared/ui/src/index.ts"],
-      "@bigi-shop/shared-util-types": [
+      "@product-hunt/shared-ui": ["packages/shared/ui/src/index.ts"],
+      "@product-hunt/shared-util-types": [
         "packages/shared/util-types/src/index.ts"
       ],
-      "@bigi-shop/shell-feature": ["packages/shell/feature/src/index.ts"],
-      "@bigi-shop/shell-ui": ["packages/shell/ui/src/index.ts"],
-      "@bigi-shop/util-config": ["packages/util-config/src/index.ts"]
+      "@product-hunt/shell-feature": ["packages/shell/feature/src/index.ts"],
+      "@product-hunt/shell-ui": ["packages/shell/ui/src/index.ts"],
+      "@product-hunt/util-config": ["packages/util-config/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

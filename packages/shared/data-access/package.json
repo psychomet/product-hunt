@@ -1,12 +1,12 @@
 {
-  "name": "@bigi-shop/shared-data-access",
+  "name": "@product-hunt/shared-data-access",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^19.2.0",
     "@angular/core": "^19.2.0",
     "@angular/router": "~19.2.0",
     "rxjs": "~7.8.0",
-    "@bigi-shop/shared-util-types": "0.0.1"
+    "@product-hunt/shared-util-types": "0.0.1"
   },
   "dependencies": {
     "apollo-angular": "^10.0.3",

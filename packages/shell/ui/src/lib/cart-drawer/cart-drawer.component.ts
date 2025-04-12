@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { CartContentsComponent } from '@bigi-shop/shared-ui';
-import { GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
+import { CartContentsComponent } from '@product-hunt/shared-ui';
+import { GetActiveOrderQuery } from '@product-hunt/shared-util-types';
 
 @Component({
   selector: 'bigi-cart-drawer',

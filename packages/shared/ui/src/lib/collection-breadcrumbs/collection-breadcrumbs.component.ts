@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { GetCollectionQuery } from '@bigi-shop/shared-util-types';
+import { GetCollectionQuery } from '@product-hunt/shared-util-types';
 
 @Component({
   selector: 'bigi-collection-breadcrumbs',

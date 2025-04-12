@@ -1,6 +1,6 @@
 import {gql} from 'apollo-angular';
 
-import { ADDRESS_FRAGMENT } from '@bigi-shop/shared-data-access';
+import { ADDRESS_FRAGMENT } from '@product-hunt/shared-data-access';
 
 
 

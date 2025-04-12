@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { DataService } from '@bigi-shop/shared-data-access';
+import { DataService } from '@product-hunt/shared-data-access';
 
 import { VERIFY } from './verify.graphql';
 

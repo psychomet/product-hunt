@@ -4,7 +4,7 @@ import {
   CART_FRAGMENT,
   ERROR_RESULT_FRAGMENT,
   ORDER_ADDRESS_FRAGMENT,
-} from '@bigi-shop/shared-data-access';
+} from '@product-hunt/shared-data-access';
 
 export const GET_ORDER_FOR_CHECKOUT = gql`
   query GetOrderForCheckout {

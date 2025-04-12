@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'bigi-shop-account',
+  selector: 'product-hunt-account',
   standalone: true,
   imports: [RouterOutlet],
   template: `

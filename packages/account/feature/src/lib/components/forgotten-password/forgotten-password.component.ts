@@ -3,11 +3,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { DataService } from '@bigi-shop/shared-data-access';
+import { DataService } from '@product-hunt/shared-data-access';
 import {
   RequestPasswordResetMutation,
   RequestPasswordResetMutationVariables,
-} from '@bigi-shop/shared-util-types';
+} from '@product-hunt/shared-util-types';
 
 import { REQUEST_PASSWORD_RESET } from './forgotten-password.graphql';
 

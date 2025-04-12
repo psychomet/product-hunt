@@ -14,7 +14,7 @@ import { RouterLink } from '@angular/router';
 import {
   CartFragment,
   GetActiveOrderQuery,
-} from '@bigi-shop/shared-util-types';
+} from '@product-hunt/shared-util-types';
 
 import { AssetPreviewPipe } from '../asset-preview.pipe';
 import { FormatPricePipe } from '../format-price.pipe';

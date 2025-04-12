@@ -1,4 +1,4 @@
-import { createVendureConfig } from '@bigi-shop/util-config';
+import { createVendureConfig } from '@product-hunt/util-config';
 import path from 'path';
 
 /**

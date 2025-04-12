@@ -1,14 +1,14 @@
 {
-  "name": "@bigi-shop/account-feature",
+  "name": "@product-hunt/account-feature",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^19.2.0",
     "@angular/core": "^19.2.0",
     "@angular/router": "~19.2.0",
     "rxjs": "~7.8.0",
-    "@bigi-shop/shared-data-access": "0.0.1",
-    "@bigi-shop/shared-util-types": "0.0.1",
-    "@bigi-shop/shared-ui": "0.0.1",
+    "@product-hunt/shared-data-access": "0.0.1",
+    "@product-hunt/shared-util-types": "0.0.1",
+    "@product-hunt/shared-ui": "0.0.1",
     "apollo-angular": "^10.0.3",
     "@angular/forms": "~19.2.0"
   },

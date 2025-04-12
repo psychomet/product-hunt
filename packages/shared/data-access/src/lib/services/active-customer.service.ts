@@ -2,7 +2,7 @@ import { inject,Injectable } from '@angular/core';
 
 import { map, Observable, shareReplay, switchMap, take } from 'rxjs';
 
-import { GetActiveCustomerQuery } from '@bigi-shop/shared-util-types';
+import { GetActiveCustomerQuery } from '@product-hunt/shared-util-types';
 
 import { GET_ACTIVE_CUSTOMER } from '../graphql/documents.graphql';
 

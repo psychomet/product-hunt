@@ -5,10 +5,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { filter, map, mergeMap, shareReplay, switchMap, take } from 'rxjs/operators';
 
-import { CheckoutService, GET_ORDER_BY_CODE } from '@bigi-shop/checkout-data-access';
-import { DataService, REGISTER, StateService } from '@bigi-shop/shared-data-access';
-import { CartContentsComponent, CartTotalsComponent } from '@bigi-shop/shared-ui';
-import { GetOrderByCodeQuery, GetOrderByCodeQueryVariables, notNullOrUndefined, RegisterMutation, RegisterMutationVariables } from '@bigi-shop/shared-util-types';
+import { CheckoutService, GET_ORDER_BY_CODE } from '@product-hunt/checkout-data-access';
+import { DataService, REGISTER, StateService } from '@product-hunt/shared-data-access';
+import { CartContentsComponent, CartTotalsComponent } from '@product-hunt/shared-ui';
+import { GetOrderByCodeQuery, GetOrderByCodeQueryVariables, notNullOrUndefined, RegisterMutation, RegisterMutationVariables } from '@product-hunt/shared-util-types';
 
 @Component({
   selector: 'bigi-checkout-confirmation',

@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client/core';
 
-import { ASSET_FRAGMENT } from '@bigi-shop/shared-data-access';
+import { ASSET_FRAGMENT } from '@product-hunt/shared-data-access';
 
 export const SEARCH_PRODUCTS = gql`
   query SearchProducts($input: SearchInput!) {

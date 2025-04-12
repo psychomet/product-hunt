@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
-import { CurrentUser } from '@bigi-shop/shared-util-types';
+import { CurrentUser } from '@product-hunt/shared-util-types';
 
 export interface AppState {
   signedIn: boolean;

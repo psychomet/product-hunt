@@ -4,8 +4,8 @@ import { RouterLink } from '@angular/router';
 
 import { Observable } from 'rxjs';
 
-import { ActiveCustomerService } from '@bigi-shop/shared-data-access';
-import { GetActiveCustomerQuery } from '@bigi-shop/shared-util-types';
+import { ActiveCustomerService } from '@product-hunt/shared-data-access';
+import { GetActiveCustomerQuery } from '@product-hunt/shared-util-types';
 
 @Component({
   selector: 'bigi-account-link',

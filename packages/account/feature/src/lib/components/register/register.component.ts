@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { DataService, REGISTER } from '@bigi-shop/shared-data-access';
+import { DataService, REGISTER } from '@product-hunt/shared-data-access';
 
 @Component({
   selector: 'bigi-register',

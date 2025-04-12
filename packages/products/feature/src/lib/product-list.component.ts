@@ -21,16 +21,16 @@ import {
   tap
 } from 'rxjs';
 
-import { ProductListControlsComponent } from '@bigi-shop/products-ui';
-import { DataService, StateService } from '@bigi-shop/shared-data-access';
-import { AssetPreviewPipe, CollectionBreadcrumbsComponent, CollectionCardComponent, ProductCardComponent } from '@bigi-shop/shared-ui';
+import { ProductListControlsComponent } from '@product-hunt/products-ui';
+import { DataService, StateService } from '@product-hunt/shared-data-access';
+import { AssetPreviewPipe, CollectionBreadcrumbsComponent, CollectionCardComponent, ProductCardComponent } from '@product-hunt/shared-ui';
 import {
   GetCollectionQuery,
   GetCollectionQueryVariables,
   getRouteArrayParam,
   SearchProductsQuery,
   SearchProductsQueryVariables
-} from '@bigi-shop/shared-util-types';
+} from '@product-hunt/shared-util-types';
 
 import { GET_COLLECTION,SEARCH_PRODUCTS } from './product-list.graphql';
 

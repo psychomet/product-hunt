@@ -19,21 +19,21 @@ import {
   ActiveService,
   DataService,
   StateService,
-} from '@bigi-shop/shared-data-access';
+} from '@product-hunt/shared-data-access';
 import {
   AssetGalleryComponent,
   CollectionBreadcrumbsComponent,
   FormatPricePipe,
   NotificationService,
   SafeHtmlPipe,
-} from '@bigi-shop/shared-ui';
+} from '@product-hunt/shared-ui';
 import {
   AddToCartMutation,
   AddToCartMutationVariables,
   GetProductDetailQuery,
   GetProductDetailQueryVariables,
   notNullOrUndefined,
-} from '@bigi-shop/shared-util-types';
+} from '@product-hunt/shared-util-types';
 
 import { ADD_TO_CART,GET_PRODUCT_DETAIL } from './product-detail.graphql';
 

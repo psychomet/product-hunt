@@ -3,7 +3,7 @@ import { Route } from '@angular/router';
 import {
   checkoutGuard,
   checkoutResolver,
-} from '@bigi-shop/checkout-data-access';
+} from '@product-hunt/checkout-data-access';
 
 export const checkoutFeatureRoutes: Route[] = [
   {

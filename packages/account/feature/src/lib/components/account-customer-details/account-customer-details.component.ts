@@ -16,14 +16,14 @@ import { filter, map } from 'rxjs';
 import {
   DataService,
   GET_ACTIVE_CUSTOMER,
-} from '@bigi-shop/shared-data-access';
+} from '@product-hunt/shared-data-access';
 import {
   GetActiveCustomerQuery,
   notNullOrUndefined,
   UpdateCustomerDetailsMutation,
   UpdateCustomerDetailsMutationVariables,
   UpdateCustomerInput,
-} from '@bigi-shop/shared-util-types';
+} from '@product-hunt/shared-util-types';
 
 import { UPDATE_CUSTOMER_DETAILS } from './account-customer-details.graphql';
 

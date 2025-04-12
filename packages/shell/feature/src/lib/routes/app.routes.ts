@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 
-import { accountRoutes } from '@bigi-shop/account-feature';
+import { accountRoutes } from '@product-hunt/account-feature';
 import {
   ProductDetailComponent,
   ProductListComponent,
-} from '@bigi-shop/products-feature';
+} from '@product-hunt/products-feature';
 
 import { HomeComponent } from '../home-feature/home.component';
 import { ShellLayoutComponent } from '../shell-feature/shell-layout.component';
@@ -37,7 +37,7 @@ export const routes: Routes = [
       {
         path: 'checkout',
         loadChildren: () =>
-          import('@bigi-shop/checkout-feature').then(
+          import('@product-hunt/checkout-feature').then(
             (m) => m.checkoutFeatureRoutes
           ),
       },

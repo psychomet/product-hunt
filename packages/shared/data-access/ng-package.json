@@ -8,6 +8,6 @@
     "@apollo/client",
     "apollo-angular",
     "graphql",
-    "@bigi-shop/shared-util"
+    "@product-hunt/shared-util"
   ]
 }

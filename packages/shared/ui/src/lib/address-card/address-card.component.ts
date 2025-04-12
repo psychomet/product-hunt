@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
-import { AddressFragment, OrderAddressFragment } from '@bigi-shop/shared-util-types';
+import { AddressFragment, OrderAddressFragment } from '@product-hunt/shared-util-types';
 
 @Component({
   selector: 'bigi-address-card',

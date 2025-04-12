@@ -3,7 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 
 import { map } from 'rxjs/operators';
 
-import {  StateService} from '@bigi-shop/shared-data-access';
+import {  StateService} from '@product-hunt/shared-data-access';
 
 export const AccountGuard: CanActivateFn = () => {
   const router = inject(Router);

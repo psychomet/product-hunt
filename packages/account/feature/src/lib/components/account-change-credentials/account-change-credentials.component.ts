@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { DataService } from '@bigi-shop/shared-data-access';
-import { ChangeEmailAddressMutation, ChangeEmailAddressMutationVariables, ChangePasswordMutation, ChangePasswordMutationVariables } from '@bigi-shop/shared-util-types';
+import { DataService } from '@product-hunt/shared-data-access';
+import { ChangeEmailAddressMutation, ChangeEmailAddressMutationVariables, ChangePasswordMutation, ChangePasswordMutationVariables } from '@product-hunt/shared-util-types';
 
 import { CHANGE_EMAIL_ADDRESS, CHANGE_PASSWORD } from './account-change-credentials.graphql';
 

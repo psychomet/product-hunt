@@ -1,6 +1,6 @@
 import { gql } from 'apollo-angular';
 
-import { ERROR_RESULT_FRAGMENT } from '@bigi-shop/shared-data-access';
+import { ERROR_RESULT_FRAGMENT } from '@product-hunt/shared-data-access';
 
 export const CHANGE_PASSWORD = gql`
   mutation ChangePassword($old: String!, $new: String!) {

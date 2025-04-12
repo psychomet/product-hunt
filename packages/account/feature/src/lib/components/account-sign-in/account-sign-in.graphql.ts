@@ -1,6 +1,6 @@
 import { gql } from 'apollo-angular';
 
-import { ERROR_RESULT_FRAGMENT } from '@bigi-shop/shared-data-access';
+import { ERROR_RESULT_FRAGMENT } from '@product-hunt/shared-data-access';
 
 export const LOGIN = gql`
   mutation Login($email: String!, $password: String!, $rememberMe: Boolean) {

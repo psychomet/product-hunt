@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 
 import { filter, map, Observable } from 'rxjs';
 
-import { DataService, StateService } from '@bigi-shop/shared-data-access';
-import { GetAccountOverviewQuery, notNullOrUndefined } from '@bigi-shop/shared-util-types';
+import { DataService, StateService } from '@product-hunt/shared-data-access';
+import { GetAccountOverviewQuery, notNullOrUndefined } from '@product-hunt/shared-util-types';
 
 import { GET_ACCOUNT_OVERVIEW } from './account-dashboard.graphql';
 

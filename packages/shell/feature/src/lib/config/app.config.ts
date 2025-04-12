@@ -12,11 +12,11 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { firstValueFrom, map, take } from 'rxjs';
 
-import { ActiveCustomerService, DataService, defaultInterceptor, GET_ACTIVE_CHANNEL } from '@bigi-shop/shared-data-access';
+import { ActiveCustomerService, DataService, defaultInterceptor, GET_ACTIVE_CHANNEL } from '@product-hunt/shared-data-access';
 import {
   GET_ACTIVE_CHANNEL_TOKEN,
   GetActiveChannelQuery,
-} from '@bigi-shop/shared-util-types';
+} from '@product-hunt/shared-util-types';
 
 import { routes } from '../routes/app.routes';
 

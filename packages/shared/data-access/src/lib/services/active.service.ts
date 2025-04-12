@@ -3,7 +3,7 @@ import { inject,Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
+import { GetActiveOrderQuery } from '@product-hunt/shared-util-types';
 
 import { GET_ACTIVE_ORDER } from '../graphql/active.graphql';
 

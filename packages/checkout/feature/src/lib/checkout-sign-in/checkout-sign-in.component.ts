@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { CheckoutService } from '@bigi-shop/checkout-data-access';
+import { CheckoutService } from '@product-hunt/checkout-data-access';
 
 @Component({
   selector: 'bigi-checkout-sign-in',

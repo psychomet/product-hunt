@@ -3,7 +3,7 @@ import { gql } from 'apollo-angular';
 import {
   CART_FRAGMENT,
   ERROR_RESULT_FRAGMENT,
-} from '@bigi-shop/shared-data-access';
+} from '@product-hunt/shared-data-access';
 
 export const SIGN_OUT = gql`
   mutation ShellLayoutSignOut {

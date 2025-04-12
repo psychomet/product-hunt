@@ -4,9 +4,9 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { DataService, GET_AVAILABLE_COUNTRIES } from '@bigi-shop/shared-data-access';
-import { AddressFormComponent, Dialog } from '@bigi-shop/shared-ui';
-import { AddressFragment, CountryFragment, CreateAddressMutation, CreateAddressMutationVariables, GetAvailableCountriesQuery } from '@bigi-shop/shared-util-types';
+import { DataService, GET_AVAILABLE_COUNTRIES } from '@product-hunt/shared-data-access';
+import { AddressFormComponent, Dialog } from '@product-hunt/shared-ui';
+import { AddressFragment, CountryFragment, CreateAddressMutation, CreateAddressMutationVariables, GetAvailableCountriesQuery } from '@product-hunt/shared-util-types';
 
 import { CREATE_ADDRESS } from './address-modal.graphql';
 

@@ -1,5 +1,5 @@
 {
-  "name": "@bigi-shop/source",
+  "name": "@product-hunt/source",
   "$schema": "node_modules/nx/schemas/project-schema.json",
   "targets": {
     "local-registry": {

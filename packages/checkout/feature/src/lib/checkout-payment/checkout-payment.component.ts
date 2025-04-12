@@ -6,9 +6,9 @@ import { ActivatedRoute,Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { ADD_PAYMENT,CheckoutService, GET_ELIGIBLE_PAYMENT_METHODS, Order, PaymentMethod } from '@bigi-shop/checkout-data-access';
-import { DataService, StateService } from '@bigi-shop/shared-data-access';
-import { AddPaymentMutation, AddPaymentMutationVariables, GetEligiblePaymentMethodsQuery } from '@bigi-shop/shared-util-types';
+import { ADD_PAYMENT,CheckoutService, GET_ELIGIBLE_PAYMENT_METHODS, Order, PaymentMethod } from '@product-hunt/checkout-data-access';
+import { DataService, StateService } from '@product-hunt/shared-data-access';
+import { AddPaymentMutation, AddPaymentMutationVariables, GetEligiblePaymentMethodsQuery } from '@product-hunt/shared-util-types';
 
 @Component({
   selector: 'bigi-checkout-payment',

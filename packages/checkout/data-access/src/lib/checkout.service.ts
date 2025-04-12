@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { ActiveService, DataService, REGISTER } from '@bigi-shop/shared-data-access';
-import { Cart, GetActiveOrderQuery } from '@bigi-shop/shared-util-types';
+import { ActiveService, DataService, REGISTER } from '@product-hunt/shared-data-access';
+import { Cart, GetActiveOrderQuery } from '@product-hunt/shared-util-types';
 
 import {
   ADD_PAYMENT,

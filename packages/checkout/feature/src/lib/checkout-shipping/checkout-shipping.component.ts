@@ -27,13 +27,13 @@ import {
   SET_SHIPPING_ADDRESS,
   SET_SHIPPING_METHOD,
   TRANSITION_TO_ARRANGING_PAYMENT,
-} from '@bigi-shop/checkout-data-access';
+} from '@product-hunt/checkout-data-access';
 import {
   DataService,
   GET_AVAILABLE_COUNTRIES,
   GET_CUSTOMER_ADDRESSES,
   StateService,
-} from '@bigi-shop/shared-data-access';
+} from '@product-hunt/shared-data-access';
 import {
   AddressFormComponent,
   FormatPricePipe,
@@ -41,7 +41,7 @@ import {
   NotificationService,
   RadioCardComponent,
   RadioCardFieldsetComponent,
-} from '@bigi-shop/shared-ui';
+} from '@product-hunt/shared-ui';
 import {
   AddressFragment,
   CreateAddressInput,
@@ -57,7 +57,7 @@ import {
   SetShippingMethodMutation,
   SetShippingMethodMutationVariables,
   TransitionToArrangingPaymentMutation,
-} from '@bigi-shop/shared-util-types';
+} from '@product-hunt/shared-util-types';
 
 import { AddressModalComponent } from './address-modal/address-modal.component';
 

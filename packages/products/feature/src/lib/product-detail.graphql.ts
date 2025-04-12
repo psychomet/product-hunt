@@ -4,7 +4,7 @@ import {
   ASSET_FRAGMENT,
   CART_FRAGMENT,
   ERROR_RESULT_FRAGMENT,
-} from '@bigi-shop/shared-data-access';
+} from '@product-hunt/shared-data-access';
 
 export const GET_PRODUCT_DETAIL = gql`
   query GetProductDetail($slug: String!) {

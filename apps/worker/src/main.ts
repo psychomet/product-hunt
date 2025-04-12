@@ -1,6 +1,6 @@
 import { bootstrapWorker } from '@vendure/core';
 import { config } from './vendure-config';
-import { loadEnv } from '@bigi-shop/util-config';
+import { loadEnv } from '@product-hunt/util-config';
 
 // Load environment variables from .env file
 loadEnv();

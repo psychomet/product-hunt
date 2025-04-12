@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { SearchProductsQuery } from '@bigi-shop/shared-util-types';
+import { SearchProductsQuery } from '@product-hunt/shared-util-types';
 
 import { AssetPreviewPipe } from '../asset-preview.pipe';
 import { FormatPricePipe } from '../format-price.pipe';

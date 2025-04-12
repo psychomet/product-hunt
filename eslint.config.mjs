@@ -71,7 +71,7 @@ export default [
             // Side effect imports.
             ['^\\u0000'],
             // Absolute imports with the prefix @ui.
-            ['^@bigi-shop'],
+            ['^@product-hunt'],
             // Parent imports. Put `..` last.
             ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
             // Other relative imports. Put same-folder imports and `.` last.

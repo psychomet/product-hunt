@@ -13,8 +13,8 @@ import {
   DataService,
   GET_AVAILABLE_COUNTRIES,
   GET_CUSTOMER_ADDRESSES,
-} from '@bigi-shop/shared-data-access';
-import { AddressFormComponent } from '@bigi-shop/shared-ui';
+} from '@product-hunt/shared-data-access';
+import { AddressFormComponent } from '@product-hunt/shared-ui';
 import {
   CountryFragment,
   GetAvailableCountriesQuery,
@@ -23,7 +23,7 @@ import {
   UpdateAddressInput,
   UpdateAddressMutation,
   UpdateAddressMutationVariables,
-} from '@bigi-shop/shared-util-types';
+} from '@product-hunt/shared-util-types';
 
 import { UPDATE_ADDRESS } from './account-address-detail.graphql';
 

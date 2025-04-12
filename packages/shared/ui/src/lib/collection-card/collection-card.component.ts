@@ -3,7 +3,7 @@ import { Component, computed, inject, input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 
-import { AssetFragment, GetCollectionQuery } from '@bigi-shop/shared-util-types';
+import { AssetFragment, GetCollectionQuery } from '@product-hunt/shared-util-types';
 
 import { AssetPreviewPipe } from '../asset-preview.pipe';
 

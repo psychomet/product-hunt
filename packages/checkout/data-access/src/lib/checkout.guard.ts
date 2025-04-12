@@ -4,7 +4,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { DataService, StateService } from '@bigi-shop/shared-data-access';
+import { DataService, StateService } from '@product-hunt/shared-data-access';
 
 import { GET_ORDER_FOR_CHECKOUT } from './checkout.graphql';
 

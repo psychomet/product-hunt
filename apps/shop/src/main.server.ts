@@ -1,6 +1,6 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 
-import { config } from '@bigi-shop/shell-feature';
+import { config } from '@product-hunt/shell-feature';
 
 import { AppComponent } from './app/app.component';
 

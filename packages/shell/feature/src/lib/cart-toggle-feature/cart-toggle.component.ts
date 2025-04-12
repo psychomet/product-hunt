@@ -19,8 +19,8 @@ import {
   DataService,
   GET_CART_TOTALS,
   StateService,
-} from '@bigi-shop/shared-data-access';
-import { GetCartTotalsQuery } from '@bigi-shop/shared-util-types';
+} from '@product-hunt/shared-data-access';
+import { GetCartTotalsQuery } from '@product-hunt/shared-util-types';
 
 @Component({
   selector: 'bigi-cart-toggle',

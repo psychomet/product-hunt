@@ -7,9 +7,9 @@ import { map, Observable } from 'rxjs';
 import {
   DataService,
   GET_CUSTOMER_ADDRESSES,
-} from '@bigi-shop/shared-data-access';
-import { AddressCardComponent } from '@bigi-shop/shared-ui';
-import { GetCustomerAddressesQuery } from '@bigi-shop/shared-util-types';
+} from '@product-hunt/shared-data-access';
+import { AddressCardComponent } from '@product-hunt/shared-ui';
+import { GetCustomerAddressesQuery } from '@product-hunt/shared-util-types';
 
 @Component({
   selector: 'bigi-account-address-book',

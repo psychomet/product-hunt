@@ -10,18 +10,18 @@ import {
 import { Observable } from 'rxjs';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
 
-import { CheckoutStageIndicatorComponent } from '@bigi-shop/checkout-ui';
-import { DataService, StateService } from '@bigi-shop/shared-data-access';
+import { CheckoutStageIndicatorComponent } from '@product-hunt/checkout-ui';
+import { DataService, StateService } from '@product-hunt/shared-data-access';
 import {
   AddressCardComponent,
   CartContentsComponent,
   CartTotalsComponent,
-} from '@bigi-shop/shared-ui';
+} from '@product-hunt/shared-ui';
 import {
   GetNextOrderStatesQuery,
   GetOrderForCheckoutQuery,
   TransitionToAddingItemsMutation,
-} from '@bigi-shop/shared-util-types';
+} from '@product-hunt/shared-util-types';
 
 import {
   GET_NEXT_ORDER_STATES,

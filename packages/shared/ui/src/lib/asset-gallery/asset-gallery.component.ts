@@ -3,7 +3,7 @@ import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, OnInit,
 
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 
-import { AssetFragment } from '@bigi-shop/shared-util-types';
+import { AssetFragment } from '@product-hunt/shared-util-types';
 
 import { AssetPreviewPipe } from '../asset-preview.pipe';
 

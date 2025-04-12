@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
-import { CartFragment } from '@bigi-shop/shared-util-types';
+import { CartFragment } from '@product-hunt/shared-util-types';
 
 import { FormatPricePipe } from '../format-price.pipe';
 

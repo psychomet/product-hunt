@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef,Component } from '@angular/c
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { DataService, StateService } from '@bigi-shop/shared-data-access';
+import { DataService, StateService } from '@product-hunt/shared-data-access';
 
 import { LOGIN } from './account-sign-in.graphql';
 

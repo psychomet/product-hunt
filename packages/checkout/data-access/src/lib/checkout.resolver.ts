@@ -4,7 +4,7 @@ import { ResolveFn } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, shareReplay, take } from 'rxjs/operators';
 
-import { ActiveService } from '@bigi-shop/shared-data-access';
+import { ActiveService } from '@product-hunt/shared-data-access';
 
 
 export type ActiveOrderStream = Observable<any>;

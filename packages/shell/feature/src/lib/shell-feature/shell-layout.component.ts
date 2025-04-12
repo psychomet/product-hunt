@@ -17,18 +17,18 @@ import {
   DataService,
   GET_COLLECTIONS,
   StateService,
-} from '@bigi-shop/shared-data-access';
+} from '@product-hunt/shared-data-access';
 import {
   arrayToTree,
   Collection,
   CollectionsMenuComponent,
   TreeNode,
-} from '@bigi-shop/shared-ui';
+} from '@product-hunt/shared-ui';
 import type {
   RemoveItemFromCartMutation,
   RemoveItemFromCartMutationVariables,
-} from '@bigi-shop/shared-util-types';
-import { CartDrawerComponent } from '@bigi-shop/shell-ui';
+} from '@product-hunt/shared-util-types';
+import { CartDrawerComponent } from '@product-hunt/shell-ui';
 
 import { AccountLinkComponent } from '../account-link/account-link.component';
 import { CartToggleComponent } from '../cart-toggle-feature/cart-toggle.component';

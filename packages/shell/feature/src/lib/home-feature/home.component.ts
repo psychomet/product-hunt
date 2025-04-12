@@ -4,9 +4,9 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { DataService, GET_COLLECTIONS } from '@bigi-shop/shared-data-access';
-import { CollectionCardComponent } from '@bigi-shop/shared-ui';
-import { GetCollectionsQuery } from '@bigi-shop/shared-util-types';
+import { DataService, GET_COLLECTIONS } from '@product-hunt/shared-data-access';
+import { CollectionCardComponent } from '@product-hunt/shared-ui';
+import { GetCollectionsQuery } from '@product-hunt/shared-util-types';
 
 
 @Component({

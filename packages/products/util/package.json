@@ -1,5 +1,5 @@
 {
-  "name": "@bigi-shop/products-util",
+  "name": "@product-hunt/products-util",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^19.2.0",
