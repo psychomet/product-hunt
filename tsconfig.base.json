@@ -20,17 +20,26 @@
       "@product-hunt/account-data-access": [
         "packages/account/data-access/src/index.ts"
       ],
-      "@product-hunt/account-feature": ["packages/account/feature/src/index.ts"],
+      "@product-hunt/account-feature": [
+        "packages/account/feature/src/index.ts"
+      ],
       "@product-hunt/account-ui": ["packages/account/ui/src/index.ts"],
       "@product-hunt/checkout-data-access": [
         "packages/checkout/data-access/src/index.ts"
       ],
-      "@product-hunt/checkout-feature": ["packages/checkout/feature/src/index.ts"],
+      "@product-hunt/checkout-feature": [
+        "packages/checkout/feature/src/index.ts"
+      ],
       "@product-hunt/checkout-ui": ["packages/checkout/ui/src/index.ts"],
+      "@product-hunt/product-hunt-plugin": [
+        "packages/product-hunt-plugin/src/index.ts"
+      ],
       "@product-hunt/products-data-access": [
         "packages/products/data-access/src/index.ts"
       ],
-      "@product-hunt/products-feature": ["packages/products/feature/src/index.ts"],
+      "@product-hunt/products-feature": [
+        "packages/products/feature/src/index.ts"
+      ],
       "@product-hunt/products-ui": ["packages/products/ui/src/index.ts"],
       "@product-hunt/products-util": ["packages/products/util/src/index.ts"],
       "@product-hunt/shared-data-access": [

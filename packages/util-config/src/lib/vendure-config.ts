@@ -1,26 +1,34 @@
+import { AdminUiPlugin } from '@vendure/admin-ui-plugin';
+import { AssetServerPlugin } from '@vendure/asset-server-plugin';
 import {
-  dummyPaymentHandler,
+  Customer,
   DefaultJobQueuePlugin,
+  DefaultLogger,
   DefaultSearchPlugin,
-  VendureConfig,
+  dummyPaymentHandler,
+  LogLevel,
   PasswordValidationStrategy,
   RequestContext,
-  DefaultLogger,
-  LogLevel,
   TypeORMHealthCheckStrategy,
+  VendureConfig,
 } from '@vendure/core';
-import { defaultEmailHandlers, EmailPlugin, FileBasedTemplateLoader } from '@vendure/email-plugin';
-import { AssetServerPlugin } from '@vendure/asset-server-plugin';
-import { AdminUiPlugin } from '@vendure/admin-ui-plugin';
+import {
+  defaultEmailHandlers,
+  EmailPlugin,
+  FileBasedTemplateLoader,
+} from '@vendure/email-plugin';
+
 import path from 'path';
 
 const IS_DEV = process.env.APP_ENV === 'dev';
 const serverPort = +(process.env.PORT || '3000');
 
+import { ProductHuntPlugin } from '@product-hunt/product-hunt-plugin';
+
 /**
  * Creates the base Vendure configuration
  * @param configOptions Additional options to customize the Vendure config
- * @returns VendureConfig object 
+ * @returns VendureConfig object
  */
 export function createVendureConfig(
   configOptions: {
@@ -29,7 +37,10 @@ export function createVendureConfig(
     assetsPath?: string; // Path to assets directory
   } = {}
 ): VendureConfig {
-  console.log('createVendureConfig',  path.join(process.cwd(), 'static/email/test-emails'));
+  console.log(
+    'createVendureConfig',
+    path.join(process.cwd(), 'static/email/test-emails')
+  );
   console.log('IS_DEV', IS_DEV);
   const {
     templatePath = path.join(process.cwd(), 'static/email/templates'),
@@ -110,11 +121,61 @@ export function createVendureConfig(
       paymentMethodHandlers: [dummyPaymentHandler],
     },
     logger: new DefaultLogger({
-      level: LogLevel.Info
+      level: LogLevel.Info,
     }),
     // When adding or altering custom field definitions, the database will
     // need to be updated. See the "Migrations" section in README.md.
-    customFields: {},
+    customFields: {
+      Product: [
+        {
+          name: 'upvotes',
+          type: 'int',
+          defaultValue: 0,
+          public: true,
+        },
+        {
+          name: 'launchDate',
+          type: 'datetime',
+          public: true,
+        },
+        {
+          name: 'status',
+          type: 'string',
+          options: [{ value: 'upcoming' }, { value: 'launched' }],
+          defaultValue: 'upcoming',
+          public: true,
+        },
+        {
+          name: 'websiteUrl',
+          type: 'string',
+          public: true,
+        },
+        {
+          name: 'makers',
+          type: 'relation',
+          entity: Customer,
+          list: true,
+          public: true,
+        },
+      ],
+      Customer: [
+        {
+          name: 'bio',
+          type: 'string',
+          public: true,
+        },
+        {
+          name: 'website',
+          type: 'string',
+          public: true,
+        },
+        {
+          name: 'twitter',
+          type: 'string',
+          public: true,
+        },
+      ],
+    },
     plugins: [
       AssetServerPlugin.init({
         route: 'assets',
@@ -125,7 +186,10 @@ export function createVendureConfig(
         assetUrlPrefix: IS_DEV ? undefined : 'https://www.my-shop.com/assets/',
       }),
       DefaultJobQueuePlugin.init({ useDatabaseForBuffer: true }),
-      DefaultSearchPlugin.init({ bufferUpdates: false, indexStockStatus: true }),
+      DefaultSearchPlugin.init({
+        bufferUpdates: false,
+        indexStockStatus: true,
+      }),
       EmailPlugin.init({
         devMode: true,
         outputPath: path.join(process.cwd(), 'static/email/test-emails'),
@@ -138,7 +202,8 @@ export function createVendureConfig(
           fromAddress: '"example" <noreply@example.com>',
           verifyEmailAddressUrl: 'http://localhost:4200/account/verify',
           passwordResetUrl: 'http://localhost:4200/account/password-reset',
-          changeEmailAddressUrl: 'http://localhost:4200/account/verify-email-address-change',
+          changeEmailAddressUrl:
+            'http://localhost:4200/account/verify-email-address-change',
         },
       }),
       AdminUiPlugin.init({
@@ -148,6 +213,7 @@ export function createVendureConfig(
           apiPort: serverPort,
         },
       }),
+      ProductHuntPlugin,
     ],
   };
-} 
+}

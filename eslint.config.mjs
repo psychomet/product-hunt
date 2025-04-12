@@ -23,7 +23,8 @@ export default [
             {
               "sourceTag": "type:app",
               "onlyDependOnLibsWithTags": [
-                "type:feature"
+                "type:feature",
+                "type:util",
               ]
             },
             {
@@ -45,7 +46,8 @@ export default [
             {
               "sourceTag": "type:util",
               "onlyDependOnLibsWithTags": [
-                "type:util"
+                "type:util",
+                "type:plugin"
               ]
             },
             {

@@ -1,5 +1,6 @@
-import { createVendureConfig } from '@product-hunt/util-config';
 import path from 'path';
+
+import { createVendureConfig } from '@product-hunt/util-config';
 
 /**
  * Configuration for the Vendure server.
