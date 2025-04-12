@@ -31,8 +31,20 @@
         "packages/checkout/feature/src/index.ts"
       ],
       "@product-hunt/checkout-ui": ["packages/checkout/ui/src/index.ts"],
+      "@product-hunt/product-hunt-data-access": [
+        "packages/product-hunt/data-access/src/index.ts"
+      ],
+      "@product-hunt/product-hunt-feature": [
+        "packages/product-hunt/feature/src/index.ts"
+      ],
       "@product-hunt/product-hunt-plugin": [
         "packages/product-hunt-plugin/src/index.ts"
+      ],
+      "@product-hunt/product-hunt-ui": [
+        "packages/product-hunt/ui/src/index.ts"
+      ],
+      "@product-hunt/product-hunt-util": [
+        "packages/product-hunt/util/src/index.ts"
       ],
       "@product-hunt/products-data-access": [
         "packages/products/data-access/src/index.ts"
