@@ -1,1 +1,1 @@
-export * from './lib/product-hunt-feature.component';
+export * from './lib/lib.routes';

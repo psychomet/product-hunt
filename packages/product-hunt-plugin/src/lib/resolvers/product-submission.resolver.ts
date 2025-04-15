@@ -1,7 +1,9 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { Ctx, RequestContext, TransactionalConnection } from '@vendure/core';
-import { ProductSubmissionService } from '../services/product-submission.service';
 import { Customer } from '@vendure/core/dist/entity/customer/customer.entity';
+
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
+
+import { ProductSubmissionService } from '../services/product-submission.service';
 
 @Resolver()
 export class ProductSubmissionResolver {

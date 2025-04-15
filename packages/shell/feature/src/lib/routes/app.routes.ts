@@ -41,6 +41,13 @@ export const routes: Routes = [
             (m) => m.checkoutFeatureRoutes
           ),
       },
+      {
+        path: 'product-hunt',
+        loadChildren: () =>
+          import('@product-hunt/product-hunt-feature').then(
+            (m) => m.productHuntFeatureRoutes
+          ),
+      },
     ],
   },
 ];

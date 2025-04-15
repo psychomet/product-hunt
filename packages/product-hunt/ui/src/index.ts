@@ -1,1 +1,1 @@
-export * from './lib/product-hunt-ui.component';
+export * from './lib/product-submission-form/product-submission-form.component';

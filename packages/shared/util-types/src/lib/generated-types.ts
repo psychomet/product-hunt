@@ -269,6 +269,30 @@ export type CollectionTranslation = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  content: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  customer: Customer;
+  id: Scalars['ID']['output'];
+  isReported: Scalars['Boolean']['output'];
+  parentComment?: Maybe<Comment>;
+  product: Product;
+  replies: Array<Comment>;
+  reports: Scalars['Int']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  upvotes: Scalars['Int']['output'];
+};
+
+export type CommentReport = {
+  __typename?: 'CommentReport';
+  comment: Comment;
+  id: Scalars['ID']['output'];
+  isResolved: Scalars['Boolean']['output'];
+  reason: Scalars['String']['output'];
+  reporter: Customer;
+};
+
 export type ConfigArg = {
   __typename?: 'ConfigArg';
   name: Scalars['String']['output'];
@@ -392,8 +416,14 @@ export type CreateAddressInput = {
   streetLine2?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type CreateCustomerCustomFieldsInput = {
+  bio?: InputMaybe<Scalars['String']['input']>;
+  twitter?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type CreateCustomerInput = {
-  customFields?: InputMaybe<Scalars['JSON']['input']>;
+  customFields?: InputMaybe<CreateCustomerCustomFieldsInput>;
   emailAddress: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
@@ -758,7 +788,7 @@ export type Customer = Node & {
   __typename?: 'Customer';
   addresses?: Maybe<Array<Address>>;
   createdAt: Scalars['DateTime']['output'];
-  customFields?: Maybe<Scalars['JSON']['output']>;
+  customFields?: Maybe<CustomerCustomFields>;
   emailAddress: Scalars['String']['output'];
   firstName: Scalars['String']['output'];
   id: Scalars['ID']['output'];
@@ -775,9 +805,17 @@ export type CustomerOrdersArgs = {
   options?: InputMaybe<OrderListOptions>;
 };
 
+export type CustomerCustomFields = {
+  __typename?: 'CustomerCustomFields';
+  bio?: Maybe<Scalars['String']['output']>;
+  twitter?: Maybe<Scalars['String']['output']>;
+  website?: Maybe<Scalars['String']['output']>;
+};
+
 export type CustomerFilterParameter = {
   _and?: InputMaybe<Array<CustomerFilterParameter>>;
   _or?: InputMaybe<Array<CustomerFilterParameter>>;
+  bio?: InputMaybe<StringOperators>;
   createdAt?: InputMaybe<DateOperators>;
   emailAddress?: InputMaybe<StringOperators>;
   firstName?: InputMaybe<StringOperators>;
@@ -785,7 +823,9 @@ export type CustomerFilterParameter = {
   lastName?: InputMaybe<StringOperators>;
   phoneNumber?: InputMaybe<StringOperators>;
   title?: InputMaybe<StringOperators>;
+  twitter?: InputMaybe<StringOperators>;
   updatedAt?: InputMaybe<DateOperators>;
+  website?: InputMaybe<StringOperators>;
 };
 
 export type CustomerGroup = Node & {
@@ -823,6 +863,7 @@ export type CustomerListOptions = {
 };
 
 export type CustomerSortParameter = {
+  bio?: InputMaybe<SortOrder>;
   createdAt?: InputMaybe<SortOrder>;
   emailAddress?: InputMaybe<SortOrder>;
   firstName?: InputMaybe<SortOrder>;
@@ -830,7 +871,9 @@ export type CustomerSortParameter = {
   lastName?: InputMaybe<SortOrder>;
   phoneNumber?: InputMaybe<SortOrder>;
   title?: InputMaybe<SortOrder>;
+  twitter?: InputMaybe<SortOrder>;
   updatedAt?: InputMaybe<SortOrder>;
+  website?: InputMaybe<SortOrder>;
 };
 
 /** Operators for filtering on a list of Date fields */
@@ -1732,6 +1775,7 @@ export type Mutation = {
   applyCouponCode: ApplyCouponCodeResult;
   /** Authenticates the user using a named authentication strategy */
   authenticate: AuthenticationResult;
+  createComment: Comment;
   /** Create a new Customer Address */
   createCustomerAddress: Address;
   /** Delete an existing Address */
@@ -1770,6 +1814,7 @@ export type Mutation = {
   removeCouponCode?: Maybe<Order>;
   /** Remove an OrderLine from the Order */
   removeOrderLine: RemoveOrderItemsResult;
+  reportComment: CommentReport;
   /** Requests a password reset email to be sent */
   requestPasswordReset?: Maybe<RequestPasswordResetResult>;
   /**
@@ -1796,6 +1841,7 @@ export type Mutation = {
    * shipping method will apply to.
    */
   setOrderShippingMethod: SetOrderShippingMethodResult;
+  submitProduct: Product;
   /** Transitions an Order to a new state. Valid next states can be found by querying `nextOrderStates` */
   transitionOrderToState?: Maybe<TransitionOrderToStateResult>;
   /** Unsets the billing address for the active Order. Available since version 3.1.0 */
@@ -1813,6 +1859,8 @@ export type Mutation = {
   updateCustomerEmailAddress: UpdateCustomerEmailAddressResult;
   /** Update the password of the active Customer */
   updateCustomerPassword: UpdateCustomerPasswordResult;
+  upvoteComment: Scalars['Boolean']['output'];
+  upvoteProduct: Scalars['Boolean']['output'];
   /**
    * Verify a Customer email address with the token sent to that address. Only applicable if `authOptions.requireVerification` is set to true.
    *
@@ -1851,6 +1899,13 @@ export type MutationAuthenticateArgs = {
 };
 
 
+export type MutationCreateCommentArgs = {
+  content: Scalars['String']['input'];
+  parentCommentId?: InputMaybe<Scalars['ID']['input']>;
+  productId: Scalars['ID']['input'];
+};
+
+
 export type MutationCreateCustomerAddressArgs = {
   input: CreateAddressInput;
 };
@@ -1885,6 +1940,12 @@ export type MutationRemoveCouponCodeArgs = {
 
 export type MutationRemoveOrderLineArgs = {
   orderLineId: Scalars['ID']['input'];
+};
+
+
+export type MutationReportCommentArgs = {
+  commentId: Scalars['ID']['input'];
+  reason: Scalars['String']['input'];
 };
 
 
@@ -1930,6 +1991,11 @@ export type MutationSetOrderShippingMethodArgs = {
 };
 
 
+export type MutationSubmitProductArgs = {
+  input: SubmitProductInput;
+};
+
+
 export type MutationTransitionOrderToStateArgs = {
   state: Scalars['String']['input'];
 };
@@ -1953,6 +2019,16 @@ export type MutationUpdateCustomerEmailAddressArgs = {
 export type MutationUpdateCustomerPasswordArgs = {
   currentPassword: Scalars['String']['input'];
   newPassword: Scalars['String']['input'];
+};
+
+
+export type MutationUpvoteCommentArgs = {
+  commentId: Scalars['ID']['input'];
+};
+
+
+export type MutationUpvoteProductArgs = {
+  productId: Scalars['ID']['input'];
 };
 
 
@@ -2639,7 +2715,7 @@ export type Product = Node & {
   assets: Array<Asset>;
   collections: Array<Collection>;
   createdAt: Scalars['DateTime']['output'];
-  customFields?: Maybe<Scalars['JSON']['output']>;
+  customFields?: Maybe<ProductCustomFields>;
   description: Scalars['String']['output'];
   enabled: Scalars['Boolean']['output'];
   facetValues: Array<FacetValue>;
@@ -2662,6 +2738,15 @@ export type ProductVariantListArgs = {
   options?: InputMaybe<ProductVariantListOptions>;
 };
 
+export type ProductCustomFields = {
+  __typename?: 'ProductCustomFields';
+  launchDate?: Maybe<Scalars['DateTime']['output']>;
+  makers?: Maybe<Array<Customer>>;
+  status?: Maybe<Scalars['String']['output']>;
+  upvotes?: Maybe<Scalars['Int']['output']>;
+  websiteUrl?: Maybe<Scalars['String']['output']>;
+};
+
 export type ProductFilterParameter = {
   _and?: InputMaybe<Array<ProductFilterParameter>>;
   _or?: InputMaybe<Array<ProductFilterParameter>>;
@@ -2670,9 +2755,13 @@ export type ProductFilterParameter = {
   enabled?: InputMaybe<BooleanOperators>;
   id?: InputMaybe<IdOperators>;
   languageCode?: InputMaybe<StringOperators>;
+  launchDate?: InputMaybe<DateOperators>;
   name?: InputMaybe<StringOperators>;
   slug?: InputMaybe<StringOperators>;
+  status?: InputMaybe<StringOperators>;
   updatedAt?: InputMaybe<DateOperators>;
+  upvotes?: InputMaybe<NumberOperators>;
+  websiteUrl?: InputMaybe<StringOperators>;
 };
 
 export type ProductList = PaginatedList & {
@@ -2743,9 +2832,13 @@ export type ProductSortParameter = {
   createdAt?: InputMaybe<SortOrder>;
   description?: InputMaybe<SortOrder>;
   id?: InputMaybe<SortOrder>;
+  launchDate?: InputMaybe<SortOrder>;
   name?: InputMaybe<SortOrder>;
   slug?: InputMaybe<SortOrder>;
+  status?: InputMaybe<SortOrder>;
   updatedAt?: InputMaybe<SortOrder>;
+  upvotes?: InputMaybe<SortOrder>;
+  websiteUrl?: InputMaybe<SortOrder>;
 };
 
 export type ProductTranslation = {
@@ -2936,6 +3029,7 @@ export type Query = {
   collection?: Maybe<Collection>;
   /** A list of Collections available to the shop */
   collections: CollectionList;
+  comments: Array<Comment>;
   /** Returns a list of payment methods and their eligibility based on the current active Order */
   eligiblePaymentMethods: Array<PaymentMethodQuote>;
   /** Returns a list of eligible shipping methods based on the current active Order */
@@ -2944,6 +3038,8 @@ export type Query = {
   facet?: Maybe<Facet>;
   /** A list of Facets available to the shop */
   facets: FacetList;
+  hasUpvoted: Scalars['Boolean']['output'];
+  hasUpvotedComment: Scalars['Boolean']['output'];
   /** Returns information about the current authenticated User */
   me?: Maybe<CurrentUser>;
   /** Returns the possible next states that the activeOrder can transition to */
@@ -2966,6 +3062,7 @@ export type Query = {
   products: ProductList;
   /** Search Products based on the criteria set by the `SearchInput` */
   search: SearchResponse;
+  upvoteCount: Scalars['Int']['output'];
 };
 
 
@@ -2980,6 +3077,11 @@ export type QueryCollectionsArgs = {
 };
 
 
+export type QueryCommentsArgs = {
+  productId: Scalars['ID']['input'];
+};
+
+
 export type QueryFacetArgs = {
   id: Scalars['ID']['input'];
 };
@@ -2987,6 +3089,16 @@ export type QueryFacetArgs = {
 
 export type QueryFacetsArgs = {
   options?: InputMaybe<FacetListOptions>;
+};
+
+
+export type QueryHasUpvotedArgs = {
+  productId: Scalars['ID']['input'];
+};
+
+
+export type QueryHasUpvotedCommentArgs = {
+  commentId: Scalars['ID']['input'];
 };
 
 
@@ -3013,6 +3125,11 @@ export type QueryProductsArgs = {
 
 export type QuerySearchArgs = {
   input: SearchInput;
+};
+
+
+export type QueryUpvoteCountArgs = {
+  productId: Scalars['ID']['input'];
 };
 
 export type RefreshCustomerVerificationResult = NativeAuthStrategyError | Success;
@@ -3070,7 +3187,14 @@ export type RegionTranslation = {
 
 export type RegisterCustomerAccountResult = MissingPasswordError | NativeAuthStrategyError | PasswordValidationError | Success;
 
+export type RegisterCustomerCustomFieldsInput = {
+  bio?: InputMaybe<Scalars['String']['input']>;
+  twitter?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type RegisterCustomerInput = {
+  customFields?: InputMaybe<RegisterCustomerCustomFieldsInput>;
   emailAddress: Scalars['String']['input'];
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
@@ -3343,6 +3467,14 @@ export type StructField = {
 
 export type StructFieldConfig = BooleanStructFieldConfig | DateTimeStructFieldConfig | FloatStructFieldConfig | IntStructFieldConfig | StringStructFieldConfig | TextStructFieldConfig;
 
+export type SubmitProductInput = {
+  description: Scalars['String']['input'];
+  launchDate?: InputMaybe<Scalars['DateTime']['input']>;
+  makers: Array<Scalars['ID']['input']>;
+  name: Scalars['String']['input'];
+  websiteUrl: Scalars['String']['input'];
+};
+
 /** Indicates that an operation succeeded, where we do not want to return any more specific information. */
 export type Success = {
   __typename?: 'Success';
@@ -3461,10 +3593,16 @@ export type UpdateAddressInput = {
   streetLine2?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateCustomerCustomFieldsInput = {
+  bio?: InputMaybe<Scalars['String']['input']>;
+  twitter?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UpdateCustomerEmailAddressResult = IdentifierChangeTokenExpiredError | IdentifierChangeTokenInvalidError | NativeAuthStrategyError | Success;
 
 export type UpdateCustomerInput = {
-  customFields?: InputMaybe<Scalars['JSON']['input']>;
+  customFields?: InputMaybe<UpdateCustomerCustomFieldsInput>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
@@ -3688,6 +3826,48 @@ export type CreateAddressMutationVariables = Exact<{
 
 
 export type CreateAddressMutation = { __typename?: 'Mutation', createCustomerAddress: { __typename?: 'Address', id: string, fullName?: string, company?: string, streetLine1: string, streetLine2?: string, city?: string, province?: string, postalCode?: string, phoneNumber?: string, defaultShippingAddress?: boolean, defaultBillingAddress?: boolean, country: { __typename?: 'Country', id: string, code: string, name: string } } };
+
+export type GetProductHuntProductsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProductHuntProductsQuery = { __typename?: 'Query', products: { __typename?: 'ProductList', totalItems: number, items: Array<{ __typename?: 'Product', id: string, name: string, description: string, variants: Array<{ __typename?: 'ProductVariant', id: string, name: string }>, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } }> } };
+
+export type SubmitProductMutationVariables = Exact<{
+  input: SubmitProductInput;
+}>;
+
+
+export type SubmitProductMutation = { __typename?: 'Mutation', submitProduct: { __typename?: 'Product', id: string, name: string, slug: string, description: string, customFields?: { __typename?: 'ProductCustomFields', upvotes?: number, launchDate?: any, status?: string, websiteUrl?: string, makers?: Array<{ __typename?: 'Customer', id: string, firstName: string, lastName: string, emailAddress: string }> } } };
+
+export type GetProductHuntDetailsQueryVariables = Exact<{
+  productId: Scalars['ID']['input'];
+}>;
+
+
+export type GetProductHuntDetailsQuery = { __typename?: 'Query', upvoteCount: number, hasUpvoted: boolean, comments: Array<{ __typename?: 'Comment', id: string, content: string, upvotes: number, createdAt: any, updatedAt: any, customer: { __typename?: 'Customer', id: string, firstName: string, lastName: string }, replies: Array<{ __typename?: 'Comment', id: string, content: string, upvotes: number, createdAt: any, customer: { __typename?: 'Customer', id: string, firstName: string, lastName: string } }> }> };
+
+export type ProductHuntCreateCommentMutationVariables = Exact<{
+  productId: Scalars['ID']['input'];
+  content: Scalars['String']['input'];
+  parentCommentId?: InputMaybe<Scalars['ID']['input']>;
+}>;
+
+
+export type ProductHuntCreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'Comment', id: string, content: string, upvotes: number, createdAt: any, updatedAt: any, customer: { __typename?: 'Customer', id: string, firstName: string, lastName: string } } };
+
+export type ProductHuntUpvoteProductMutationVariables = Exact<{
+  productId: Scalars['ID']['input'];
+}>;
+
+
+export type ProductHuntUpvoteProductMutation = { __typename?: 'Mutation', upvoteProduct: boolean };
+
+export type ProductHuntUpvoteCommentMutationVariables = Exact<{
+  commentId: Scalars['ID']['input'];
+}>;
+
+
+export type ProductHuntUpvoteCommentMutation = { __typename?: 'Mutation', upvoteComment: boolean };
 
 export type GetProductQueryVariables = Exact<{
   id: Scalars['ID']['input'];

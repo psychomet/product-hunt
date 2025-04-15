@@ -1,1 +1,2 @@
-export * from './lib/product-hunt-data-access.component';
+export * from './lib/graphql/product-hunt.graphql';
+export * from './lib/services/product-hunt.service';
